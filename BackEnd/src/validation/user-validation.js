@@ -12,4 +12,4 @@ export const loginUserValidation = Joi.object({
   password: Joi.string().required().max(255),
 });
 
-export const getUserValidation = Joi.string().max(100).required();
+export const getUserValidation = Joi.string().uuid().required();

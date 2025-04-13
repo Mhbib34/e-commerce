@@ -66,11 +66,11 @@ export const logout = () => {
   return { success: true, message: "User logged out successfully" };
 };
 
-export const get = async (email) => {
-  email = validate(getUserValidation, email);
+export const get = async (id) => {
+  id = validate(getUserValidation, id);
   const user = await prismaClient.user.findUnique({
     where: {
-      email,
+      id,
     },
     select: {
       id: true,
@@ -81,4 +81,32 @@ export const get = async (email) => {
   });
   if (!user) throw new ResponseError(404, "User is not found");
   return user;
+};
+
+export const verifyOtp = async (id) => {
+  id = validate(getUserValidation, id);
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  console.log(user.id);
+
+  if (!user) throw new ResponseError(404, "User is not found");
+  if (user.isAccountVerified)
+    throw new ResponseError(400, "User already verified!");
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+
+  await prismaClient.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      verifyOtp: otp,
+      verifyOtpExpireAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    },
+  });
+  return { otp, user };
 };

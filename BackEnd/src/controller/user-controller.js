@@ -1,7 +1,16 @@
-import { create, get, login, logout } from "../services/user-services.js";
+import {
+  create,
+  get,
+  login,
+  logout,
+  verifyOtp,
+} from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../app/nodemailer.js";
-import { welcomeEmailTemplate } from "../app/email-template.js";
+import {
+  otpEmailTemplate,
+  welcomeEmailTemplate,
+} from "../app/email-template.js";
 
 const registerUserHandler = async (req, res, next) => {
   try {
@@ -88,8 +97,8 @@ const logoutUserHandler = async (req, res, next) => {
 
 const getUserHandler = async (req, res, next) => {
   try {
-    const email = req.user.email;
-    const result = await get(email);
+    const id = req.user.id;
+    const result = await get(id);
     res.status(200).json({
       success: true,
       message: "Get User successfully",
@@ -105,9 +114,32 @@ const getUserHandler = async (req, res, next) => {
   }
 };
 
+const verifyOtpHandler = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const { otp, user } = await verifyOtp(id);
+
+    const mailOption = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: `Account Verify OTP!`,
+      html: otpEmailTemplate(user.name, otp, "verify your email"),
+    };
+    await transporter.sendMail(mailOption);
+
+    res.status(200).json({
+      success: true,
+      message: "Verification OTP sent on email",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
   logout: logoutUserHandler,
   get: getUserHandler,
+  verifyOtp: verifyOtpHandler,
 };
