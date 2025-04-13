@@ -179,3 +179,39 @@ describe("GET /api/user/get", () => {
     expect(result.status).toBe(401);
   });
 });
+
+describe("POST /api/user/send-verify-otp", () => {
+  let token;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can send verify otp", async () => {
+    const result = await supertest(app)
+      .post("/api/user/send-verify-otp")
+      .set("Cookie", [`token=${token}`]);
+
+    expect(result.status).toBe(200);
+    expect(result.body.success).toBe(true);
+    expect(result.body.message).toBe("Verification OTP sent on email");
+  });
+
+  it("should reject if send verify otp is invalid", async () => {
+    const result = await supertest(app)
+      .post("/api/user/send-verify-otp")
+      .set("Cookie", [`token=asasasas`]);
+
+    expect(result.status).toBe(401);
+  });
+});

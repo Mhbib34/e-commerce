@@ -3,6 +3,7 @@ import {
   get,
   login,
   logout,
+  verifyEmail,
   verifyOtp,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
