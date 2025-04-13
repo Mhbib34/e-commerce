@@ -22,6 +22,7 @@ export const create = async (request) => {
   return prismaClient.user.create({
     data: user,
     select: {
+      id: true,
       name: true,
       email: true,
       username: true,
