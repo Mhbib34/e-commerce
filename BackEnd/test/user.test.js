@@ -1,7 +1,6 @@
 import { createTestUser, removeAllTestUser } from "./test.util.js";
 import supertest from "supertest";
 import { app } from "../src/app/app.js";
-import { prismaClient } from "../src/app/database.js";
 
 describe("POST /api/user/register", () => {
   afterEach(async () => {
@@ -135,6 +134,46 @@ describe("POST /api/user/logout", () => {
     const result = await supertest(app)
       .post("/api/user/logout")
       .set("Cookie", [`token=asdasdas`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});
+
+describe("GET /api/user/get", () => {
+  let token;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can get user", async () => {
+    const result = await supertest(app)
+      .get("/api/user/get")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+
+    expect(result.status).toBe(200);
+    expect(result.body.user.username).toBe("test");
+    expect(result.body.user.name).toBe("test");
+    expect(result.body.user.email).toBe("test@gmail.com");
+  });
+
+  it("should reject if token is not valid", async () => {
+    const result = await supertest(app)
+      .get("/api/user/get")
+      .set("Cookie", [`token=asasas`]);
 
     console.log(result.body);
     expect(result.status).toBe(401);

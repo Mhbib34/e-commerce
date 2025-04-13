@@ -6,3 +6,4 @@ export const userRouter = new express.Router();
 userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
 userRouter.post("/logout", userAuth, userController.logout);
+userRouter.get("/get", userAuth, userController.get);

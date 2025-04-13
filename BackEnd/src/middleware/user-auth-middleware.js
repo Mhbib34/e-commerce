@@ -16,8 +16,11 @@ const userAuth = async (req, res, next) => {
       throw new ResponseError(401, "Invalid or expired token");
     }
 
-    if (tokenDecode.id) {
-      req.user = { id: tokenDecode.id };
+    if (tokenDecode?.id && tokenDecode?.email) {
+      req.user = {
+        id: tokenDecode.id,
+        email: tokenDecode.email,
+      };
     } else {
       throw new ResponseError(401, "Not authorized, Login again");
     }

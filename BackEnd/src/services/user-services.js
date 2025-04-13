@@ -65,3 +65,20 @@ export const login = async (request) => {
 export const logout = () => {
   return { success: true, message: "User logged out successfully" };
 };
+
+export const get = async (email) => {
+  email = validate(getUserValidation, email);
+  const user = await prismaClient.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      name: true,
+    },
+  });
+  if (!user) throw new ResponseError(404, "User is not found");
+  return user;
+};

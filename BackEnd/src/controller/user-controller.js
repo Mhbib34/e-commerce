@@ -1,4 +1,4 @@
-import { create, login, logout } from "../services/user-services.js";
+import { create, get, login, logout } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../app/nodemailer.js";
 import { welcomeEmailTemplate } from "../app/email-template.js";
@@ -6,9 +6,13 @@ import { welcomeEmailTemplate } from "../app/email-template.js";
 const registerUserHandler = async (req, res, next) => {
   try {
     const result = await create(req.body);
-    const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: result.id, email: result.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -39,9 +43,13 @@ const registerUserHandler = async (req, res, next) => {
 const loginUserHandler = async (req, res, next) => {
   try {
     const result = await login(req.body);
-    const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: result.id, email: result.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -78,8 +86,28 @@ const logoutUserHandler = async (req, res, next) => {
   }
 };
 
+const getUserHandler = async (req, res, next) => {
+  try {
+    const email = req.user.email;
+    const result = await get(email);
+    res.status(200).json({
+      success: true,
+      message: "Get User successfully",
+      user: {
+        id: result.id,
+        username: result.username,
+        name: result.name,
+        email: result.email,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
   logout: logoutUserHandler,
+  get: getUserHandler,
 };
