@@ -1,6 +1,7 @@
 import { prismaClient } from "../app/database.js";
 import { ResponseError } from "../error/response-error.js";
 import {
+  getUserValidation,
   loginUserValidation,
   registerUserValidation,
 } from "../validation/user-validation.js";
@@ -59,4 +60,8 @@ export const login = async (request) => {
     throw new ResponseError(401, "Email or password is wrong!");
 
   return user;
+};
+
+export const logout = () => {
+  return { success: true, message: "User logged out successfully" };
 };

@@ -1,6 +1,7 @@
 import { createTestUser, removeAllTestUser } from "./test.util.js";
 import supertest from "supertest";
 import { app } from "../src/app/app.js";
+import { prismaClient } from "../src/app/database.js";
 
 describe("POST /api/user/register", () => {
   afterEach(async () => {
@@ -98,6 +99,42 @@ describe("POST /api/user/login", () => {
       email: "te@gmail.com",
       password: "rahasia",
     });
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});
+
+describe("POST /api/user/logout", () => {
+  let token;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can logout", async () => {
+    const result = await supertest(app)
+      .post("/api/user/logout")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject logout if token is invalid", async () => {
+    const result = await supertest(app)
+      .post("/api/user/logout")
+      .set("Cookie", [`token=asdasdas`]);
 
     console.log(result.body);
     expect(result.status).toBe(401);

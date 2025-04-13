@@ -1,4 +1,4 @@
-import { create, login } from "../services/user-services.js";
+import { create, login, logout } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../app/nodemailer.js";
 import { welcomeEmailTemplate } from "../app/email-template.js";
@@ -65,7 +65,21 @@ const loginUserHandler = async (req, res, next) => {
   }
 };
 
+const logoutUserHandler = async (req, res, next) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+    return res.status(200).json(logout());
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
+  logout: logoutUserHandler,
 };

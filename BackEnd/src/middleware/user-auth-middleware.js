@@ -4,15 +4,24 @@ import { ResponseError } from "../error/response-error.js";
 const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
+
     if (!token) {
       throw new ResponseError(401, "Not authorized, Login again");
     }
-    const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+
+    let tokenDecode;
+    try {
+      tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      throw new ResponseError(401, "Invalid or expired token");
+    }
+
     if (tokenDecode.id) {
-      req.body.userId = tokenDecode.id;
+      req.user = { id: tokenDecode.id };
     } else {
       throw new ResponseError(401, "Not authorized, Login again");
     }
+
     next();
   } catch (error) {
     next(error);
