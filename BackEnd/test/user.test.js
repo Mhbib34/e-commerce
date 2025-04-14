@@ -1,6 +1,7 @@
 import { createTestUser, removeAllTestUser } from "./test.util.js";
 import supertest from "supertest";
 import { app } from "../src/app/app.js";
+import { prismaClient } from "../src/app/database.js";
 
 describe("POST /api/user/register", () => {
   afterEach(async () => {
@@ -213,5 +214,97 @@ describe("POST /api/user/send-verify-otp", () => {
       .set("Cookie", [`token=asasasas`]);
 
     expect(result.status).toBe(401);
+  });
+});
+
+describe("POST /api/user/verify-email", () => {
+  let token;
+  let userId;
+
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+
+    await supertest(app)
+      .post("/api/user/send-verify-otp")
+      .set("Cookie", [`token=${token}`]);
+
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email: "test@gmail.com",
+      },
+    });
+
+    userId = user.id;
+  });
+
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should verify email successfully with valid OTP", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.verifyOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/verify-email")
+      .set("Cookie", [`token=${token}`])
+      .send({ otp });
+
+    console.log(otp);
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body.success).toBe(true);
+    expect(result.body.message).toBe("Email verified successfully");
+    expect(result.body.user.isAccountVerified).toBe(true);
+  });
+
+  it("should reject if verify email token is invalid", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.verifyOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/verify-email")
+      .set("Cookie", [`token=dasdadas`])
+      .send({ otp });
+
+    console.log(otp);
+
+    expect(result.statusCode).toBe(401);
+  });
+
+  it("should reject if otp is invalid", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.verifyOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/verify-email")
+      .set("Cookie", [`token=${token}`])
+      .send({ otp: 121212 });
+
+    console.log(otp);
+
+    expect(result.statusCode).toBe(400);
   });
 });

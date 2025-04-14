@@ -137,10 +137,32 @@ const verifyOtpHandler = async (req, res, next) => {
   }
 };
 
+const emailVerifyHandler = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const { otp } = req.body;
+    const user = await verifyEmail(id, otp);
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        isAccountVerified: user.isAccountVerified,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
   logout: logoutUserHandler,
   get: getUserHandler,
   verifyOtp: verifyOtpHandler,
+  verifyEmail: emailVerifyHandler,
 };
