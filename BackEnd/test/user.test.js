@@ -308,3 +308,58 @@ describe("POST /api/user/verify-email", () => {
     expect(result.statusCode).toBe(400);
   });
 });
+
+describe("POST /api/user/send-password-otp", () => {
+  let token;
+  let email;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+    email = result.body.user.email;
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can send reset password otp", async () => {
+    const result = await supertest(app)
+      .post("/api/user/send-password-otp")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email,
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject if email is not found", async () => {
+    const result = await supertest(app)
+      .post("/api/user/send-password-otp")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email: "asasas@gmail.com",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(404);
+  });
+
+  it("should reject if reset password token is not valid", async () => {
+    const result = await supertest(app)
+      .post("/api/user/send-password-otp")
+      .set("Cookie", [`token=dadsadas`])
+      .send({
+        email,
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});

@@ -94,6 +94,7 @@ export const verifyOtp = async (id) => {
   console.log(user.id);
 
   if (!user) throw new ResponseError(404, "User is not found");
+  if (user.verifyOtp) throw new ResponseError(400, "OTP has been sent");
   if (user.isAccountVerified)
     throw new ResponseError(400, "User already verified!");
 
@@ -139,4 +140,31 @@ export const verifyEmail = async (id, otp) => {
     },
   });
   return updatedUser;
+};
+
+export const resetPasswordOtp = async (email) => {
+  if (!email) throw new ResponseError(400, "Email is required!");
+
+  const user = await prismaClient.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) throw new ResponseError(404, "User is not found!");
+
+  if (user.resetOtp) throw new ResponseError(400, "OTP has been sent");
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+
+  await prismaClient.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      resetOtp: otp,
+      resetOtpExpireAt: new Date(Date.now() + 15 * 60 * 1000),
+    },
+  });
+  return { otp, user };
 };

@@ -3,6 +3,7 @@ import {
   get,
   login,
   logout,
+  resetPasswordOtp,
   verifyEmail,
   verifyOtp,
 } from "../services/user-services.js";
@@ -158,6 +159,27 @@ const emailVerifyHandler = async (req, res, next) => {
   }
 };
 
+const sendResetPasswordOtpHandler = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const { otp, user } = await resetPasswordOtp(email);
+    const mailOption = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: `Reset Password OTP!`,
+      html: otpEmailTemplate(user.name, otp, "reset your password"),
+    };
+    await transporter.sendMail(mailOption);
+
+    res.status(200).json({
+      success: true,
+      message: "Reset password OTP sent on email",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -165,4 +187,5 @@ export default {
   get: getUserHandler,
   verifyOtp: verifyOtpHandler,
   verifyEmail: emailVerifyHandler,
+  sendresetPasswordOtp: sendResetPasswordOtpHandler,
 };

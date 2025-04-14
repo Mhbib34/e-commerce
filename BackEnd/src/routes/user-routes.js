@@ -9,3 +9,8 @@ userRouter.post("/logout", userAuth, userController.logout);
 userRouter.get("/get", userAuth, userController.get);
 userRouter.post("/send-verify-otp", userAuth, userController.verifyOtp);
 userRouter.post("/verify-email", userAuth, userController.verifyEmail);
+userRouter.post(
+  "/send-password-otp",
+  userAuth,
+  userController.sendresetPasswordOtp
+);
