@@ -20,6 +20,7 @@ const userAuth = async (req, res, next) => {
       req.user = {
         id: tokenDecode.id,
         email: tokenDecode.email,
+        role: user.role,
       };
     } else {
       throw new ResponseError(401, "Not authorized, Login again");
