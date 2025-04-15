@@ -19,3 +19,11 @@ export const createTestUser = async () => {
     },
   });
 };
+
+export const removeAllTestCategory = async () => {
+  await prismaClient.category.deleteMany({
+    where: {
+      name: "test category",
+    },
+  });
+};
