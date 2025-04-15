@@ -26,7 +26,13 @@ model User {
   resetOtpExpireAt DateTime?
   orders Order[]
   cartItem CartItem[]
+  role Role @default(USER)
   @@map("users")
+}
+enum Role {
+  USER
+  ADMIN
+  SELLER
 }
 
 model Product {
