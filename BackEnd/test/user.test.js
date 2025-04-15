@@ -309,7 +309,7 @@ describe("POST /api/user/verify-email", () => {
   });
 });
 
-describe("POST /api/user/send-password-otp", () => {
+describe("POST /api/user/send-reset-password-otp", () => {
   let token;
   let email;
   beforeEach(async () => {
@@ -329,7 +329,7 @@ describe("POST /api/user/send-password-otp", () => {
 
   it("should can send reset password otp", async () => {
     const result = await supertest(app)
-      .post("/api/user/send-password-otp")
+      .post("/api/user/send-reset-password-otp")
       .set("Cookie", [`token=${token}`])
       .send({
         email,
@@ -341,7 +341,7 @@ describe("POST /api/user/send-password-otp", () => {
 
   it("should reject if email is not found", async () => {
     const result = await supertest(app)
-      .post("/api/user/send-password-otp")
+      .post("/api/user/send-reset-password-otp")
       .set("Cookie", [`token=${token}`])
       .send({
         email: "asasas@gmail.com",
@@ -353,7 +353,7 @@ describe("POST /api/user/send-password-otp", () => {
 
   it("should reject if reset password token is not valid", async () => {
     const result = await supertest(app)
-      .post("/api/user/send-password-otp")
+      .post("/api/user/send-reset-password-otp")
       .set("Cookie", [`token=dadsadas`])
       .send({
         email,
@@ -361,5 +361,144 @@ describe("POST /api/user/send-password-otp", () => {
 
     console.log(result.body);
     expect(result.status).toBe(401);
+  });
+});
+
+describe("POST /api/user/reset-password", () => {
+  let token;
+  let userId;
+  let email;
+
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    email = result.body.user.email;
+
+    await supertest(app)
+      .post("/api/user/send-reset-password-otp")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email,
+      });
+
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email: "test@gmail.com",
+      },
+    });
+
+    userId = user.id;
+  });
+
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can reset password", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.resetOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/reset-password")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email,
+        otp,
+        newPassword: "rahasia baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject if reset password token is not valid", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.resetOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/reset-password")
+      .set("Cookie", [`token=asdasdasdas`])
+      .send({
+        email,
+        otp,
+        newPassword: "rahasia baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+
+  it("should reject if new password same as old", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.resetOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/reset-password")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email,
+        otp,
+        newPassword: "rahasia",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(400);
+  });
+
+  it("should reject if reset password email is wrong", async () => {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const otp = user.resetOtp;
+
+    const result = await supertest(app)
+      .post("/api/user/reset-password")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email: "asasa@gmail.com",
+        otp,
+        newPassword: "rahasia baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(404);
+  });
+
+  it("should reject if reset password otp is not valid", async () => {
+    const result = await supertest(app)
+      .post("/api/user/reset-password")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        email,
+        otp: 12345,
+        newPassword: "rahasia baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(400);
   });
 });

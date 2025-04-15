@@ -10,7 +10,8 @@ userRouter.get("/get", userAuth, userController.get);
 userRouter.post("/send-verify-otp", userAuth, userController.verifyOtp);
 userRouter.post("/verify-email", userAuth, userController.verifyEmail);
 userRouter.post(
-  "/send-password-otp",
+  "/send-reset-password-otp",
   userAuth,
   userController.sendresetPasswordOtp
 );
+userRouter.post("/reset-password", userAuth, userController.resetPassword);

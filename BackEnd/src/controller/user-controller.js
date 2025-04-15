@@ -4,6 +4,7 @@ import {
   login,
   logout,
   resetPasswordOtp,
+  resetPassword,
   verifyEmail,
   verifyOtp,
 } from "../services/user-services.js";
@@ -71,12 +72,7 @@ const loginUserHandler = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "User login successfully",
-      user: {
-        id: result.id,
-        username: result.username,
-        name: result.name,
-        email: result.email,
-      },
+      user: result,
       token,
     });
   } catch (error) {
@@ -104,12 +100,7 @@ const getUserHandler = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Get User successfully",
-      user: {
-        id: result.id,
-        username: result.username,
-        name: result.name,
-        email: result.email,
-      },
+      user: result,
     });
   } catch (error) {
     next(error);
@@ -180,6 +171,30 @@ const sendResetPasswordOtpHandler = async (req, res, next) => {
   }
 };
 
+const resetPasswordHandler = async (req, res, next) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const user = await resetPassword(email, otp, newPassword);
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+    res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully!",
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -188,4 +203,5 @@ export default {
   verifyOtp: verifyOtpHandler,
   verifyEmail: emailVerifyHandler,
   sendresetPasswordOtp: sendResetPasswordOtpHandler,
+  resetPassword: resetPasswordHandler,
 };

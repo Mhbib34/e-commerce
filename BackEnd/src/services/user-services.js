@@ -47,6 +47,7 @@ export const login = async (request) => {
       name: true,
       username: true,
       password: true,
+      isAccountVerified: true,
     },
   });
   if (!user) throw new ResponseError(401, "Email or password is wrong!");
@@ -77,6 +78,7 @@ export const get = async (id) => {
       username: true,
       email: true,
       name: true,
+      isAccountVerified: true,
     },
   });
   if (!user) throw new ResponseError(404, "User is not found");
@@ -90,8 +92,6 @@ export const verifyOtp = async (id) => {
       id,
     },
   });
-
-  console.log(user.id);
 
   if (!user) throw new ResponseError(404, "User is not found");
   if (user.verifyOtp) throw new ResponseError(400, "OTP has been sent");
@@ -167,4 +167,45 @@ export const resetPasswordOtp = async (email) => {
     },
   });
   return { otp, user };
+};
+
+export const resetPassword = async (email, otp, newPassword) => {
+  if (!email || !otp || !newPassword)
+    throw new ResponseError(400, "Missing details!");
+
+  const user = await prismaClient.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) throw new ResponseError(404, "User is not found");
+
+  if (user.resetOtpExpireAt < Date.now()) {
+    throw new ResponseError(400, "OTP Expired");
+  }
+
+  if (user.resetOtp !== otp || user.resetOtp === "")
+    throw new ResponseError(400, "Invalid OTP");
+
+  const isPasswordSame = await bcrypt.compare(newPassword, user.password);
+
+  if (isPasswordSame)
+    throw new ResponseError(
+      400,
+      "New password cannot be the same as the old one"
+    );
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const updatedUser = await prismaClient.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      password: hashedPassword,
+      resetOtp: null,
+      resetOtpExpireAt: null,
+    },
+  });
+  return updatedUser;
 };
