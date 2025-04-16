@@ -1,4 +1,4 @@
-import { create, get } from "../services/category-service.js";
+import { create, get, getAll } from "../services/category-service.js";
 
 const createCategoryHandler = async (req, res, next) => {
   try {
@@ -22,7 +22,17 @@ const getCategoryHandler = async (req, res, next) => {
   });
 };
 
+const getAllCategoryHandler = async (req, res, next) => {
+  const result = await getAll();
+  res.status(200).json({
+    success: true,
+    message: "Get All category successfully",
+    category: result,
+  });
+};
+
 export default {
   create: createCategoryHandler,
   get: getCategoryHandler,
+  getAll: getAllCategoryHandler,
 };

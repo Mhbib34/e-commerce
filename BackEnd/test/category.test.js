@@ -73,3 +73,19 @@ describe("GET /api/category/get", () => {
     expect(result.status).toBe(404);
   });
 });
+
+describe("GET /api/category/get-all", () => {
+  beforeEach(async () => {
+    await createTestCategory();
+  });
+  afterEach(async () => {
+    await removeAllTestCategory();
+  });
+
+  it("should can get all category", async () => {
+    const result = await supertest(app).get("/api/category/get-all");
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+});

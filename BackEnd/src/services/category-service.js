@@ -34,3 +34,12 @@ export const get = async (request) => {
 
   return category;
 };
+
+export const getAll = async () => {
+  const category = await prismaClient.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+  return category;
+};
