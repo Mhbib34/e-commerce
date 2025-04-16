@@ -63,4 +63,13 @@ describe("GET /api/category/get", () => {
     expect(result.status).toBe(200);
     expect(result.body.category.name).toBe("test category");
   });
+
+  it("should reject if category name is not found", async () => {
+    const result = await supertest(app).get("/api/category/get").send({
+      name: "ini diaa",
+    });
+    console.log(result.body);
+
+    expect(result.status).toBe(404);
+  });
 });
