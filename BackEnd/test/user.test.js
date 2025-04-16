@@ -2,6 +2,7 @@ import { createTestUser, removeAllTestUser } from "./test.util.js";
 import supertest from "supertest";
 import { app } from "../src/app/app.js";
 import { prismaClient } from "../src/app/database.js";
+import { log } from "winston";
 
 describe("POST /api/user/register", () => {
   afterEach(async () => {
@@ -365,6 +366,7 @@ describe("POST /api/user/send-reset-password-otp", () => {
 });
 
 describe("POST /api/user/reset-password", () => {
+  jest.setTimeout(10000);
   let token;
   let userId;
   let email;
@@ -379,13 +381,17 @@ describe("POST /api/user/reset-password", () => {
 
     token = result.body.token;
     email = result.body.user.email;
+    console.log(token);
+    console.log(email);
 
-    await supertest(app)
+    const sendOtp = await supertest(app)
       .post("/api/user/send-reset-password-otp")
       .set("Cookie", [`token=${token}`])
       .send({
         email,
       });
+
+    console.log(sendOtp.body);
 
     const user = await prismaClient.user.findUnique({
       where: {
@@ -406,7 +412,9 @@ describe("POST /api/user/reset-password", () => {
         id: userId,
       },
     });
+    console.log(user);
 
+    console.log(userId);
     const otp = user.resetOtp;
 
     const result = await supertest(app)

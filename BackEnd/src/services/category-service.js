@@ -43,3 +43,21 @@ export const getAll = async () => {
   });
   return category;
 };
+
+export const deleted = async (name) => {
+  const category = await prismaClient.category.findUnique({
+    where: {
+      name,
+    },
+  });
+
+  if (!category) throw new ResponseError(404, "Category name is not found!");
+
+  await prismaClient.category.delete({
+    where: {
+      name,
+    },
+  });
+
+  return category;
+};

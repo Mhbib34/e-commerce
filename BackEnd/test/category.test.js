@@ -89,3 +89,30 @@ describe("GET /api/category/get-all", () => {
     expect(result.status).toBe(200);
   });
 });
+
+describe("DELETE /api/category/delete", () => {
+  beforeEach(async () => {
+    await createTestCategory();
+  });
+  afterEach(async () => {
+    await removeAllTestCategory();
+  });
+
+  it("should can delete category by name query", async () => {
+    const result = await supertest(app).delete(
+      `/api/category/delete?name=test%20category`
+    );
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject if category name is not found", async () => {
+    const result = await supertest(app).delete(
+      `/api/category/delete?name=Aasdasd`
+    );
+
+    console.log(result.body);
+    expect(result.status).toBe(404);
+  });
+});

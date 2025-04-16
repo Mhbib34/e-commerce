@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ResponseError } from "../error/response-error.js";
+import { prismaClient } from "../app/database.js";
 
 const userAuth = async (req, res, next) => {
   try {
@@ -17,6 +18,16 @@ const userAuth = async (req, res, next) => {
     }
 
     if (tokenDecode?.id && tokenDecode?.email) {
+      const user = await prismaClient.user.findUnique({
+        where: {
+          email: tokenDecode.email,
+        },
+      });
+
+      if (!user) {
+        throw new ResponseError(401, "User not found");
+      }
+
       req.user = {
         id: tokenDecode.id,
         email: tokenDecode.email,
