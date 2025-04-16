@@ -7,6 +7,7 @@ import {
   resetPassword,
   verifyEmail,
   verifyOtp,
+  update,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../app/nodemailer.js";
@@ -43,7 +44,7 @@ const registerUserHandler = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: "User Created Successfully",
+      message: "User created Successfully",
       user: result,
       token,
     });
@@ -195,6 +196,19 @@ const resetPasswordHandler = async (req, res, next) => {
   }
 };
 
+const updateUserHandler = async (req, res, next) => {
+  try {
+    const result = await update({ ...req.body, email: req.user.email });
+    res.status(200).json({
+      success: true,
+      message: "User updated Successfully",
+      user: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -204,4 +218,5 @@ export default {
   verifyEmail: emailVerifyHandler,
   sendresetPasswordOtp: sendResetPasswordOtpHandler,
   resetPassword: resetPasswordHandler,
+  update: updateUserHandler,
 };

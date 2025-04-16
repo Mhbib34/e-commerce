@@ -4,6 +4,7 @@ import {
   getUserValidation,
   loginUserValidation,
   registerUserValidation,
+  updateUserValidation,
 } from "../validation/user-validation.js";
 import validate from "../validation/validation.js";
 import bcrypt from "bcrypt";
@@ -208,4 +209,28 @@ export const resetPassword = async (email, otp, newPassword) => {
     },
   });
   return updatedUser;
+};
+
+export const update = async (request) => {
+  const userValidate = validate(updateUserValidation, request);
+  const user = await prismaClient.user.findUnique({
+    where: {
+      email: userValidate.email,
+    },
+  });
+
+  if (!user) throw new ResponseError(404, "User is not found!");
+
+  return prismaClient.user.update({
+    where: {
+      email: user.email,
+    },
+    data: userValidate,
+    select: {
+      name: true,
+      username: true,
+      email: true,
+      isAccountVerified: true,
+    },
+  });
 };
