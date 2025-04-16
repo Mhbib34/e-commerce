@@ -20,3 +20,17 @@ export const create = async (request) => {
     },
   });
 };
+
+export const get = async (request) => {
+  const { name } = validate(createCategoryValidation, request);
+
+  const category = await prismaClient.category.findUnique({
+    where: {
+      name,
+    },
+  });
+
+  if (!category) throw new ResponseError(404, "Category name is not found!");
+
+  return category;
+};
