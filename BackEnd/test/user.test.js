@@ -510,3 +510,62 @@ describe("POST /api/user/reset-password", () => {
     expect(result.status).toBe(400);
   });
 });
+
+describe("PATCH /api/user/update", () => {
+  let token;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can update user", async () => {
+    const result = await supertest(app)
+      .patch("/api/user/update")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        name: "test baru",
+        username: "test baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+    expect(result.body.user.name).toBe("test baru");
+    expect(result.body.user.username).toBe("test baru");
+  });
+
+  it("should reject if name is empty", async () => {
+    const result = await supertest(app)
+      .patch("/api/user/update")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        name: "",
+        username: "test baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(400);
+  });
+
+  it("should reject if token is invalid", async () => {
+    const result = await supertest(app)
+      .patch("/api/user/update")
+      .set("Cookie", [`token=asdasd`])
+      .send({
+        name: "test baru",
+        username: "test baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});
