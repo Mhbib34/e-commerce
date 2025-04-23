@@ -8,6 +8,13 @@ export const removeAllTestUser = async () => {
     },
   });
 };
+export const removeAllTestIsUser = async () => {
+  await prismaClient.user.deleteMany({
+    where: {
+      email: "testuser@gmail.com",
+    },
+  });
+};
 
 export const createTestUser = async () => {
   await prismaClient.user.create({
