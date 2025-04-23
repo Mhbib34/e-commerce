@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { userRouter } from "../routes/user-routes.js";
 import errorMiddleware from "../middleware/error-middleware.js";
 import { categoryRouter } from "../routes/category-routes.js";
+import { productRouter } from "../routes/product-routes.js";
 
 export const app = express();
 
@@ -17,4 +18,5 @@ app.use(cookieParser());
 
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
 app.use(errorMiddleware);

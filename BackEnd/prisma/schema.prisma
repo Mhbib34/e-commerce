@@ -37,7 +37,7 @@ enum Role {
 
 model Product {
   id String @id @unique @default(uuid()) 
-  name String @db.VarChar(200)
+  name String @unique @db.VarChar(200)
   description String @db.VarChar(500)
   price Float
   stock Int
