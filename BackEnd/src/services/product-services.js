@@ -1,6 +1,9 @@
 import { prismaClient } from "../app/database.js";
 import { ResponseError } from "../error/response-error.js";
-import { createProductValidation } from "../validation/product-validation.js";
+import {
+  createProductValidation,
+  getProductValidation,
+} from "../validation/product-validation.js";
 import validate from "../validation/validation.js";
 
 export const create = async (request) => {
@@ -46,4 +49,23 @@ export const create = async (request) => {
       category: true,
     },
   });
+};
+
+export const get = async (request) => {
+  const { name } = validate(getProductValidation, request);
+  const findProduct = await prismaClient.product.findUnique({
+    where: {
+      name,
+    },
+    select: {
+      name: true,
+      description: true,
+      price: true,
+      stock: true,
+      category: true,
+    },
+  });
+  if (!findProduct) throw new ResponseError(404, "Product not found!");
+
+  return findProduct;
 };

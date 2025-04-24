@@ -7,3 +7,7 @@ export const createProductValidation = Joi.object({
   stock: Joi.number().required().positive(),
   categoryName: Joi.string().required().max(100),
 });
+
+export const getProductValidation = Joi.object({
+  name: Joi.string().required().max(200),
+});

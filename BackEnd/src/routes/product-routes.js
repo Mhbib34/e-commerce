@@ -6,3 +6,4 @@ import { isAdmin } from "../middleware/is-admin.js";
 export const productRouter = new express.Router();
 
 productRouter.post("/create", userAuth, isAdmin, productController.create);
+productRouter.get("/get", userAuth, productController.get);
