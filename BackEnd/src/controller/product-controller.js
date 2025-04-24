@@ -33,7 +33,7 @@ const updateProductHandler = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       message: "Product updated successfully",
-      data: result,
+      product: result,
     });
   } catch (error) {
     next(error);

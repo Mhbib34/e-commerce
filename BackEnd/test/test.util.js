@@ -43,7 +43,13 @@ export const removeAllTestProduct = async () => {
 };
 
 export const createTestCategory = async () => {
-  await prismaClient.category.create({
+  const existing = await prismaClient.category.findUnique({
+    where: { name: "test category" },
+  });
+
+  if (existing) return existing;
+
+  return prismaClient.category.create({
     data: {
       name: "test category",
     },
@@ -51,21 +57,15 @@ export const createTestCategory = async () => {
 };
 
 export const createTestProduct = async () => {
-  const category = await prismaClient.category.findFirst({
-    where: { name: "test category" },
-  });
+  const category = await createTestCategory();
 
-  if (!category) throw new Error("Category not found");
-
-  await prismaClient.product.create({
+  return await prismaClient.product.create({
     data: {
       name: "test product",
-      description: "test product",
+      description: "desc",
       price: 100,
-      stock: 100,
-      category: {
-        connect: { id: category.id },
-      },
+      stock: 10,
+      categoryId: category.id,
     },
   });
 };

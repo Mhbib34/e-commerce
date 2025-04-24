@@ -73,7 +73,6 @@ export const get = async (request) => {
 
 export const update = async (id, request) => {
   const updatedProduct = validate(updateProductValidation, request);
-
   const findProduct = await prismaClient.product.findUnique({
     where: { id },
   });

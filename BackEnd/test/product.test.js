@@ -203,3 +203,110 @@ describe("GET /api/product/get", () => {
     expect(result.status).toBe(401);
   });
 });
+
+describe("PATCH /api/product/update", () => {
+  let tokenAdmin;
+  let tokenUser;
+  let product;
+
+  beforeEach(async () => {
+    product = await createTestProduct();
+
+    const isAdmin = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+      role: "ADMIN",
+    });
+
+    const isUser = await supertest(app).post("/api/user/register").send({
+      username: "test user",
+      password: "rahasia user",
+      name: "test user",
+      email: "testuser@gmail.com",
+    });
+
+    tokenAdmin = isAdmin.body.token;
+    tokenUser = isUser.body.token;
+  });
+  afterEach(async () => {
+    await removeAllTestProduct();
+    await removeAllTestUser();
+    await removeAllTestIsUser();
+    await removeAllTestCategory();
+  });
+
+  it("should can update product", async () => {
+    const result = await supertest(app)
+      .patch(`/api/product/update/${product.id}`)
+      .set("Cookie", [`token=${tokenAdmin}`])
+      .send({
+        name: "test baru",
+        description: "test baru",
+        price: 200,
+        stock: 200,
+        categoryName: "test baru",
+      });
+
+    console.log(result.body);
+
+    expect(result.status).toBe(200);
+    expect(result.body.product.name).toBe("test baru");
+    expect(result.body.product.description).toBe("test baru");
+    expect(result.body.product.category.name).toBe("test baru");
+    expect(result.body.product.price).toBe(200);
+    expect(result.body.product.stock).toBe(200);
+  });
+
+  it("should reject if request update product is not valid", async () => {
+    const result = await supertest(app)
+      .patch(`/api/product/update/${product.id}`)
+      .set("Cookie", [`token=${tokenAdmin}`])
+      .send({
+        name: "",
+        description: "test baru",
+        price: 200,
+        stock: 200,
+        categoryName: "test baru",
+      });
+
+    console.log(result.body);
+
+    expect(result.status).toBe(400);
+  });
+
+  it("should reject update product if is not admin", async () => {
+    const result = await supertest(app)
+      .patch(`/api/product/update/${product.id}`)
+      .set("Cookie", [`token=${tokenUser}`])
+      .send({
+        name: "test baru",
+        description: "test baru",
+        price: 200,
+        stock: 200,
+        categoryName: "test baru",
+      });
+
+    console.log(result.body);
+
+    expect(result.status).toBe(403);
+  });
+
+  it("should reject update product if token is not valid", async () => {
+    const result = await supertest(app)
+      .patch(`/api/product/update/${product.id}`)
+      .set("Cookie", [`token=asdadas`])
+      .send({
+        name: "test baru",
+        description: "test baru",
+        price: 200,
+        stock: 200,
+        categoryName: "test baru",
+      });
+
+    console.log(result.body);
+
+    expect(result.status).toBe(401);
+  });
+});
