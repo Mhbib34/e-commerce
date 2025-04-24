@@ -49,3 +49,23 @@ export const createTestCategory = async () => {
     },
   });
 };
+
+export const createTestProduct = async () => {
+  const category = await prismaClient.category.findFirst({
+    where: { name: "test category" },
+  });
+
+  if (!category) throw new Error("Category not found");
+
+  await prismaClient.product.create({
+    data: {
+      name: "test product",
+      description: "test product",
+      price: 100,
+      stock: 100,
+      category: {
+        connect: { id: category.id },
+      },
+    },
+  });
+};

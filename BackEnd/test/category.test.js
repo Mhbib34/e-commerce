@@ -13,6 +13,7 @@ describe("POST /api/category/create", () => {
     await removeAllTestCategory();
     await removeAllTestUser();
     await removeAllTestIsUser();
+    await removeAllTestCategory();
   });
 
   let tokenAdmin;

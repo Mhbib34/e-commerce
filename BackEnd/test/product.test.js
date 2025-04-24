@@ -1,5 +1,8 @@
 import supertest from "supertest";
 import {
+  createTestCategory,
+  createTestProduct,
+  removeAllTestCategory,
   removeAllTestIsUser,
   removeAllTestProduct,
   removeAllTestUser,
@@ -12,6 +15,7 @@ describe("POST /api/product/create", () => {
     await removeAllTestProduct();
     await removeAllTestUser();
     await removeAllTestIsUser();
+    await removeAllTestCategory();
   });
 
   let tokenAdmin;
@@ -137,5 +141,65 @@ describe("POST /api/product/create", () => {
 
     console.log(result.body);
     expect(result.status).toBe(403);
+  });
+});
+
+describe("GET /api/product/get", () => {
+  let token;
+  beforeEach(async () => {
+    await createTestCategory();
+    await createTestProduct();
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+    await removeAllTestProduct();
+    await removeAllTestCategory();
+  });
+
+  it("should can get product by name", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        name: "test product",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+    expect(result.body.product.name).toBe("test product");
+    expect(result.body.product.category.name).toBe("test category");
+  });
+
+  it("should reject if product is not found", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        name: "test",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(404);
+  });
+
+  it("should reject get product if token is not valid", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get")
+      .set("Cookie", [`token=asdadasd`])
+      .send({
+        name: "test category",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
   });
 });
