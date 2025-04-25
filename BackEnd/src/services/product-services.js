@@ -140,7 +140,7 @@ export const deleted = async (id) => {
 
 export const getAllProductsService = async ({
   search,
-  categoryId,
+  categoryName,
   minPrice,
   maxPrice,
 }) => {
@@ -151,7 +151,11 @@ export const getAllProductsService = async ({
         { description: { contains: search } },
       ],
     }),
-    ...(categoryId && { categoryId }),
+    ...(categoryName && {
+      category: {
+        name: { equals: categoryName },
+      },
+    }),
     ...(minPrice !== undefined || maxPrice !== undefined
       ? {
           price: {

@@ -61,10 +61,10 @@ const deletedProductHandler = async (req, res, next) => {
 
 const getAllProducts = async (req, res, next) => {
   try {
-    const { search, categoryId, minPrice, maxPrice } = req.query;
+    const { search, categoryName, minPrice, maxPrice } = req.query;
     const result = await getAllProductsService({
       search,
-      categoryId,
+      categoryName,
       minPrice,
       maxPrice,
     });
