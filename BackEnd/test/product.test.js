@@ -384,3 +384,62 @@ describe("DELETE /api/product/delete/:id", () => {
     expect(result.status).toBe(401);
   });
 });
+
+describe("GET /api/product/get-all", () => {
+  let token;
+
+  beforeEach(async () => {
+    await createTestProduct();
+    const user = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = user.body.token;
+  });
+
+  afterEach(async () => {
+    await removeAllTestProduct();
+    await removeAllTestUser();
+    await removeAllTestCategory();
+  });
+
+  it("should return all products", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get-all")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should return products by search query", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get-all?search=test")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should return empty if no match found", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get-all?search=nothingmatch")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+    expect(result.body.product).toEqual([]);
+  });
+
+  it("should reject get all if token is not valid", async () => {
+    const result = await supertest(app)
+      .get("/api/product/get-all?search=test")
+      .set("Cookie", [`token=dada`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});

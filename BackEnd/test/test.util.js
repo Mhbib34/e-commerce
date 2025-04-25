@@ -62,7 +62,7 @@ export const createTestProduct = async () => {
   return await prismaClient.product.create({
     data: {
       name: "test product",
-      description: "desc",
+      description: "test desc",
       price: 100,
       stock: 10,
       categoryId: category.id,
