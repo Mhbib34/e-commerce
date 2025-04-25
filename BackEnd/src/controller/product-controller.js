@@ -1,4 +1,10 @@
-import { create, deleted, get, update } from "../services/product-services.js";
+import {
+  create,
+  deleted,
+  get,
+  getAllProductsService,
+  update,
+} from "../services/product-services.js";
 
 const createProductHandler = async (req, res, next) => {
   try {
@@ -53,9 +59,29 @@ const deletedProductHandler = async (req, res, next) => {
   }
 };
 
+const getAllProducts = async (req, res, next) => {
+  try {
+    const { search, categoryId, minPrice, maxPrice } = req.query;
+    const result = await getAllProductsService({
+      search,
+      categoryId,
+      minPrice,
+      maxPrice,
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Products fetched successfully",
+      product: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   create: createProductHandler,
   get: getProductHandler,
   update: updateProductHandler,
   deleted: deletedProductHandler,
+  getAll: getAllProducts,
 };

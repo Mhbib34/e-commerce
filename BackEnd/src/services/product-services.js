@@ -137,3 +137,40 @@ export const deleted = async (id) => {
 
   return product;
 };
+
+export const getAllProductsService = async ({
+  search,
+  categoryId,
+  minPrice,
+  maxPrice,
+}) => {
+  const where = {
+    ...(search && {
+      OR: [
+        { name: { contains: search } },
+        { description: { contains: search } },
+      ],
+    }),
+    ...(categoryId && { categoryId }),
+    ...(minPrice !== undefined || maxPrice !== undefined
+      ? {
+          price: {
+            ...(minPrice !== undefined ? { gte: +minPrice } : {}),
+            ...(maxPrice !== undefined ? { lte: +maxPrice } : {}),
+          },
+        }
+      : {}),
+  };
+
+  return prismaClient.product.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      stock: true,
+      category: true,
+    },
+  });
+};
