@@ -310,3 +310,77 @@ describe("PATCH /api/product/update", () => {
     expect(result.status).toBe(401);
   });
 });
+
+describe("DELETE /api/product/delete/:id", () => {
+  let tokenAdmin;
+  let tokenUser;
+  let product;
+
+  beforeEach(async () => {
+    product = await createTestProduct();
+
+    const isAdmin = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+      role: "ADMIN",
+    });
+
+    const isUser = await supertest(app).post("/api/user/register").send({
+      username: "test user",
+      password: "rahasia user",
+      name: "test user",
+      email: "testuser@gmail.com",
+    });
+
+    tokenAdmin = isAdmin.body.token;
+    tokenUser = isUser.body.token;
+  });
+  afterEach(async () => {
+    await removeAllTestProduct();
+    await removeAllTestUser();
+    await removeAllTestIsUser();
+    await removeAllTestCategory();
+  });
+
+  it("should can delete product", async () => {
+    const result = await supertest(app)
+      .delete(`/api/product/delete/${product.id}`)
+      .set("Cookie", [`token=${tokenAdmin}`]);
+
+    console.log(result.body);
+
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject delete product if productId is not found", async () => {
+    const result = await supertest(app)
+      .delete(`/api/product/delete/dadsadasd`)
+      .set("Cookie", [`token=${tokenAdmin}`]);
+
+    console.log(result.body);
+
+    expect(result.status).toBe(404);
+  });
+
+  it("should reject delete product if is not admin", async () => {
+    const result = await supertest(app)
+      .delete(`/api/product/delete/${product.id}`)
+      .set("Cookie", [`token=${tokenUser}`]);
+
+    console.log(result.body);
+
+    expect(result.status).toBe(403);
+  });
+
+  it("should reject delete product if token is not valid", async () => {
+    const result = await supertest(app)
+      .delete(`/api/product/delete/${product.id}`)
+      .set("Cookie", [`token=dadasd`]);
+
+    console.log(result.body);
+
+    expect(result.status).toBe(401);
+  });
+});
