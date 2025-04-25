@@ -119,3 +119,21 @@ export const update = async (id, request) => {
     },
   });
 };
+
+export const deleted = async (id) => {
+  const product = await prismaClient.product.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!product) throw new ResponseError(404, "Product is not found!");
+
+  await prismaClient.product.delete({
+    where: {
+      id: product.id,
+    },
+  });
+
+  return product;
+};

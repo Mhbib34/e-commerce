@@ -1,4 +1,4 @@
-import { create, get, update } from "../services/product-services.js";
+import { create, deleted, get, update } from "../services/product-services.js";
 
 const createProductHandler = async (req, res, next) => {
   try {
@@ -40,8 +40,22 @@ const updateProductHandler = async (req, res, next) => {
   }
 };
 
+const deletedProductHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const result = await deleted(id);
+    res.status(200).json({
+      status: "success",
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   create: createProductHandler,
   get: getProductHandler,
   update: updateProductHandler,
+  deleted: deletedProductHandler,
 };

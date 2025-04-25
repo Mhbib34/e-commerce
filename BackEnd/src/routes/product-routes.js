@@ -8,3 +8,9 @@ export const productRouter = new express.Router();
 productRouter.post("/create", userAuth, isAdmin, productController.create);
 productRouter.get("/get", userAuth, productController.get);
 productRouter.patch("/update/:id", userAuth, isAdmin, productController.update);
+productRouter.delete(
+  "/delete/:id",
+  userAuth,
+  isAdmin,
+  productController.deleted
+);
