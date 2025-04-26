@@ -43,6 +43,7 @@ export const create = async (request) => {
       categoryId: category.id,
     },
     select: {
+      id: true,
       name: true,
       description: true,
       price: true,
