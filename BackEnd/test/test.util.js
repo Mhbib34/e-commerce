@@ -10,6 +10,11 @@ export const removeAllTestUser = async () => {
 };
 
 export const removeAllTestUserOrder = async (userId) => {
+  await prismaClient.cartItem.deleteMany({
+    where: {
+      userId: userId,
+    },
+  });
   await prismaClient.orderItem.deleteMany({
     where: {
       order: {
@@ -26,7 +31,7 @@ export const removeAllTestUserOrder = async (userId) => {
 
   await prismaClient.user.deleteMany({
     where: {
-      id: userId,
+      email: "test@gmail.com",
     },
   });
 };

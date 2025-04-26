@@ -1,6 +1,15 @@
 import { prismaClient } from "../app/database.js";
+import { ResponseError } from "../error/response-error.js";
 
 export const addToCart = async (userId, productId, quantity) => {
+  const findProduct = await prismaClient.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (!findProduct) throw new ResponseError(404, "Product is not found!");
+
   const existingCartItem = await prismaClient.cartItem.findFirst({
     where: {
       userId,
