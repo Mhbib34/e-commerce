@@ -94,3 +94,20 @@ export const getCartByUser = async (userId) => {
 
   return cartItems;
 };
+
+export const removeCart = async (userId, cartItemId) => {
+  const existingCart = await prismaClient.cartItem.findFirst({
+    where: {
+      id: cartItemId,
+    },
+  });
+
+  if (!existingCart) throw new ResponseError(400, "Cart is not found");
+
+  return prismaClient.cartItem.delete({
+    where: {
+      userId,
+      id: cartItemId,
+    },
+  });
+};

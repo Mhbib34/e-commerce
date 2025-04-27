@@ -1,4 +1,8 @@
-import { addToCart, getCartByUser } from "../services/cart-item-services.js";
+import {
+  addToCart,
+  getCartByUser,
+  removeCart,
+} from "../services/cart-item-services.js";
 
 const addToCartHandler = async (req, res, next) => {
   try {
@@ -29,7 +33,22 @@ const getCartByUserHandler = async (req, res, next) => {
   }
 };
 
+const removeCartHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { cartItemId } = req.body;
+    const result = await removeCart(userId, cartItemId);
+    res.status(200).json({
+      success: true,
+      message: "Cart item removed successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   addCart: addToCartHandler,
   getCart: getCartByUserHandler,
+  remove: removeCartHandler,
 };
