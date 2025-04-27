@@ -66,3 +66,26 @@ export const addToCart = async (userId, productId, quantity) => {
     });
   }
 };
+
+export const getCartByUser = async (userId) => {
+  return prismaClient.cartItem.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      product: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+        },
+      },
+    },
+  });
+};

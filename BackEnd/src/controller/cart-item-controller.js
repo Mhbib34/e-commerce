@@ -1,4 +1,4 @@
-import { addToCart } from "../services/cart-item-services.js";
+import { addToCart, getCartByUser } from "../services/cart-item-services.js";
 
 const addToCartHandler = async (req, res, next) => {
   try {
@@ -15,6 +15,21 @@ const addToCartHandler = async (req, res, next) => {
   }
 };
 
+const getCartByUserHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const result = await getCartByUser(userId);
+    res.status(200).json({
+      success: true,
+      message: "Cart item fetched successfully",
+      cart: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   addCart: addToCartHandler,
+  getCart: getCartByUserHandler,
 };
