@@ -68,7 +68,7 @@ export const addToCart = async (userId, productId, quantity) => {
 };
 
 export const getCartByUser = async (userId) => {
-  return prismaClient.cartItem.findMany({
+  const cartItems = prismaClient.cartItem.findMany({
     where: {
       userId,
     },
@@ -88,4 +88,9 @@ export const getCartByUser = async (userId) => {
       },
     },
   });
+
+  if (!cartItems || (await cartItems).length === 0)
+    throw new ResponseError(400, "Your cart still empty!");
+
+  return cartItems;
 };

@@ -9,6 +9,14 @@ export const removeAllTestUser = async () => {
   });
 };
 
+export const removeAllTestUserCartEmpty = async () => {
+  await prismaClient.user.deleteMany({
+    where: {
+      email: "testempty@gmail.com",
+    },
+  });
+};
+
 export const removeAllTestUserOrder = async (userId) => {
   await prismaClient.cartItem.deleteMany({
     where: {
