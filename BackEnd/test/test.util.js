@@ -23,6 +23,7 @@ export const removeAllTestUserOrder = async (userId) => {
       userId: userId,
     },
   });
+
   await prismaClient.orderItem.deleteMany({
     where: {
       order: {

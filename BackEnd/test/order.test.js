@@ -2,6 +2,7 @@ import supertest from "supertest";
 import {
   removeAllTestCategory,
   removeAllTestProduct,
+  removeAllTestUserCartEmpty,
   removeAllTestUserOrder,
 } from "./test.util.js";
 import { app } from "../src/app/app.js";
@@ -11,6 +12,7 @@ describe("POST /api/order/create", () => {
   let productId;
   let token;
   let userId;
+  let userCardEmpty;
   beforeEach(async () => {
     const result = await supertest(app).post("/api/user/register").send({
       username: "test",
@@ -19,10 +21,19 @@ describe("POST /api/order/create", () => {
       email: "test@gmail.com",
       role: "ADMIN",
     });
+
+    const userCart = await supertest(app).post("/api/user/register").send({
+      username: "test empty",
+      password: "rahasia empty",
+      name: "test empty",
+      email: "testempty@gmail.com",
+      role: "ADMIN",
+    });
     console.log(result.body);
 
     token = result.body.token;
     userId = result.body.user.id;
+    userCardEmpty = userCart.body.token;
 
     const product = await supertest(app)
       .post("/api/product/create")
@@ -36,6 +47,14 @@ describe("POST /api/order/create", () => {
       });
 
     productId = product.body.product.id;
+
+    await supertest(app)
+      .post("/api/cart-item/add-to-cart")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        productId: productId,
+        quantity: 2,
+      });
     console.log(token);
     console.log(productId);
   });
@@ -43,53 +62,33 @@ describe("POST /api/order/create", () => {
     await removeAllTestUserOrder(userId);
     await removeAllTestProduct();
     await removeAllTestCategory();
+    await removeAllTestUserCartEmpty();
   });
 
   it("should can create order", async () => {
     const result = await supertest(app)
       .post("/api/order/create")
-      .set("Cookie", [`token=${token}`])
-      .send({
-        items: [
-          {
-            productId: `${productId}`,
-            quantity: 2,
-            price: 100,
-          },
-        ],
-      });
+      .set("Cookie", [`token=${token}`]);
 
     console.log(result.body);
     expect(result.status).toBe(201);
   });
 
-  it("should reject create order if product is empty", async () => {
-    const result = await supertest(app)
-      .post("/api/order/create")
-      .set("Cookie", [`token=${token}`])
-      .send({
-        items: [],
-      });
-
-    console.log(result.body);
-    expect(result.status).toBe(400);
-  });
-
   it("should reject create order if token is not valid", async () => {
     const result = await supertest(app)
       .post("/api/order/create")
-      .set("Cookie", [`token=asasas`])
-      .send({
-        items: [
-          {
-            productId: `${productId}`,
-            quantity: 2,
-            price: 100,
-          },
-        ],
-      });
+      .set("Cookie", [`token=asasas`]);
 
     console.log(result.body);
     expect(result.status).toBe(401);
+  });
+
+  it("should reject create order if product is empty", async () => {
+    const result = await supertest(app)
+      .post("/api/order/create")
+      .set("Cookie", [`token=${userCardEmpty}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(400);
   });
 });

@@ -5,7 +5,7 @@ import {
   removeAllTestUserCartEmpty,
   removeAllTestUserOrder,
 } from "./test.util.js";
-import { app } from "../src/app/app";
+import { app } from "../src/app/app.js";
 
 describe("POST /api/cart-item/add-to-cart", () => {
   jest.setTimeout(10000);
