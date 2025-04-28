@@ -92,3 +92,100 @@ describe("POST /api/order/create", () => {
     expect(result.status).toBe(400);
   });
 });
+
+describe("GET /api/order/get", () => {
+  let productId;
+  let token;
+  let userId;
+  let userCardEmpty;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+      role: "ADMIN",
+    });
+
+    const userCart = await supertest(app).post("/api/user/register").send({
+      username: "test empty",
+      password: "rahasia empty",
+      name: "test empty",
+      email: "testempty@gmail.com",
+      role: "ADMIN",
+    });
+    console.log(result.body);
+
+    token = result.body.token;
+    userId = result.body.user.id;
+    userCardEmpty = userCart.body.token;
+
+    const product = await supertest(app)
+      .post("/api/product/create")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        name: "test product",
+        description: "test product",
+        price: 100,
+        stock: 100,
+        categoryName: "test category",
+      });
+
+    productId = product.body.product.id;
+
+    await supertest(app)
+      .post("/api/cart-item/add-to-cart")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        productId: productId,
+        quantity: 2,
+      });
+
+    await supertest(app)
+      .post("/api/cart-item/add-to-cart")
+      .set("Cookie", [`token=${userCardEmpty}`])
+      .send({
+        productId: productId,
+        quantity: 2,
+      });
+
+    await supertest(app)
+      .post("/api/order/create")
+      .set("Cookie", [`token=${token}`]);
+    console.log(token);
+    console.log(productId);
+  });
+  afterEach(async () => {
+    await removeAllTestUserOrder(userId);
+    await removeAllTestProduct();
+    await removeAllTestCategory();
+    await removeAllTestUserCartEmpty();
+  });
+
+  it("should can get order", async () => {
+    const result = await supertest(app)
+      .get("/api/order/get")
+      .set("Cookie", [`token=${token}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
+  });
+
+  it("should reject get order if cart is empty", async () => {
+    const result = await supertest(app)
+      .get("/api/order/get")
+      .set("Cookie", [`token=${userCardEmpty}`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(400);
+  });
+
+  it("should reject get order if token is not valid", async () => {
+    const result = await supertest(app)
+      .get("/api/order/get")
+      .set("Cookie", [`token=asdasd`]);
+
+    console.log(result.body);
+    expect(result.status).toBe(401);
+  });
+});

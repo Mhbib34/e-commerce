@@ -72,7 +72,7 @@ model OrderItem {
   quantity Int
   price Float
   order Order @relation(fields: [orderId],references: [id])
-  product Product @relation(fields: [productId],references: [id])
+  product Product @relation(fields: [productId],references: [id],onDelete: Cascade)
 }
 
 model CartItem {
@@ -81,5 +81,5 @@ model CartItem {
   productId String
   quantity Int
   user User @relation(fields: [userId],references: [id])
-  product Product @relation(fields: [productId],references: [id])
+  product Product @relation(fields: [productId],references: [id],onDelete: Cascade)
 }
