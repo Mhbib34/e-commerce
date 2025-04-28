@@ -5,3 +5,4 @@ import orderController from "../controller/order-controller.js";
 export const orderRouter = new express.Router();
 
 orderRouter.post("/create", userAuth, orderController.create);
+orderRouter.get("/get", userAuth, orderController.getOrderByUserId);

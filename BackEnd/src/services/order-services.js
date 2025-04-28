@@ -50,3 +50,28 @@ export const create = async (userId) => {
 
   return order;
 };
+
+export const getOrderByUser = async (userId) => {
+  const orderItems = await prismaClient.order.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+      user: {
+        select: { id: true, name: true },
+      },
+    },
+  });
+
+  if (!orderItems || orderItems.length === 0)
+    throw new ResponseError(400, "Your order is empty!");
+
+  return orderItems;
+};
