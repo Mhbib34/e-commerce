@@ -104,3 +104,46 @@ export const getOrderById = async (OrderId) => {
 
   return findOrder;
 };
+
+export const getAllOrder = async () => {
+  const findOrder = await prismaClient.order.findMany({
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  return findOrder;
+};
+
+export const getOrderByUserParams = async (userId) => {
+  const findUser = await prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!findUser) throw new ResponseError(404, "User is not found");
+
+  const orderItems = await prismaClient.order.findMany({
+    where: {
+      userId: findUser.id,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+      user: {
+        select: { id: true, name: true },
+      },
+    },
+  });
+
+  if (!orderItems || orderItems.length === 0)
+    throw new ResponseError(400, "Your order is empty!");
+
+  return orderItems;
+};
