@@ -6,3 +6,4 @@ export const orderRouter = new express.Router();
 
 orderRouter.post("/create", userAuth, orderController.create);
 orderRouter.get("/get", userAuth, orderController.getOrderByUserId);
+orderRouter.get("/get/:id", userAuth, orderController.getById);

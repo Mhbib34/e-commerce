@@ -1,4 +1,8 @@
-import { create, getOrderByUser } from "../services/order-services.js";
+import {
+  create,
+  getOrderById,
+  getOrderByUser,
+} from "../services/order-services.js";
 
 const createOrderHandler = async (req, res, next) => {
   try {
@@ -28,7 +32,22 @@ const getOrderByUserHandler = async (req, res, next) => {
   }
 };
 
+const getOrderByIdHandler = async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    const result = await getOrderById(orderId);
+    res.status(200).json({
+      success: true,
+      message: "Get order successfully",
+      order: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   create: createOrderHandler,
   getOrderByUserId: getOrderByUserHandler,
+  getById: getOrderByIdHandler,
 };

@@ -75,3 +75,32 @@ export const getOrderByUser = async (userId) => {
 
   return orderItems;
 };
+
+export const getOrderById = async (OrderId) => {
+  const findOrder = await prismaClient.order.findUnique({
+    where: {
+      id: OrderId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!findOrder) throw new ResponseError(404, "Order is not found!");
+
+  return findOrder;
+};
