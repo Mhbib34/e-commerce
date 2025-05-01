@@ -5,8 +5,8 @@ import { isAdmin } from "../middleware/is-admin.js";
 
 export const orderRouter = new express.Router();
 
-orderRouter.post("/create", userAuth, orderController.create);
-orderRouter.get("/get", userAuth, orderController.getOrderByUserId);
-orderRouter.get("/get/:id", userAuth, orderController.getById);
-orderRouter.get("/get-all", userAuth, isAdmin, orderController.getAll);
-orderRouter.get("/get-order/:id", userAuth, orderController.getByParams);
+orderRouter.post("/", userAuth, orderController.create);
+orderRouter.get("/list", userAuth, isAdmin, orderController.getAll);
+orderRouter.get("/user/:id", userAuth, orderController.getByParams);
+orderRouter.get("/:id", userAuth, orderController.getById);
+orderRouter.get("/", userAuth, orderController.getOrderByUserId);

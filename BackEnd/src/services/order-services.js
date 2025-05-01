@@ -106,13 +106,29 @@ export const getOrderById = async (OrderId) => {
 };
 
 export const getAllOrder = async () => {
-  const findOrder = await prismaClient.order.findMany({
+  const orders = await prismaClient.order.findMany({
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+      user: {
+        select: { id: true, name: true },
+      },
+    },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
   });
 
-  return findOrder;
+  if (!orders || orders.length === 0) {
+    throw new ResponseError(404, "No orders found.");
+  }
+
+  return orders;
 };
 
 export const getOrderByUserParams = async (userId) => {

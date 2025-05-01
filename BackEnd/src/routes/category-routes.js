@@ -5,7 +5,7 @@ import userAuth from "../middleware/user-auth-middleware.js";
 
 export const categoryRouter = new express.Router();
 
-categoryRouter.post("/create", userAuth, isAdmin, categoryController.create);
-categoryRouter.get("/get", userAuth, categoryController.get);
-categoryRouter.get("/get-all", userAuth, categoryController.getAll);
-categoryRouter.delete("/delete", userAuth, isAdmin, categoryController.delete);
+categoryRouter.post("/", userAuth, isAdmin, categoryController.create);
+categoryRouter.get("/list", userAuth, categoryController.getAll);
+categoryRouter.get("/", userAuth, categoryController.get);
+categoryRouter.delete("/", userAuth, isAdmin, categoryController.delete);

@@ -36,7 +36,7 @@ const getCartByUserHandler = async (req, res, next) => {
 const removeCartHandler = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { cartItemId } = req.body;
+    const cartItemId = req.params.id;
     const result = await removeCart(userId, cartItemId);
     res.status(200).json({
       success: true,
