@@ -10,11 +10,11 @@ import {
   update,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
-import transporter from "../app/nodemailer.js";
+import transporter from "../config/nodemailer.js";
 import {
   otpEmailTemplate,
   welcomeEmailTemplate,
-} from "../app/email-template.js";
+} from "../config/email-template.js";
 
 const registerUserHandler = async (req, res, next) => {
   try {

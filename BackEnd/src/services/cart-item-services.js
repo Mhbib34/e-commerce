@@ -1,4 +1,4 @@
-import { prismaClient } from "../app/database.js";
+import { prismaClient } from "../config/database.js";
 import { ResponseError } from "../error/response-error.js";
 
 export const addToCart = async (userId, productId, quantity) => {

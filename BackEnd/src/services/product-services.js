@@ -1,4 +1,4 @@
-import { prismaClient } from "../app/database.js";
+import { prismaClient } from "../config/database.js";
 import { ResponseError } from "../error/response-error.js";
 import {
   createProductValidation,
@@ -38,6 +38,7 @@ export const create = async (request) => {
     data: {
       name: product.name,
       description: product.description,
+      image: product.image,
       price: product.price,
       stock: product.stock,
       categoryId: category.id,
@@ -46,6 +47,7 @@ export const create = async (request) => {
       id: true,
       name: true,
       description: true,
+      image: true,
       price: true,
       stock: true,
       category: true,
@@ -62,6 +64,7 @@ export const get = async (request) => {
     select: {
       name: true,
       description: true,
+      image: true,
       price: true,
       stock: true,
       category: true,
@@ -107,6 +110,7 @@ export const update = async (id, request) => {
     data: {
       name: updatedProduct.name,
       description: updatedProduct.description,
+      image: updatedProduct.image,
       price: updatedProduct.price,
       stock: updatedProduct.stock,
       categoryId: categoryId,
@@ -114,6 +118,7 @@ export const update = async (id, request) => {
     select: {
       name: true,
       description: true,
+      image: true,
       price: true,
       stock: true,
       category: true,
@@ -173,6 +178,7 @@ export const getAllProductsService = async ({
       id: true,
       name: true,
       description: true,
+      image: true,
       price: true,
       stock: true,
       category: true,

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ResponseError } from "../error/response-error.js";
-import { prismaClient } from "../app/database.js";
+import { prismaClient } from "../config/database.js";
 
 const userAuth = async (req, res, next) => {
   try {
