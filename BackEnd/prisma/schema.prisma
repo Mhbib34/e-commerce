@@ -39,6 +39,7 @@ model Product {
   id String @id @unique @default(uuid()) 
   name String @unique @db.VarChar(200)
   description String @db.VarChar(500)
+  image String @db.VarChar(500)
   price Float
   stock Int
   categoryId String
