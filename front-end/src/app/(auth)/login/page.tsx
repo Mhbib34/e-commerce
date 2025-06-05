@@ -2,29 +2,30 @@
 
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const router = useRouter();
 
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
-			const response = await axios.post(
-				"http://localhost:3000/api/user/login",
-				{
-					email,
-					password,
-				}
-			);
-			toast.success("Login successful! 🎉");
-			console.log("Login success:", response.data);
+			const response = await axios.post(`${baseUrl}/api/user/login`, {
+				email,
+				password,
+			});
+			toast.success(`${response.data.message} 🎉`);
+			router.push("/");
 		} catch (error) {
-			console.error(error);
-			toast.error("Login failed. Please try again.");
+			const err = error as AxiosError<{ errors: string }>;
+			const errorMessage =
+				err.response?.data?.errors || "Login failed. Please try again.";
+			toast.error(errorMessage);
 		}
 	};
 
