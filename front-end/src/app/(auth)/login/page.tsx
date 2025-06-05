@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { imagesForm } from "@/assets/assets";
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -39,6 +40,7 @@ const LoginPage = () => {
 				title="Welcome Back"
 				textLink="Don't have an account?"
 				buttonText="Login"
+				image={imagesForm.p1}
 			>
 				<Input
 					type="email"

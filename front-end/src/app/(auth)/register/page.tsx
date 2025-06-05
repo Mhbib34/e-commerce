@@ -1,5 +1,6 @@
 "use client";
 
+import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
 import axios, { AxiosError } from "axios";
@@ -47,11 +48,12 @@ const RegisterPage = () => {
 				title="Register"
 				textLink="Already have an account?"
 				buttonText="Register"
+				image={imagesForm.p2}
 			>
 				<Input
 					type="text"
 					text="Full Name"
-					placeholder="your name"
+					placeholder="full name"
 					onChange={(e) => setName(e.target.value)}
 					value={name}
 				/>
@@ -72,7 +74,7 @@ const RegisterPage = () => {
 				<Input
 					type="password"
 					text="Password"
-					placeholder="password"
+					placeholder="*********"
 					onChange={(e) => setPassword(e.target.value)}
 					value={password}
 				/>
