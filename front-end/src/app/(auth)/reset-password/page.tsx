@@ -12,6 +12,7 @@ const ResetPasswordPage = () => {
 	const [newPassword, setNewPassword] = useState("");
 	const [email, setEmail] = useState("");
 	const [otp, setOtp] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,11 +46,11 @@ const ResetPasswordPage = () => {
 				image={imagesForm.p4}
 			>
 				<Input
-					type="password"
-					placeholder="New Password"
-					text="New Password"
-					value={newPassword}
-					onChange={(e) => setNewPassword(e.target.value)}
+					type="number"
+					placeholder="123456"
+					text="OTP"
+					value={otp}
+					onChange={(e) => setOtp(e.target.value)}
 				/>
 				<Input
 					type="email"
@@ -59,12 +60,24 @@ const ResetPasswordPage = () => {
 					onChange={(e) => setEmail(e.target.value)}
 				/>
 				<Input
-					type="number"
-					placeholder="123456"
-					text="OTP"
-					value={otp}
-					onChange={(e) => setOtp(e.target.value)}
+					type={showPassword ? "text" : "password"}
+					placeholder="New Password"
+					text="New Password"
+					value={newPassword}
+					onChange={(e) => setNewPassword(e.target.value)}
 				/>
+				<div className="flex items-center gap-2 text-black text-sm">
+					<input
+						id="showPassword"
+						type="checkbox"
+						checked={showPassword}
+						onChange={() => setShowPassword(!showPassword)}
+						className="accent-black w-4 h-4 rounded cursor-pointer"
+					/>
+					<label htmlFor="showPassword" className="cursor-pointer">
+						Show Password
+					</label>
+				</div>
 			</Form>
 		</div>
 	);

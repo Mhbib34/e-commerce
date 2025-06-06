@@ -14,6 +14,7 @@ const RegisterPage = () => {
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -72,12 +73,24 @@ const RegisterPage = () => {
 					value={email}
 				/>
 				<Input
-					type="password"
+					type={showPassword ? "text" : "password"}
 					text="Password"
 					placeholder="*********"
 					onChange={(e) => setPassword(e.target.value)}
 					value={password}
 				/>
+				<div className="flex items-center gap-2 text-black text-sm">
+					<input
+						id="showPassword"
+						type="checkbox"
+						checked={showPassword}
+						onChange={() => setShowPassword(!showPassword)}
+						className="accent-black w-4 h-4 rounded cursor-pointer"
+					/>
+					<label htmlFor="showPassword" className="cursor-pointer">
+						Show Password
+					</label>
+				</div>
 			</Form>
 		</div>
 	);

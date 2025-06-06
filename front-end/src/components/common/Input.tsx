@@ -1,4 +1,5 @@
 type InputProps = {
+	children?: React.ReactNode;
 	type: string;
 	value: string;
 	placeholder: string;
@@ -6,7 +7,14 @@ type InputProps = {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Input = ({ type, value, placeholder, text, onChange }: InputProps) => {
+const Input = ({
+	type,
+	value,
+	placeholder,
+	text,
+	onChange,
+	children,
+}: InputProps) => {
 	return (
 		<div className="flex flex-col gap-1">
 			{text && (
@@ -14,14 +22,17 @@ const Input = ({ type, value, placeholder, text, onChange }: InputProps) => {
 					{text}
 				</label>
 			)}
-			<input
-				id={type}
-				type={type}
-				value={value}
-				placeholder={placeholder}
-				onChange={onChange}
-				className="border border-black rounded-md p-2"
-			/>
+			<div className="flex w-full flex-col items-start">
+				<input
+					id={type}
+					type={type}
+					value={value}
+					placeholder={placeholder}
+					onChange={onChange}
+					className="border border-black rounded-md p-2 w-full"
+				/>
+				{children}
+			</div>
 		</div>
 	);
 };

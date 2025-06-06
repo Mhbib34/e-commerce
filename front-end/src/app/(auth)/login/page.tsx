@@ -7,10 +7,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { imagesForm } from "@/assets/assets";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,16 +49,30 @@ const LoginPage = () => {
 					type="email"
 					text="Email"
 					placeholder="example@gmail.com"
-					onChange={(e) => setEmail(e.target.value)}
 					value={email}
+					onChange={(e) => setEmail(e.target.value)}
 				/>
+
 				<Input
-					type="password"
+					type={showPassword ? "text" : "password"}
 					text="Password"
 					placeholder="password"
-					onChange={(e) => setPassword(e.target.value)}
 					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 				/>
+
+				<div className="flex items-center gap-2 text-black text-sm">
+					<input
+						id="showPassword"
+						type="checkbox"
+						checked={showPassword}
+						onChange={() => setShowPassword(!showPassword)}
+						className="accent-black w-4 h-4 rounded cursor-pointer"
+					/>
+					<label htmlFor="showPassword" className="cursor-pointer">
+						Show Password
+					</label>
+				</div>
 			</Form>
 		</div>
 	);
