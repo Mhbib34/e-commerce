@@ -3,7 +3,7 @@ import Link from "next/link";
 
 type FormProps = {
 	children?: React.ReactNode;
-	textPage: string;
+	textPage?: string;
 	linkPage: string;
 	forgotPassword?: string;
 	title: string;
@@ -49,7 +49,7 @@ const Form = ({
 				</p>
 				<div className="flex flex-col gap-4 mt-4">{children}</div>
 				<div className="mt-4 text-end text-blue-500 font-medium">
-					<Link href="/">{forgotPassword}</Link>
+					<Link href="/reset-password-otp">{forgotPassword}</Link>
 				</div>
 				<div>
 					<button className="w-full bg-black text-white py-2 rounded-lg mt-4 cursor-pointer">
