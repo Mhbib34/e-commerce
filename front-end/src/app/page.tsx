@@ -1,16 +1,13 @@
 "use client";
 
+import LoadingSpinner from "@/components/fragment/Loading";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
 	const { user, isAuthenticated, isLoading, logout } = useAuth();
 
 	if (isLoading) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<p>Loading...</p>
-			</div>
-		);
+		return <LoadingSpinner />;
 	}
 
 	return (
@@ -38,6 +35,12 @@ export default function Home() {
 					<p className="mt-2">
 						Please log in to access your dashboard.
 					</p>
+					<button
+						onClick={() => (window.location.href = "/login")}
+						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					>
+						Login
+					</button>
 				</div>
 			)}
 		</div>

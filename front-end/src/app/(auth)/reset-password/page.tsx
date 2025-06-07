@@ -2,6 +2,8 @@
 import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
+import LoadingSpinner from "@/components/fragment/Loading";
+import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -13,6 +15,7 @@ const ResetPasswordPage = () => {
 	const [email, setEmail] = useState("");
 	const [otp, setOtp] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
+	const { isLoading } = useAuth();
 	const router = useRouter();
 
 	const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,6 +35,10 @@ const ResetPasswordPage = () => {
 			toast.error(errorMessage);
 		}
 	};
+
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
 	return (
 		<div className="flex justify-center items-center h-screen bg-black px-5 sm:px-0">
 			<Form

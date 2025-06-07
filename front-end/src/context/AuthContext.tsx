@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		} catch (err) {
 			const error = err as AxiosError<{ errors: string }>;
 			if (error.response?.status === 401) {
-				// User belum login, jangan tampilkan error di console
 				setUser(null);
 			} else {
 				console.error("Error fetching user:", err);
