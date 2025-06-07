@@ -3,11 +3,11 @@
 import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import axiosInstance from "@/lib/axiosInstance";
 
 const RegisterPage = () => {
 	const [name, setName] = useState("");
@@ -20,7 +20,7 @@ const RegisterPage = () => {
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
-			const response = await axios.post(`${baseUrl}/api/user/register`, {
+			const response = await axiosInstance.post(`user/register`, {
 				name,
 				username,
 				email,

@@ -2,13 +2,13 @@
 
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { imagesForm } from "@/assets/assets";
-
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { useAuth } from "@/hooks/useAuth";
+import axiosInstance from "@/lib/axiosInstance";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -16,13 +16,15 @@ const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
 
+	const { refetchUser } = useAuth();
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
-			const response = await axios.post(`${baseUrl}/api/user/login`, {
+			const response = await axiosInstance.post(`/user/login`, {
 				email,
 				password,
 			});
+			await refetchUser();
 			toast.success(`${response.data.message} 🎉`);
 			router.push("/");
 		} catch (error) {
