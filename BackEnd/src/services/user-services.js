@@ -49,6 +49,7 @@ export const login = async (request) => {
       username: true,
       password: true,
       isAccountVerified: true,
+      role: true,
     },
   });
   if (!user) throw new ResponseError(401, "Email or password is wrong!");
