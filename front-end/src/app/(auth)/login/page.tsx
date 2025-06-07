@@ -24,9 +24,19 @@ const LoginPage = () => {
 				email,
 				password,
 			});
+
+			const loggedInUser = response.data.user;
+			console.log(loggedInUser);
+
 			await refetchUser();
+
 			toast.success(`${response.data.message} 🎉`);
-			router.push("/");
+
+			if (loggedInUser.role === "ADMIN") {
+				router.push("/admin/dashboard");
+			} else {
+				router.push("/");
+			}
 		} catch (error) {
 			const err = error as AxiosError<{ errors: string }>;
 			const errorMessage =
