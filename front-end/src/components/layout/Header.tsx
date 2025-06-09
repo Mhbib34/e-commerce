@@ -52,14 +52,14 @@ const Header = ({ children }: HeaderProps) => {
 									{user?.isAccountVerified === false && (
 										<button
 											onClick={handleClickVerify}
-											className="text-red-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium bg-gray-200 py-1 px-2 rounded-md"
+											className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 										>
 											Verify Account
 										</button>
 									)}
 									<button
 										onClick={logout}
-										className="text-blue-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium bg-gray-200 py-1 px-2 rounded-md"
+										className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 									>
 										Logout
 									</button>
@@ -68,13 +68,13 @@ const Header = ({ children }: HeaderProps) => {
 								<div className="flex gap-2 flex-col items-start">
 									<button
 										onClick={() => router.push("/login")}
-										className="text-blue-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md bg-gray-200"
+										className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 									>
 										Login
 									</button>
 									<button
 										onClick={() => router.push("/register")}
-										className="text-blue-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md bg-gray-200"
+										className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 									>
 										Register
 									</button>
