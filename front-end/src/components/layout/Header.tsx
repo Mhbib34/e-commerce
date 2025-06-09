@@ -1,9 +1,12 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "@/hooks/useAuth"; // perbaikan dari useAuthh
+import { useAuth } from "@/hooks/useAuth";
 import { UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/lib/axiosInstance";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 type HeaderProps = {
 	children: React.ReactNode;
@@ -13,6 +16,19 @@ const Header = ({ children }: HeaderProps) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const { isAuthenticated, user, logout } = useAuth();
 	const router = useRouter();
+
+	const handleClickVerify = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		try {
+			const response = await axiosInstance.post(`user/send-verify-otp`);
+			toast.success(`${response.data.message} 🎉`);
+			router.push("/verify-email");
+		} catch (error) {
+			const err = error as AxiosError<{ errors: string }>;
+			const errorMessage = err.response?.data?.errors;
+			toast.error(errorMessage);
+		}
+	};
 	return (
 		<>
 			<header className="bg-black text-white p-4 sticky top-0 flex justify-between items-center z-50">
@@ -34,7 +50,10 @@ const Header = ({ children }: HeaderProps) => {
 										Hi, {user?.name || "User"}
 									</p>
 									{user?.isAccountVerified === false && (
-										<button className="text-red-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium bg-gray-200 py-1 px-2 rounded-md">
+										<button
+											onClick={handleClickVerify}
+											className="text-red-600 hover:bg-black hover:text-white transition-all duration-200 ease-in cursor-pointer font-medium bg-gray-200 py-1 px-2 rounded-md"
+										>
 											Verify Account
 										</button>
 									)}

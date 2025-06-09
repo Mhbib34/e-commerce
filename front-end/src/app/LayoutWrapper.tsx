@@ -10,7 +10,7 @@ export default function LayoutWrapper({
 	children: React.ReactNode;
 }) {
 	const pathname = usePathname();
-	const hiddenHeaderPaths = ["/login", "/register"];
+	const hiddenHeaderPaths = ["/login", "/register", "/verify-email"];
 	const isAuthPage = hiddenHeaderPaths.includes(pathname);
 
 	if (isAuthPage) {
