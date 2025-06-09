@@ -3,8 +3,6 @@
 import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
-import LoadingSpinner from "@/components/fragment/Loading";
-import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -14,7 +12,6 @@ import { toast } from "react-toastify";
 const ResetPasswordOtpPage = () => {
 	const [email, setEmail] = useState("");
 	const router = useRouter();
-	const { isLoading } = useAuth();
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
@@ -34,9 +31,6 @@ const ResetPasswordOtpPage = () => {
 		}
 	};
 
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
 	return (
 		<div className="flex justify-center items-center h-screen bg-black px-5 sm:px-0">
 			<Form

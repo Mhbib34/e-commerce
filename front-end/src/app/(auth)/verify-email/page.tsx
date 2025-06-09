@@ -57,19 +57,16 @@ const EmailVerifyPage = () => {
 		if (!/^\d+$/.test(pasteData)) return;
 
 		const digits = pasteData.slice(0, OTP_LENGTH).split("");
-		const newOtp = [...otp];
-
-		digits.forEach((digit, i) => {
-			newOtp[i] = digit;
-			if (inputRefs.current[i]) {
-				inputRefs.current[i]!.value = digit;
-			}
+		setOtp((prevOtp) => {
+			const updatedOtp = [...prevOtp];
+			digits.forEach((digit, i) => {
+				updatedOtp[i] = digit;
+			});
+			return updatedOtp;
 		});
 
-		setOtp(newOtp);
-
-		const nextIndex =
-			digits.length >= OTP_LENGTH ? OTP_LENGTH - 1 : digits.length;
+		// Fokus ke input setelah digit terakhir
+		const nextIndex = Math.min(digits.length, OTP_LENGTH - 1);
 		inputRefs.current[nextIndex]?.focus();
 	};
 

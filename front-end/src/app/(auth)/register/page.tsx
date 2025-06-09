@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "@/lib/axiosInstance";
-import { useAuth } from "@/hooks/useAuth";
-import LoadingSpinner from "@/components/fragment/Loading";
 
 const RegisterPage = () => {
 	const [name, setName] = useState("");
@@ -17,7 +15,6 @@ const RegisterPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	const { isLoading } = useAuth();
 	const router = useRouter();
 
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,10 +40,6 @@ const RegisterPage = () => {
 			toast.error(errorMessage);
 		}
 	};
-
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
 
 	return (
 		<div className="flex justify-center items-center h-screen bg-black px-5 sm:px-0">

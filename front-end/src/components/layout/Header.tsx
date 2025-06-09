@@ -32,7 +32,7 @@ const Header = ({ children }: HeaderProps) => {
 	return (
 		<>
 			<header className="bg-black text-white p-4 sticky top-0 flex justify-between items-center z-50">
-				<div>
+				<div onClick={() => router.push("/")}>
 					<span className="text-2xl font-bold font-mono">Velora</span>
 				</div>
 				<div className="relative">

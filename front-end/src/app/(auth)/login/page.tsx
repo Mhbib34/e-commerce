@@ -9,13 +9,12 @@ import { toast } from "react-toastify";
 import { imagesForm } from "@/assets/assets";
 import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/axiosInstance";
-import LoadingSpinner from "@/components/fragment/Loading";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	const { refetchUser, isLoading } = useAuth();
+	const { refetchUser } = useAuth();
 	const router = useRouter();
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -44,10 +43,6 @@ const LoginPage = () => {
 			toast.error(errorMessage);
 		}
 	};
-
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
 
 	return (
 		<div className="flex justify-center items-center h-screen bg-black px-5 sm:px-0">

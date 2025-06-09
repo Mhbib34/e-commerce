@@ -1,13 +1,8 @@
 "use client";
-import LoadingSpinner from "@/components/fragment/Loading";
 import { useAuth } from "@/hooks/useAuth";
 
 const AdminDashboardPage = () => {
-	const { isLoading, logout } = useAuth();
-
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
+	const { logout } = useAuth();
 
 	return (
 		<div>
