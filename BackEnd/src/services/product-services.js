@@ -7,13 +7,11 @@ import {
 } from "../validation/product-validation.js";
 import validate from "../validation/validation.js";
 
-export const create = async (request) => {
-  const product = validate(createProductValidation, request);
+export const create = async (body, file) => {
+  const product = validate(createProductValidation, body);
 
   const findProduct = await prismaClient.product.findUnique({
-    where: {
-      name: product.name,
-    },
+    where: { name: product.name },
   });
 
   if (findProduct) {
@@ -21,24 +19,22 @@ export const create = async (request) => {
   }
 
   let category = await prismaClient.category.findUnique({
-    where: {
-      name: product.categoryName,
-    },
+    where: { name: product.categoryName },
   });
 
   if (!category) {
     category = await prismaClient.category.create({
-      data: {
-        name: product.categoryName,
-      },
+      data: { name: product.categoryName },
     });
   }
+
+  const imageUrl = file ? `/uploads/${file.filename}` : "";
 
   return await prismaClient.product.create({
     data: {
       name: product.name,
       description: product.description,
-      image: product.image,
+      image: imageUrl,
       price: product.price,
       stock: product.stock,
       categoryId: category.id,

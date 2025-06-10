@@ -14,13 +14,20 @@ const AddProductPage = () => {
 	const [price, setPrice] = useState("");
 	const [stock, setStock] = useState("");
 	const [description, setDescription] = useState("");
-	const [category, setCategory] = useState("");
+	const [categoryName, setCategoryName] = useState("");
 	const [image, setImage] = useState<File | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!name || !price || !stock || !description || !category || !image) {
+		if (
+			!name ||
+			!price ||
+			!stock ||
+			!description ||
+			!categoryName ||
+			!image
+		) {
 			toast.warn("Please fill in all fields.");
 			return;
 		}
@@ -31,7 +38,7 @@ const AddProductPage = () => {
 			formData.append("price", price);
 			formData.append("stock", stock);
 			formData.append("description", description);
-			formData.append("category", category);
+			formData.append("categoryName", categoryName);
 			formData.append("image", image);
 
 			const response = await axiosInstance.post("/product", formData, {
@@ -39,14 +46,22 @@ const AddProductPage = () => {
 					"Content-Type": "multipart/form-data",
 				},
 			});
+			console.log(response);
 
 			toast.success(`${response.data.message} 🎉`);
+			setName("");
+			setPrice("");
+			setStock("");
+			setDescription("");
+			setCategoryName("");
+			setImage(null);
 		} catch (error) {
 			const err = error as AxiosError<{ errors?: string }>;
 			const errorMessage =
 				err.response?.data?.errors ||
 				"Failed to add product. Please try again.";
 			toast.error(errorMessage);
+			console.log(errorMessage);
 		}
 	};
 
@@ -85,8 +100,8 @@ const AddProductPage = () => {
 					<Input
 						type="text"
 						text="Product Category"
-						value={category}
-						onChange={(e) => setCategory(e.target.value)}
+						value={categoryName}
+						onChange={(e) => setCategoryName(e.target.value)}
 						placeholder="Product Category"
 					/>
 				</div>

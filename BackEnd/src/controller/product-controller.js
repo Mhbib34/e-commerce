@@ -8,7 +8,7 @@ import {
 
 const createProductHandler = async (req, res, next) => {
   try {
-    const result = await create(req.body);
+    const result = await create(req.body, req.file);
     res.status(201).json({
       success: true,
       message: "Product created successfully",
