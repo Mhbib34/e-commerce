@@ -29,6 +29,13 @@ const Header = ({ children }: HeaderProps) => {
 			toast.error(errorMessage);
 		}
 	};
+
+	const handleLogout = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		logout();
+		setIsOpen(false);
+		router.push("/login");
+	};
 	return (
 		<>
 			<header className="bg-black text-white p-4 sticky top-0 flex justify-between items-center z-50">
@@ -77,7 +84,7 @@ const Header = ({ children }: HeaderProps) => {
 									</button>
 								)}
 								<button
-									onClick={logout}
+									onClick={handleLogout}
 									className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 								>
 									Logout

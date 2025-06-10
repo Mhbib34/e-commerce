@@ -19,7 +19,11 @@ export default function LayoutWrapper({
 		"/reset-password",
 		"/reset-password-otp",
 	];
-	const isAuthPage = hiddenHeaderPaths.includes(pathname);
+
+	// Jika path termasuk yang disembunyikan ATAU dimulai dengan "/admin"
+	const isAuthPage =
+		hiddenHeaderPaths.includes(pathname) || pathname.startsWith("/admin");
+
 	const { isLoading } = useAuth();
 
 	if (isLoading) {
