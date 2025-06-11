@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import Button from "@/components/common/Button";
 
 type Props = {
 	onClose?: () => void;
@@ -32,9 +33,9 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 					Admin Panel
 				</h1>
 				{onClose && (
-					<button className="md:hidden text-white" onClick={onClose}>
+					<Button className="md:hidden text-white" onClick={onClose}>
 						✕
-					</button>
+					</Button>
 				)}
 			</div>
 			<nav className="flex flex-col gap-4 text-base">
@@ -73,13 +74,13 @@ type MenuItemProps = {
 };
 
 const MenuItem: FC<MenuItemProps> = ({ icon, label, onClick }) => (
-	<button
+	<Button
 		onClick={onClick}
 		className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors w-full cursor-pointer"
 	>
 		{icon}
 		<span>{label}</span>
-	</button>
+	</Button>
 );
 
 export default AdminSidebar;

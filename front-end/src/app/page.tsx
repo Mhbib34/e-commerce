@@ -1,6 +1,7 @@
 "use client";
 
 import { imagesForm } from "@/assets/assets";
+import Button from "@/components/common/Button";
 import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,12 +31,12 @@ export default function Home() {
 								? "Verified"
 								: "Not Verified"}
 						</p>
-						<button
+						<Button
 							onClick={logout}
 							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
 						>
 							Logout
-						</button>
+						</Button>
 					</div>
 				</div>
 			) : (
@@ -53,12 +54,12 @@ export default function Home() {
 						<p className="">
 							Please log in to access our services.
 						</p>
-						<button
+						<Button
 							onClick={() => router.push("/login")}
 							className="bg-black text-white font-bold py-2 px-4 rounded-md mt-5"
 						>
 							Login
-						</button>
+						</Button>
 					</div>
 				</div>
 			)}

@@ -23,6 +23,7 @@ export const useProducts = () => {
 		};
 
 		fetchProducts();
+		//eslint-disable-next-line
 	}, []);
 
 	const deleteProduct = async (id: string) => {

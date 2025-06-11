@@ -1,5 +1,6 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import Button from "@/components/common/Button";
 
 type FormProps = {
 	children?: React.ReactNode;
@@ -52,9 +53,9 @@ const Form = ({
 					<Link href="/reset-password-otp">{forgotPassword}</Link>
 				</div>
 				<div>
-					<button className="w-full bg-black text-white py-2 rounded-lg mt-4 cursor-pointer">
+					<Button className="w-full bg-black text-white py-2 rounded-lg mt-4 cursor-pointer">
 						{buttonText}
-					</button>
+					</Button>
 				</div>
 			</div>
 		</form>

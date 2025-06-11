@@ -2,6 +2,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
+import { showSuccess } from "@/lib/tasterHelper";
 
 type User = {
 	id: string;
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const logout = async () => {
 		try {
 			await axios.post("/user/logout");
+			showSuccess("User logout successful.");
 		} catch (err) {
 			console.log("Logout error:", err);
 		} finally {

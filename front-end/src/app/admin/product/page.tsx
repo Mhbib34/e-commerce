@@ -6,6 +6,7 @@ import { FC } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import LoadingSpinner from "@/components/fragment/Loading";
 import { showConfirm } from "@/lib/tasterHelper";
+import Button from "@/components/common/Button";
 
 const formatRupiah = (value: number) =>
 	new Intl.NumberFormat("id-ID", {
@@ -28,13 +29,13 @@ const AdminProductPage: FC = () => {
 						<h1 className="text-2xl font-bold text-zinc-800">
 							Products
 						</h1>
-						<button
+						<Button
 							onClick={() => router.push("/admin/product/add")}
 							className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg transition cursor-pointer"
 						>
 							<Plus size={18} />
 							Add Product
-						</button>
+						</Button>
 					</div>
 					<div className="overflow-x-auto px-6">
 						<table className="min-w-full border border-zinc-300 rounded-lg overflow-hidden">
@@ -71,10 +72,10 @@ const AdminProductPage: FC = () => {
 												{product.stock}
 											</td>
 											<td className="px-4 py-3 flex gap-2">
-												<button className="text-blue-600 hover:text-blue-800">
+												<Button className="text-blue-600 hover:text-blue-800 cursor-pointer">
 													<Pencil size={18} />
-												</button>
-												<button
+												</Button>
+												<Button
 													onClick={() =>
 														showConfirm(
 															"Are you sure you want to delete this product?",
@@ -85,10 +86,10 @@ const AdminProductPage: FC = () => {
 																)
 														)
 													}
-													className="text-red-600 hover:text-red-800"
+													className="text-red-600 hover:text-red-800 cursor-pointer"
 												>
 													<Trash2 size={18} />
-												</button>
+												</Button>
 											</td>
 										</tr>
 									))

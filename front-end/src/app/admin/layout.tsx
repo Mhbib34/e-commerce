@@ -3,6 +3,7 @@
 import { ReactNode, useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
+import Button from "@/components/common/Button";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
 	const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -30,9 +31,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 			<main className="flex-1 bg-white overflow-y-auto md:h-auto">
 				{/* Topbar for mobile */}
 				<div className="flex items-center justify-between mb-6 md:hidden bg-black w-full py-4 px-3">
-					<button onClick={() => setSidebarOpen(true)}>
+					<Button onClick={() => setSidebarOpen(true)}>
 						<Menu size={28} className="text-white" />
-					</button>
+					</Button>
 					<h2 className="text-lg font-semibold text-white">
 						Admin Panel
 					</h2>

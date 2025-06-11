@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
 import { showError, showSuccess } from "@/lib/tasterHelper";
+import Button from "../common/Button";
 
 type HeaderProps = {
 	children: React.ReactNode;
@@ -56,18 +57,18 @@ const Header = ({ children }: HeaderProps) => {
 						</div>
 					) : (
 						<div className="flex justify-center items-center gap-2">
-							<button
+							<Button
 								onClick={() => router.push("/login")}
 								className="py-1 px-2 border-2 rounded-lg cursor-pointer font-medium"
 							>
 								Login
-							</button>
-							<button
+							</Button>
+							<Button
 								onClick={() => router.push("/register")}
 								className="py-1 px-2 border-2 rounded-lg cursor-pointer font-medium bg-white text-black border-white hover:bg-black hover:text-white transition-all duration-200 ease-in"
 							>
 								Register
-							</button>
+							</Button>
 						</div>
 					)}
 					{isOpen && (
@@ -77,19 +78,19 @@ const Header = ({ children }: HeaderProps) => {
 									Hi, {user?.name || "User"}
 								</p>
 								{user?.isAccountVerified === false && (
-									<button
+									<Button
 										onClick={handleClickVerify}
 										className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 									>
 										Verify Account
-									</button>
+									</Button>
 								)}
-								<button
+								<Button
 									onClick={handleLogout}
 									className="bg-black text-white transition-all duration-200 ease-in cursor-pointer font-medium py-1 px-2 rounded-md"
 								>
 									Logout
-								</button>
+								</Button>
 							</>
 						</div>
 					)}
