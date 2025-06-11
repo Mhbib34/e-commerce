@@ -66,7 +66,7 @@ const AddProductPage = () => {
 	};
 
 	return (
-		<div className="flex justify-center items-center min-h-screen bg-zinc-950 px-4 py-10">
+		<div className="flex justify-center items-center min-h-screen bg-white px-4 py-10">
 			<Form
 				onSubmit={handleSubmit}
 				title="Product"

@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
 
+type Decode = {
+	role: string;
+};
+
 export function middleware(request: NextRequest) {
-	console.log("Middleware running...", request.nextUrl.pathname);
 	const token = request.cookies.get("token")?.value;
 
 	if (!token) {
@@ -11,9 +14,7 @@ export function middleware(request: NextRequest) {
 	}
 
 	try {
-		//eslint-disable-next-line
-		const decoded: any = jwtDecode(token);
-		console.log(decoded);
+		const decoded: Decode = jwtDecode(token);
 
 		if (decoded.role === "ADMIN" && request.nextUrl.pathname === "/") {
 			return NextResponse.redirect(
