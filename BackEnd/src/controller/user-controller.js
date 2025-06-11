@@ -20,7 +20,7 @@ const registerUserHandler = async (req, res, next) => {
   try {
     const result = await create(req.body);
     const token = jwt.sign(
-      { id: result.id, email: result.email },
+      { id: result.id, email: result.email, role: result.role },
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
@@ -57,7 +57,7 @@ const loginUserHandler = async (req, res, next) => {
   try {
     const result = await login(req.body);
     const token = jwt.sign(
-      { id: result.id, email: result.email },
+      { id: result.id, email: result.email, role: result.role },
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",

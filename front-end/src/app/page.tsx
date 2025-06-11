@@ -1,18 +1,13 @@
 "use client";
 
 import { imagesForm } from "@/assets/assets";
-import LoadingSpinner from "@/components/fragment/Loading";
 import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-	const { user, isAuthenticated, isLoading, logout } = useAuth();
+	const { user, isAuthenticated, logout } = useAuth();
 	const router = useRouter();
-
-	if (isLoading) {
-		return <LoadingSpinner />;
-	}
 
 	return (
 		<div className="h-screen flex items-center justify-center">

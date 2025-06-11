@@ -32,6 +32,7 @@ export const create = async (request) => {
       email: true,
       username: true,
       isAccountVerified: true,
+      role: true,
     },
   });
 };
@@ -81,6 +82,7 @@ export const get = async (id) => {
       email: true,
       name: true,
       isAccountVerified: true,
+      role: true,
     },
   });
   if (!user) throw new ResponseError(404, "User is not found");
