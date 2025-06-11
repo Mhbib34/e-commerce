@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 			)}
 
 			{/* Main Content */}
-			<main className="flex-1 bg-white md:p-6 overflow-y-auto h-screen md:h-auto">
+			<main className="flex-1 bg-white overflow-y-auto md:h-auto">
 				{/* Topbar for mobile */}
 				<div className="flex items-center justify-between mb-6 md:hidden bg-black w-full py-4 px-3">
 					<button onClick={() => setSidebarOpen(true)}>
@@ -37,7 +37,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 						Admin Panel
 					</h2>
 				</div>
-
 				{children}
 			</main>
 		</div>
