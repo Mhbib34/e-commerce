@@ -3,10 +3,10 @@ import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
 import axiosInstance from "@/lib/axiosInstance";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
 
 const ResetPasswordPage = () => {
 	const [newPassword, setNewPassword] = useState("");
@@ -23,13 +23,13 @@ const ResetPasswordPage = () => {
 				email,
 				otp: parseInt(otp, 10),
 			});
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess(`${response.data.message} 🎉`);
 			router.push("/login");
 		} catch (error) {
 			const err = error as AxiosError<{ errors: string }>;
 			const errorMessage =
 				err.response?.data?.errors || "Login failed. Please try again.";
-			toast.error(errorMessage);
+			showError(errorMessage);
 		}
 	};
 

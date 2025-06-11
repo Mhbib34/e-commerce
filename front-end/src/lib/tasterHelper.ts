@@ -1,0 +1,38 @@
+import { toast } from "sonner";
+
+export const showSuccess = (message: string) => {
+	toast.success(message, {
+		duration: 2000,
+		position: "top-right",
+	});
+};
+
+export const showError = (message: string) => {
+	toast.error(message, {
+		duration: 2000,
+		position: "top-right",
+	});
+};
+
+export const showWarning = (message: string) => {
+	toast.warning(message, {
+		duration: 2000,
+		position: "top-right",
+	});
+};
+
+export const showConfirm = (
+	message: string,
+	description: string,
+	onConfirm: () => void
+) => {
+	toast.warning(message, {
+		description,
+		action: {
+			label: "Hapus",
+			onClick: onConfirm,
+		},
+		duration: 4000,
+		position: "top-right",
+	});
+};

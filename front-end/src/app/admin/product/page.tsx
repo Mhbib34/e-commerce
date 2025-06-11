@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FC } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import LoadingSpinner from "@/components/fragment/Loading";
+import { showConfirm } from "@/lib/tasterHelper";
 
 const formatRupiah = (value: number) =>
 	new Intl.NumberFormat("id-ID", {
@@ -14,7 +15,7 @@ const formatRupiah = (value: number) =>
 	}).format(value);
 
 const AdminProductPage: FC = () => {
-	const { products, loading } = useProducts();
+	const { products, loading, deleteProduct } = useProducts();
 	const router = useRouter();
 
 	return (
@@ -54,30 +55,53 @@ const AdminProductPage: FC = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{products.map((product) => (
-									<tr
-										key={product.id}
-										className="border-t border-zinc-200"
-									>
-										<td className="px-4 py-3">
-											{product.name}
-										</td>
-										<td className="px-4 py-3">
-											{formatRupiah(product.price)}
-										</td>
-										<td className="px-4 py-3">
-											{product.stock}
-										</td>
-										<td className="px-4 py-3 flex gap-2">
-											<button className="text-blue-600 hover:text-blue-800">
-												<Pencil size={18} />
-											</button>
-											<button className="text-red-600 hover:text-red-800">
-												<Trash2 size={18} />
-											</button>
+								{products.length > 0 ? (
+									products.map((product) => (
+										<tr
+											key={product.id}
+											className="border-t border-zinc-200"
+										>
+											<td className="px-4 py-3">
+												{product.name}
+											</td>
+											<td className="px-4 py-3">
+												{formatRupiah(product.price)}
+											</td>
+											<td className="px-4 py-3">
+												{product.stock}
+											</td>
+											<td className="px-4 py-3 flex gap-2">
+												<button className="text-blue-600 hover:text-blue-800">
+													<Pencil size={18} />
+												</button>
+												<button
+													onClick={() =>
+														showConfirm(
+															"Are you sure you want to delete this product?",
+															product.name,
+															() =>
+																deleteProduct(
+																	product.id
+																)
+														)
+													}
+													className="text-red-600 hover:text-red-800"
+												>
+													<Trash2 size={18} />
+												</button>
+											</td>
+										</tr>
+									))
+								) : (
+									<tr>
+										<td
+											colSpan={4}
+											className="px-4 py-3 text-center"
+										>
+											No products found
 										</td>
 									</tr>
-								))}
+								)}
 							</tbody>
 						</table>
 					</div>

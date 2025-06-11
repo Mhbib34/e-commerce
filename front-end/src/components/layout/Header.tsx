@@ -5,8 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 
 type HeaderProps = {
 	children: React.ReactNode;
@@ -21,12 +21,13 @@ const Header = ({ children }: HeaderProps) => {
 		e.preventDefault();
 		try {
 			const response = await axiosInstance.post(`user/send-verify-otp`);
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess(`${response.data.message} 🎉`);
 			router.push("/verify-email");
 		} catch (error) {
 			const err = error as AxiosError<{ errors: string }>;
-			const errorMessage = err.response?.data?.errors;
-			toast.error(errorMessage);
+			const errorMessage =
+				err.response?.data?.errors || "Verify email failed.";
+			showError(errorMessage);
 		}
 	};
 

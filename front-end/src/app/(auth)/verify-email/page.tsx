@@ -4,11 +4,11 @@ import { useRef, useState } from "react";
 import { imagesForm } from "@/assets/assets";
 import Form from "@/components/fragment/Form";
 import axiosInstance from "@/lib/axiosInstance";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import LoadingSpinner from "@/components/fragment/Loading";
 import { useAuth } from "@/hooks/useAuth";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 
 const OTP_LENGTH = 6;
 
@@ -77,14 +77,14 @@ const EmailVerifyPage = () => {
 				otp: parseInt(otp.join(""), 10),
 			});
 			await refetchUser();
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess(`${response.data.message} 🎉`);
 			router.push("/");
 		} catch (error) {
 			const err = error as AxiosError<{ errors: string }>;
 			const errorMessage =
 				err.response?.data?.errors ||
 				"Verify email failed. Please try again.";
-			toast.error(errorMessage);
+			showError(errorMessage);
 		}
 	};
 

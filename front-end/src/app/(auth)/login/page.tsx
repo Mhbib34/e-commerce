@@ -5,10 +5,10 @@ import Form from "@/components/fragment/Form";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { imagesForm } from "@/assets/assets";
 import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/axiosInstance";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -29,7 +29,7 @@ const LoginPage = () => {
 
 			await refetchUser();
 
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess(`${response.data.message}`);
 
 			if (loggedInUser.role === "ADMIN") {
 				router.push("/admin/dashboard");
@@ -40,7 +40,7 @@ const LoginPage = () => {
 			const err = error as AxiosError<{ errors: string }>;
 			const errorMessage =
 				err.response?.data?.errors || "Login failed. Please try again.";
-			toast.error(errorMessage);
+			showError(errorMessage);
 		}
 	};
 

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "@/context/AuthContext";
 import LayoutWrapper from "./LayoutWrapper";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -33,7 +32,7 @@ export default function RootLayout({
 			>
 				<AuthProvider>
 					<LayoutWrapper>{children}</LayoutWrapper>
-					<ToastContainer position="top-right" autoClose={2000} />
+					<Toaster richColors closeButton />
 				</AuthProvider>
 			</body>
 		</html>

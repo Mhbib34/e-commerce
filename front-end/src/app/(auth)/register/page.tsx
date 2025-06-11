@@ -6,8 +6,8 @@ import Form from "@/components/fragment/Form";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import axiosInstance from "@/lib/axiosInstance";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 
 const RegisterPage = () => {
 	const [name, setName] = useState("");
@@ -26,7 +26,7 @@ const RegisterPage = () => {
 				email,
 				password,
 			});
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess(`${response.data.message} 🎉`);
 			setName("");
 			setUsername("");
 			setEmail("");
@@ -37,7 +37,7 @@ const RegisterPage = () => {
 			const err = error as AxiosError<{ errors: string }>;
 			const errorMessage =
 				err.response?.data?.errors || "Registration failed.";
-			toast.error(errorMessage);
+			showError(errorMessage);
 		}
 	};
 

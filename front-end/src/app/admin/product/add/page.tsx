@@ -2,12 +2,11 @@
 
 import React, { useState } from "react";
 import { AxiosError } from "axios";
-import { toast } from "react-toastify";
-
 import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
 import axiosInstance from "@/lib/axiosInstance";
+import { showError, showSuccess, showWarning } from "@/lib/tasterHelper";
 
 const AddProductPage = () => {
 	const [name, setName] = useState("");
@@ -28,7 +27,7 @@ const AddProductPage = () => {
 			!categoryName ||
 			!image
 		) {
-			toast.warn("Please fill in all fields.");
+			showWarning("Please fill in all required fields.");
 			return;
 		}
 
@@ -48,7 +47,7 @@ const AddProductPage = () => {
 			});
 			console.log(response);
 
-			toast.success(`${response.data.message} 🎉`);
+			showSuccess("Product added successfully.");
 			setName("");
 			setPrice("");
 			setStock("");
@@ -60,7 +59,7 @@ const AddProductPage = () => {
 			const errorMessage =
 				err.response?.data?.errors ||
 				"Failed to add product. Please try again.";
-			toast.error(errorMessage);
+			showError(errorMessage);
 			console.log(errorMessage);
 		}
 	};
