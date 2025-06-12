@@ -82,8 +82,8 @@ const UpdateProductPage = () => {
 				onSubmit={handleUpdate}
 				title="Product"
 				linkPage="/admin/product"
-				textLink="Add Product"
-				buttonText="Add Product"
+				textLink="Update Product"
+				buttonText="Update Product"
 				image={imagesForm.p6}
 			>
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+tr:nth-child(even) {
+	background-color: #f3f4f6; /* warna abu-abu muda (Tailwind: bg-zinc-100) */
+}
+
 @theme {
 	--animate-spin-slow: spin 1s linear infinite;
 }

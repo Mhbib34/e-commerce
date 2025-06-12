@@ -38,8 +38,8 @@ const AdminProductPage: FC = () => {
 						</Button>
 					</div>
 					<div className="overflow-x-auto px-6">
-						<table className="min-w-full border border-zinc-300 rounded-lg overflow-hidden">
-							<thead className="bg-zinc-100">
+						<table className="min-w-full border border-black rounded-lg overflow-hidden">
+							<thead className="bg-black text-white">
 								<tr>
 									<th className="text-left px-4 py-3">
 										Name
@@ -49,6 +49,9 @@ const AdminProductPage: FC = () => {
 									</th>
 									<th className="text-left px-4 py-3">
 										Stock
+									</th>
+									<th className="text-left px-4 py-3">
+										Category
 									</th>
 									<th className="text-left px-4 py-3">
 										Actions
@@ -73,6 +76,9 @@ const AdminProductPage: FC = () => {
 											</td>
 											<td className="px-4 py-3">
 												{product.stock}
+											</td>
+											<td className="px-4 py-3">
+												{product.category.name}
 											</td>
 											<td className="px-4 py-3 flex gap-2">
 												<Button

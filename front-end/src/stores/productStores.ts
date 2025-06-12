@@ -1,12 +1,16 @@
 import { create } from "zustand";
 
+type Category = {
+	id: string;
+	name: string;
+};
 type Product = {
 	id: string;
 	name: string;
 	description: string;
 	price: number;
 	stock: number;
-	categoryName: string;
+	category: Category;
 };
 
 type ProductStore = {
