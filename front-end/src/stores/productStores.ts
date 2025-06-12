@@ -4,7 +4,7 @@ type Category = {
 	id: string;
 	name: string;
 };
-type Product = {
+export type Product = {
 	id: string;
 	name: string;
 	description: string;

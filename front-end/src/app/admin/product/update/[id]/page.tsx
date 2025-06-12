@@ -2,6 +2,7 @@
 import { imagesForm } from "@/assets/assets";
 import Input from "@/components/common/Input";
 import Form from "@/components/fragment/Form";
+import LoadingSpinner from "@/components/fragment/Loading";
 import { useProducts } from "@/hooks/useProducts";
 import { showError, showSuccess, showWarning } from "@/lib/tasterHelper";
 import { AxiosError } from "axios";
@@ -73,7 +74,7 @@ const UpdateProductPage = () => {
 	};
 
 	if (!product) {
-		return <div>Loading...</div>;
+		return <LoadingSpinner />;
 	}
 
 	return (

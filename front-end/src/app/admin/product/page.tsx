@@ -1,12 +1,13 @@
 "use client";
 
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, SearchCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import LoadingSpinner from "@/components/fragment/Loading";
 import { showConfirm } from "@/lib/tasterHelper";
 import Button from "@/components/common/Button";
+import { Product } from "@/stores/productStores";
 
 const formatRupiah = (value: number) =>
 	new Intl.NumberFormat("id-ID", {
@@ -16,19 +17,57 @@ const formatRupiah = (value: number) =>
 	}).format(value);
 
 const AdminProductPage: FC = () => {
+	const [search, setSearch] = useState("");
+	const [searchResult, setSearchResult] = useState<Product[] | null>(null);
 	const { products, loading, deleteProduct } = useProducts();
 	const router = useRouter();
+
+	const handleSearch = () => {
+		const keyword = search.toLowerCase();
+		const result = products.filter(
+			(product) =>
+				product.name.toLowerCase().includes(keyword) ||
+				product.category?.name?.toLowerCase().includes(keyword)
+		);
+		setSearchResult(result);
+	};
+
+	const displayedProducts = searchResult ?? products;
 
 	return (
 		<>
 			{loading ? (
 				<LoadingSpinner />
 			) : (
-				<div className="">
-					<div className="flex justify-between items-center mb-6 p-6">
+				<div className="px-6 flex flex-col gap-5">
+					<div className="flex justify-between items-center md:py-6 py-0">
 						<h1 className="text-2xl font-bold text-zinc-800">
 							Products
 						</h1>
+
+						<div className="hidden md:flex items-center gap-2 border-2 py-1 px-2 rounded-xl w-[65%]">
+							<SearchCheckIcon
+								size={30}
+								className="cursor-pointer"
+								onClick={handleSearch}
+							/>
+							<input
+								type="search"
+								placeholder="Search product..."
+								className="px-4 py-2 focus:outline-none w-full"
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
+							/>
+							<div>
+								<Button
+									onClick={handleSearch}
+									className="flex items-center gap-2 bg-black text-white px-6 py-2 rounded-lg transition cursor-pointer"
+								>
+									Search
+								</Button>
+							</div>
+						</div>
+
 						<Button
 							onClick={() => router.push("/admin/product/add")}
 							className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg transition cursor-pointer"
@@ -37,7 +76,30 @@ const AdminProductPage: FC = () => {
 							Add Product
 						</Button>
 					</div>
-					<div className="overflow-x-auto px-6">
+					<div className="md:hidden flex items-center gap-2 border-2 py-1 px-2 rounded-xl ">
+						<SearchCheckIcon
+							size={30}
+							className="cursor-pointer"
+							onClick={handleSearch}
+						/>
+						<input
+							type="search"
+							placeholder="Search product..."
+							className="px-4 py-2 focus:outline-none w-full"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+						/>
+						<div>
+							<Button
+								onClick={handleSearch}
+								className="flex items-center gap-2 bg-black text-white px-6 py-2 rounded-lg transition cursor-pointer"
+							>
+								Search
+							</Button>
+						</div>
+					</div>
+
+					<div className="overflow-x-auto ">
 						<table className="min-w-full border border-black rounded-lg overflow-hidden">
 							<thead className="bg-black text-white">
 								<tr>
@@ -59,14 +121,15 @@ const AdminProductPage: FC = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{products.length > 0 ? (
-									products.map((product) => (
+								{displayedProducts.length > 0 ? (
+									displayedProducts.map((product, index) => (
 										<tr
-											onClick={() =>
-												console.log(product.id)
-											}
 											key={product.id}
-											className="border-t border-zinc-200"
+											className={`border-t border-zinc-200 ${
+												index % 2 === 0
+													? "bg-zinc-200"
+													: "bg-white"
+											}`}
 										>
 											<td className="px-4 py-3">
 												{product.name}
@@ -112,7 +175,7 @@ const AdminProductPage: FC = () => {
 								) : (
 									<tr>
 										<td
-											colSpan={4}
+											colSpan={5}
 											className="px-4 py-3 text-center"
 										>
 											No products found
