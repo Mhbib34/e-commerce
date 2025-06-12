@@ -3,7 +3,8 @@ import axiosInstance from "@/lib/axiosInstance";
 import useProductStore from "@/stores/productStores";
 
 export const useProducts = () => {
-	const { products, setProducts, removeProduct } = useProductStore();
+	const { products, setProducts, removeProduct, updateProductStore } =
+		useProductStore();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -36,5 +37,42 @@ export const useProducts = () => {
 		}
 	};
 
-	return { products, loading, error, deleteProduct };
+	const updateProduct = async (id: string, data: FormData) => {
+		try {
+			const isFormData = data instanceof FormData;
+
+			const res = await axiosInstance.patch(`/product/${id}`, data, {
+				headers: {
+					"Content-Type": isFormData
+						? "multipart/form-data"
+						: "application/json",
+				},
+			});
+			updateProductStore(id, res.data.product);
+			const refreshedProduct = await axiosInstance.get(`/product/list`);
+			setProducts(refreshedProduct.data.product);
+			return res.data;
+		} catch (error) {
+			console.log(error);
+			throw new Error("Failed to update product");
+		}
+	};
+
+	const getProductById = async (id: string) => {
+		try {
+			const res = await axiosInstance.get(`/product/${id}`);
+			return res.data.product;
+		} catch (error) {
+			console.log(error);
+			throw new Error("Failed to fetch product");
+		}
+	};
+	return {
+		products,
+		loading,
+		error,
+		deleteProduct,
+		updateProduct,
+		getProductById,
+	};
 };

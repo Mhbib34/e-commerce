@@ -14,6 +14,12 @@ productRouter.post(
   productController.create
 );
 productRouter.get("/list", userAuth, productController.getAll);
-productRouter.get("/", userAuth, productController.get);
-productRouter.patch("/:id", userAuth, isAdmin, productController.update);
+productRouter.get("/:id", userAuth, productController.get);
+productRouter.patch(
+  "/:id",
+  userAuth,
+  isAdmin,
+  upload.single("image"),
+  productController.update
+);
 productRouter.delete("/:id", userAuth, isAdmin, productController.deleted);

@@ -21,7 +21,8 @@ const createProductHandler = async (req, res, next) => {
 
 const getProductHandler = async (req, res, next) => {
   try {
-    const result = await get(req.body);
+    const id = req.params.id;
+    const result = await get(id);
     res.status(200).json({
       success: true,
       message: "Find product successfully",

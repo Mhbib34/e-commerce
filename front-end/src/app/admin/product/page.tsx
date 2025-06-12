@@ -59,6 +59,9 @@ const AdminProductPage: FC = () => {
 								{products.length > 0 ? (
 									products.map((product) => (
 										<tr
+											onClick={() =>
+												console.log(product.id)
+											}
 											key={product.id}
 											className="border-t border-zinc-200"
 										>
@@ -72,7 +75,14 @@ const AdminProductPage: FC = () => {
 												{product.stock}
 											</td>
 											<td className="px-4 py-3 flex gap-2">
-												<Button className="text-blue-600 hover:text-blue-800 cursor-pointer">
+												<Button
+													onClick={() =>
+														router.push(
+															`/admin/product/update/${product.id}`
+														)
+													}
+													className="text-blue-600 hover:text-blue-800 cursor-pointer"
+												>
 													<Pencil size={18} />
 												</Button>
 												<Button

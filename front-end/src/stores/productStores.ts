@@ -6,13 +6,14 @@ type Product = {
 	description: string;
 	price: number;
 	stock: number;
-	category: string;
+	categoryName: string;
 };
 
 type ProductStore = {
 	products: Product[];
 	setProducts: (products: Product[]) => void;
 	removeProduct: (id: string) => void;
+	updateProductStore: (id: string, product: Product) => void;
 };
 
 const useProductStore = create<ProductStore>((set) => ({
@@ -21,6 +22,10 @@ const useProductStore = create<ProductStore>((set) => ({
 	removeProduct: (id: string) =>
 		set((state) => ({
 			products: state.products.filter((product) => product.id !== id),
+		})),
+	updateProductStore: (id: string, product: Product) =>
+		set((state) => ({
+			products: state.products.map((p) => (p.id === id ? product : p)),
 		})),
 }));
 

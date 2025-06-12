@@ -51,11 +51,10 @@ export const create = async (body, file) => {
   });
 };
 
-export const get = async (request) => {
-  const { name } = validate(getProductValidation, request);
+export const get = async (id) => {
   const findProduct = await prismaClient.product.findUnique({
     where: {
-      name,
+      id,
     },
     select: {
       name: true,
