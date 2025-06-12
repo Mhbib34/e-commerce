@@ -8,7 +8,7 @@ import {
 	Settings,
 	LogOut,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/common/Button";
 
@@ -18,6 +18,7 @@ type Props = {
 
 const AdminSidebar: FC<Props> = ({ onClose }) => {
 	const router = useRouter();
+	const pathname = usePathname();
 	const { logout } = useAuth();
 
 	const handleLogout = (e: React.MouseEvent) => {
@@ -42,25 +43,33 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 				<MenuItem
 					icon={<LayoutDashboard size={20} />}
 					label="Dashboard"
+					active={pathname === "/admin/dashboard"}
 					onClick={() => router.push("/admin/dashboard")}
 				/>
 				<MenuItem
 					icon={<Package size={20} />}
 					label="Products"
+					active={pathname === "/admin/product"}
 					onClick={() => router.push("/admin/product")}
 				/>
 				<MenuItem
 					icon={<Users size={20} />}
 					label="Users"
+					active={pathname === "/admin/users"}
 					onClick={() => router.push("/admin/users")}
 				/>
 				<MenuItem
 					icon={<Settings size={20} />}
 					label="Settings"
+					active={pathname === "/admin/settings"}
 					onClick={() => router.push("/admin/settings")}
 				/>
 				<div onClick={handleLogout}>
-					<MenuItem icon={<LogOut size={20} />} label="Logout" />
+					<MenuItem
+						icon={<LogOut size={20} />}
+						label="Logout"
+						active={false}
+					/>
 				</div>
 			</nav>
 		</aside>
@@ -71,12 +80,14 @@ type MenuItemProps = {
 	icon: React.ReactNode;
 	label: string;
 	onClick?: () => void;
+	active?: boolean;
 };
 
-const MenuItem: FC<MenuItemProps> = ({ icon, label, onClick }) => (
+const MenuItem: FC<MenuItemProps> = ({ icon, label, onClick, active }) => (
 	<Button
 		onClick={onClick}
-		className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors w-full cursor-pointer"
+		className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors w-full cursor-pointer
+		${active ? "bg-zinc-800" : "hover:bg-zinc-800"}`}
 	>
 		{icon}
 		<span>{label}</span>
