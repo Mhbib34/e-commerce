@@ -42,6 +42,7 @@ export const create = async (body, file) => {
     select: {
       id: true,
       name: true,
+      brand: true,
       description: true,
       image: true,
       price: true,
@@ -59,6 +60,7 @@ export const get = async (id) => {
     select: {
       name: true,
       description: true,
+      brand: true,
       image: true,
       price: true,
       stock: true,
@@ -172,6 +174,7 @@ export const getAllProductsService = async ({
     select: {
       id: true,
       name: true,
+      brand: true,
       description: true,
       image: true,
       price: true,
