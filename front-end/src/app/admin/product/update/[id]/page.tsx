@@ -21,6 +21,7 @@ const UpdateProductPage = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
 	const [stock, setStock] = useState("");
+	const [brand, setBrand] = useState("");
 	const [categoryName, setCategoryName] = useState("");
 	const [description, setDescription] = useState("");
 	const [image, setImage] = useState<File | null>(null);
@@ -33,6 +34,7 @@ const UpdateProductPage = () => {
 				setName(fetchedProduct.name);
 				setPrice(fetchedProduct.price.toString());
 				setStock(fetchedProduct.stock.toString());
+				setBrand(fetchedProduct.brand);
 				setCategoryName(fetchedProduct.category.name);
 				setDescription(fetchedProduct.description);
 			} catch (error) {
@@ -55,6 +57,7 @@ const UpdateProductPage = () => {
 		formData.append("name", name);
 		formData.append("price", price);
 		formData.append("stock", stock);
+		formData.append("brand", brand);
 		formData.append("categoryName", categoryName);
 		formData.append("description", description);
 		if (image) formData.append("image", image);
@@ -117,6 +120,13 @@ const UpdateProductPage = () => {
 						placeholder="Product Category"
 					/>
 				</div>
+				<Input
+					type="text"
+					text="Product Brand"
+					value={brand}
+					onChange={(e) => setBrand(e.target.value)}
+					placeholder="Product Brand"
+				/>
 
 				<div className="mt-4 w-full">
 					<label htmlFor="description">Product Description</label>

@@ -12,6 +12,7 @@ const AddProductPage = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
 	const [stock, setStock] = useState("");
+	const [brand, setBrand] = useState("");
 	const [description, setDescription] = useState("");
 	const [categoryName, setCategoryName] = useState("");
 	const [image, setImage] = useState<File | null>(null);
@@ -23,6 +24,7 @@ const AddProductPage = () => {
 			!name ||
 			!price ||
 			!stock ||
+			!brand ||
 			!description ||
 			!categoryName ||
 			!image
@@ -36,6 +38,7 @@ const AddProductPage = () => {
 			formData.append("name", name);
 			formData.append("price", price);
 			formData.append("stock", stock);
+			formData.append("brand", brand);
 			formData.append("description", description);
 			formData.append("categoryName", categoryName);
 			formData.append("image", image);
@@ -51,6 +54,7 @@ const AddProductPage = () => {
 			setName("");
 			setPrice("");
 			setStock("");
+			setBrand("");
 			setDescription("");
 			setCategoryName("");
 			setImage(null);
@@ -104,6 +108,13 @@ const AddProductPage = () => {
 						placeholder="Product Category"
 					/>
 				</div>
+				<Input
+					type="text"
+					text="Product Brand"
+					value={brand}
+					onChange={(e) => setBrand(e.target.value)}
+					placeholder="Product Brand"
+				/>
 
 				<div className="mt-4 w-full">
 					<label htmlFor="description">Product Description</label>

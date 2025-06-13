@@ -23,11 +23,12 @@ const AdminProductPage: FC = () => {
 	const router = useRouter();
 
 	const handleSearch = () => {
-		const keyword = search.toLowerCase();
+		const keyword = search.toLowerCase().trim();
 		const result = products.filter(
 			(product) =>
 				product.name.toLowerCase().includes(keyword) ||
-				product.category?.name?.toLowerCase().includes(keyword)
+				product.category?.name?.toLowerCase().includes(keyword) ||
+				product.brand.toLowerCase().includes(keyword)
 		);
 		setSearchResult(result);
 	};
@@ -116,6 +117,9 @@ const AdminProductPage: FC = () => {
 										Category
 									</th>
 									<th className="text-left px-4 py-3">
+										Brand
+									</th>
+									<th className="text-left px-4 py-3">
 										Actions
 									</th>
 								</tr>
@@ -142,6 +146,9 @@ const AdminProductPage: FC = () => {
 											</td>
 											<td className="px-4 py-3">
 												{product.category.name}
+											</td>
+											<td className="px-4 py-3">
+												{product.brand}
 											</td>
 											<td className="px-4 py-3 flex gap-2">
 												<Button

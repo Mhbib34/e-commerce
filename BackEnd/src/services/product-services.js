@@ -2,7 +2,6 @@ import { prismaClient } from "../config/database.js";
 import { ResponseError } from "../error/response-error.js";
 import {
   createProductValidation,
-  getProductValidation,
   updateProductValidation,
 } from "../validation/product-validation.js";
 import validate from "../validation/validation.js";
@@ -34,6 +33,7 @@ export const create = async (body, file) => {
     data: {
       name: product.name,
       description: product.description,
+      brand: product.brand,
       image: imageUrl,
       price: product.price,
       stock: product.stock,
@@ -110,11 +110,13 @@ export const update = async (id, request) => {
       image: updatedProduct.image,
       price: updatedProduct.price,
       stock: updatedProduct.stock,
+      brand: updatedProduct.brand,
       categoryId: categoryId,
     },
     select: {
       name: true,
       description: true,
+      brand: true,
       image: true,
       price: true,
       stock: true,
