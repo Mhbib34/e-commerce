@@ -6,6 +6,7 @@ import ProductAdminDisplay from "@/components/template/Product/ProductAdminDispl
 import SearchFilterProduct from "@/components/template/Product/SearchFilterProduct";
 import StatsCard from "@/components/template/Product/StatsCard";
 import { useProducts } from "@/hooks/useProducts";
+import axiosInstance from "@/lib/axiosInstance";
 import { Product } from "@/stores/productStores";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -14,28 +15,61 @@ import { FC, useState } from "react";
 const AdminProductPage: FC = () => {
 	const [search, setSearch] = useState("");
 	const [searchResult, setSearchResult] = useState<Product[] | null>(null);
+	const [searching, setSearching] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState("all");
-	const { products, deleteProduct, loading } = useProducts();
+	const [page, setPage] = useState(1);
+	const itemsPerPage = 5;
+
+	const { products, deleteProduct, loading, total } = useProducts(
+		page,
+		itemsPerPage
+	);
 	const router = useRouter();
 
-	const handleSearch = () => {
+	const handleSearch = async () => {
 		const keyword = search.toLowerCase().trim();
-		const result = products.filter((product) => {
-			const matchesKeyword =
-				product.name.toLowerCase().includes(keyword) ||
-				product.category?.name?.toLowerCase().includes(keyword) ||
-				product.brand.toLowerCase().includes(keyword);
 
-			const matchesCategory =
-				selectedCategory === "all" ||
-				product.category?.name === selectedCategory;
+		// Kosongin search = kembali ke default
+		if (!keyword && selectedCategory === "all") {
+			setSearchResult(null);
+			setSearching(false);
+			return;
+		}
 
-			return matchesKeyword && matchesCategory;
-		});
-		setSearchResult(result);
+		setSearching(true);
+
+		try {
+			const res = await axiosInstance.get("/product/list");
+			console.log(res);
+
+			const allProducts: Product[] = res.data.product;
+
+			const result = allProducts.filter((product) => {
+				const matchesKeyword =
+					product.name.toLowerCase().includes(keyword) ||
+					product.category?.name?.toLowerCase().includes(keyword) ||
+					product.brand.toLowerCase().includes(keyword);
+
+				const matchesCategory =
+					selectedCategory === "all" ||
+					product.category?.name === selectedCategory;
+
+				return matchesKeyword && matchesCategory;
+			});
+
+			setSearchResult(result);
+			setPage(1); // kembali ke halaman 1 saat search
+		} catch (err) {
+			console.error("Search failed:", err);
+		}
 	};
 
+	const isSearching = searching && searchResult !== null;
 	const displayedProducts = searchResult ?? products;
+	const totalPages = isSearching
+		? Math.ceil(displayedProducts.length / itemsPerPage)
+		: Math.ceil(total);
+	const paginatedProducts = displayedProducts;
 
 	if (loading) {
 		return <LoadingAdmin />;
@@ -67,6 +101,7 @@ const AdminProductPage: FC = () => {
 
 				{/* Stats Cards */}
 				<StatsCard products={products} />
+
 				{/* Filters and Search */}
 				<SearchFilterProduct
 					products={products}
@@ -76,10 +111,16 @@ const AdminProductPage: FC = () => {
 					selectedCategory={selectedCategory}
 					setSelectedCategory={setSelectedCategory}
 				/>
+
 				{/* Products Table */}
 				<ProductAdminDisplay
-					displayedProducts={displayedProducts}
+					displayedProducts={paginatedProducts}
 					deleteProduct={deleteProduct}
+					currentPage={page}
+					totalPages={totalPages}
+					onPageChange={setPage}
+					itemsPerPage={itemsPerPage}
+					totalItems={displayedProducts.length}
 				/>
 			</div>
 		</div>

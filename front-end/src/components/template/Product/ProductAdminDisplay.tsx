@@ -9,11 +9,20 @@ import ProductDisplayPagination from "./ProductDisplayPagination";
 type ProductAdminDisplayProps = {
 	displayedProducts: Product[];
 	deleteProduct: (id: string) => void;
+	currentPage: number;
+	totalPages: number;
+	onPageChange: (page: number) => void;
+	itemsPerPage: number; // 🆕
+	totalItems: number; // 🆕
 };
-
 const ProductAdminDisplay = ({
 	displayedProducts,
 	deleteProduct,
+	currentPage,
+	totalPages,
+	onPageChange,
+	itemsPerPage, // 🆕
+	totalItems, // 🆕
 }: ProductAdminDisplayProps) => {
 	const router = useRouter();
 	const formatRupiah = (value: number) =>
@@ -172,9 +181,15 @@ const ProductAdminDisplay = ({
 					</table>
 				</div>
 			</div>
-
 			{/* Pagination */}
-			<ProductDisplayPagination displayedProducts={displayedProducts} />
+			<ProductDisplayPagination
+				displayedProducts={displayedProducts}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={onPageChange}
+				itemsPerPage={itemsPerPage} // 🆕
+				totalItems={totalItems}
+			/>
 		</>
 	);
 };

@@ -23,3 +23,4 @@ productRouter.patch(
   productController.update
 );
 productRouter.delete("/:id", userAuth, isAdmin, productController.deleted);
+productRouter.get("/", userAuth, productController.getPage);

@@ -1,20 +1,39 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
-import useProductStore from "@/stores/productStores";
+import { Product } from "@/stores/productStores";
 
-export const useProducts = () => {
-	const { products, setProducts, removeProduct, updateProductStore } =
-		useProductStore();
+type UseProductsPagination = {
+	products: Product[];
+	total: number;
+	loading: boolean;
+	error: string | null;
+	deleteProduct: (id: string) => Promise<void>;
+	updateProduct: (id: string, data: FormData) => Promise<any>;
+	getProductById: (id: string) => Promise<Product>;
+};
+
+export const useProducts = (
+	page: number,
+	limit: number
+): UseProductsPagination => {
+	const [products, setProducts] = useState<Product[]>([]);
+	const [total, setTotal] = useState<number>(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
-			if (useProductStore.getState().products.length > 0) return;
 			setLoading(true);
 			try {
-				const res = await axiosInstance.get("/product/list");
-				setProducts(res.data.product);
+				const res = await axiosInstance.get(
+					`/product/?page=${page}&limit=${limit}`
+				);
+
+				setProducts(res.data.product.data);
+				console.log(res.data);
+
+				setTotal(res.data.product.totalPages);
+				console.log(res.data.product.totalPages);
 			} catch (err) {
 				console.error(err);
 				setError("Failed to fetch products");
@@ -24,13 +43,12 @@ export const useProducts = () => {
 		};
 
 		fetchProducts();
-		//eslint-disable-next-line
-	}, []);
+	}, [page, limit]);
 
 	const deleteProduct = async (id: string) => {
 		try {
 			await axiosInstance.delete(`/product/${id}`);
-			removeProduct(id);
+			setProducts((prev) => prev.filter((product) => product.id !== id));
 		} catch (err) {
 			console.error(err);
 			setError("Failed to delete product");
@@ -39,21 +57,20 @@ export const useProducts = () => {
 
 	const updateProduct = async (id: string, data: FormData) => {
 		try {
-			const isFormData = data instanceof FormData;
-
 			const res = await axiosInstance.patch(`/product/${id}`, data, {
 				headers: {
-					"Content-Type": isFormData
-						? "multipart/form-data"
-						: "application/json",
+					"Content-Type":
+						data instanceof FormData
+							? "multipart/form-data"
+							: "application/json",
 				},
 			});
-			updateProductStore(id, res.data.product);
-			const refreshedProduct = await axiosInstance.get(`/product/list`);
-			setProducts(refreshedProduct.data.product);
+			setProducts((prev) =>
+				prev.map((p) => (p.id === id ? res.data.product : p))
+			);
 			return res.data;
-		} catch (error) {
-			console.log(error);
+		} catch (err) {
+			console.error(err);
 			throw new Error("Failed to update product");
 		}
 	};
@@ -62,13 +79,15 @@ export const useProducts = () => {
 		try {
 			const res = await axiosInstance.get(`/product/${id}`);
 			return res.data.product;
-		} catch (error) {
-			console.log(error);
+		} catch (err) {
+			console.error(err);
 			throw new Error("Failed to fetch product");
 		}
 	};
+
 	return {
 		products,
+		total,
 		loading,
 		error,
 		deleteProduct,

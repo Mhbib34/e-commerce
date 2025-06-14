@@ -185,3 +185,24 @@ export const getAllProductsService = async ({
     },
   });
 };
+
+export const getPaginatedProducts = async (page, limit) => {
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    prismaClient.product.findMany({
+      skip,
+      take: limit,
+      include: { category: true },
+    }),
+    prismaClient.product.count(),
+  ]);
+
+  return {
+    data: products,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};

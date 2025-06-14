@@ -3,6 +3,7 @@ import {
   deleted,
   get,
   getAllProductsService,
+  getPaginatedProducts,
   update,
 } from "../services/product-services.js";
 
@@ -79,10 +80,27 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
+const getAllProductsPaginations = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await getPaginatedProducts(page, limit);
+    res.status(200).json({
+      status: "success",
+      message: "Products fetched successfully",
+      product: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   create: createProductHandler,
   get: getProductHandler,
   update: updateProductHandler,
   deleted: deletedProductHandler,
   getAll: getAllProducts,
+  getPage: getAllProductsPaginations,
 };
