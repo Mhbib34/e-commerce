@@ -5,7 +5,7 @@ export const createProductValidation = Joi.object({
   brand: Joi.string().required().max(100),
   description: Joi.string().required().max(500),
   price: Joi.number().required().positive(),
-  stock: Joi.number().required().positive(),
+  stock: Joi.number().required(),
   categoryName: Joi.string().required().max(100),
 });
 
@@ -19,6 +19,6 @@ export const updateProductValidation = Joi.object({
   description: Joi.string().optional().max(500),
   image: Joi.string().optional().max(500),
   price: Joi.number().optional().positive(),
-  stock: Joi.number().optional().positive(),
+  stock: Joi.number().optional(),
   categoryName: Joi.string().optional().max(100),
 });

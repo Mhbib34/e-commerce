@@ -50,6 +50,7 @@ const AdminProductPage: FC = () => {
 		try {
 			const res = await axiosInstance.get("/product/list");
 			const allProducts: Product[] = res.data.product;
+			console.log(allProducts);
 
 			const result = allProducts.filter((product) => {
 				const matchesKeyword =
@@ -111,7 +112,7 @@ const AdminProductPage: FC = () => {
 
 				{/* Filters and Search */}
 				<SearchFilterProduct
-					products={products}
+					products={allProducts}
 					search={search}
 					setSearch={setSearch}
 					handleSearch={handleSearch}

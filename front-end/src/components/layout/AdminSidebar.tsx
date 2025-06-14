@@ -122,7 +122,7 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 					{onClose && (
 						<button
 							onClick={onClose}
-							className="p-2 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
+							className="py-2 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
 						>
 							<X size={18} className="text-gray-600" />
 						</button>
@@ -154,7 +154,7 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 			)}
 
 			{/* Navigation Menu */}
-			<nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+			<nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-none">
 				{menuItems.map((item, index) => (
 					<MenuItem
 						key={index}
@@ -253,7 +253,7 @@ const MenuItem: FC<MenuItemProps> = ({
 			)}
 
 			{collapsed && (
-				<div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50">
+				<div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 ">
 					{label}
 					<div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
 				</div>
