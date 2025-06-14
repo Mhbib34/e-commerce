@@ -8,8 +8,10 @@ type UseProductsPagination = {
 	loading: boolean;
 	error: string | null;
 	deleteProduct: (id: string) => Promise<void>;
-	updateProduct: (id: string, data: FormData) => Promise<any>;
+	updateProduct: (id: string, data: FormData) => Promise<Product>;
 	getProductById: (id: string) => Promise<Product>;
+	getAllProducts: () => Promise<Product[]>;
+	allProducts: Product[];
 };
 
 export const useProducts = (
@@ -20,6 +22,7 @@ export const useProducts = (
 	const [total, setTotal] = useState<number>(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [allProducts, setAllProducts] = useState<Product[]>([]);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -30,10 +33,7 @@ export const useProducts = (
 				);
 
 				setProducts(res.data.product.data);
-				console.log(res.data);
-
 				setTotal(res.data.product.totalPages);
-				console.log(res.data.product.totalPages);
 			} catch (err) {
 				console.error(err);
 				setError("Failed to fetch products");
@@ -85,6 +85,16 @@ export const useProducts = (
 		}
 	};
 
+	const getAllProducts = async () => {
+		try {
+			const res = await axiosInstance.get(`/product/list`);
+			setAllProducts(res.data.product);
+			return res.data.product;
+		} catch (err) {
+			console.error(err);
+			throw new Error("Failed to fetch product");
+		}
+	};
 	return {
 		products,
 		total,
@@ -93,5 +103,7 @@ export const useProducts = (
 		deleteProduct,
 		updateProduct,
 		getProductById,
+		getAllProducts,
+		allProducts,
 	};
 };

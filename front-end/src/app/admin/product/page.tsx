@@ -10,7 +10,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Product } from "@/stores/productStores";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const AdminProductPage: FC = () => {
 	const [search, setSearch] = useState("");
@@ -20,11 +20,20 @@ const AdminProductPage: FC = () => {
 	const [page, setPage] = useState(1);
 	const itemsPerPage = 5;
 
-	const { products, deleteProduct, loading, total } = useProducts(
-		page,
-		itemsPerPage
-	);
+	const {
+		products,
+		deleteProduct,
+		loading,
+		total,
+		allProducts,
+		getAllProducts,
+	} = useProducts(page, itemsPerPage);
 	const router = useRouter();
+
+	useEffect(() => {
+		getAllProducts();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const handleSearch = async () => {
 		const keyword = search.toLowerCase().trim();
@@ -40,8 +49,6 @@ const AdminProductPage: FC = () => {
 
 		try {
 			const res = await axiosInstance.get("/product/list");
-			console.log(res);
-
 			const allProducts: Product[] = res.data.product;
 
 			const result = allProducts.filter((product) => {
@@ -58,7 +65,7 @@ const AdminProductPage: FC = () => {
 			});
 
 			setSearchResult(result);
-			setPage(1); // kembali ke halaman 1 saat search
+			setPage(1);
 		} catch (err) {
 			console.error("Search failed:", err);
 		}
@@ -100,7 +107,7 @@ const AdminProductPage: FC = () => {
 				</div>
 
 				{/* Stats Cards */}
-				<StatsCard products={products} />
+				<StatsCard products={allProducts} />
 
 				{/* Filters and Search */}
 				<SearchFilterProduct
