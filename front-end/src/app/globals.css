@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
 
 @theme {
 	--animate-spin-slow: spin 1s linear infinite;

@@ -1,7 +1,7 @@
 "use client";
 
 import LoadingSpinner from "@/components/fragment/Loading";
-import ProductForm from "@/components/template/ProductForm";
+import ProductForm from "@/components/template/Product/ProductForm";
 import { useProductForm } from "@/hooks/useProductForm";
 import { useProducts } from "@/hooks/useProducts";
 import { showError, showSuccess, showWarning } from "@/lib/tasterHelper";

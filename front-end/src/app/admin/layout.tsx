@@ -1,44 +1,103 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Button from "@/components/common/Button";
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+interface AdminLayoutProps {
+	children: ReactNode;
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
 	const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-	return (
-		<div className="flex h-screen overflow-hidden">
-			{/* Sidebar */}
-			<div
-				className={`fixed top-0 left-0 h-full w-72 bg-black z-50 transform transition-transform duration-300 ease-in-out
-				${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-				md:translate-x-0 md:relative`}
-			>
-				<AdminSidebar onClose={() => setSidebarOpen(false)} />
-			</div>
+	// Handle keyboard shortcuts
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape" && isSidebarOpen) {
+				setSidebarOpen(false);
+			}
+		};
 
-			{/* Overlay */}
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [isSidebarOpen]);
+
+	// Handle body scroll when sidebar is open on mobile
+	useEffect(() => {
+		if (isSidebarOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "unset";
+		}
+
+		return () => {
+			document.body.style.overflow = "unset";
+		};
+	}, [isSidebarOpen]);
+
+	const closeSidebar = () => setSidebarOpen(false);
+	const openSidebar = () => setSidebarOpen(true);
+
+	return (
+		<div className="flex h-screen overflow-hidden bg-gray-50">
+			{/* Sidebar - Menggunakan flex untuk otomatis menyesuaikan */}
+			<aside
+				className={`
+          bg-white shadow-2xl border-r border-gray-200
+          transform transition-all duration-300 ease-in-out
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+          fixed md:relative top-0 left-0 h-full z-50 md:z-auto
+        `}
+				aria-label="Admin navigation"
+			>
+				<AdminSidebar onClose={closeSidebar} />
+			</aside>
+
+			{/* Overlay for mobile */}
 			{isSidebarOpen && (
 				<div
-					className="fixed inset-0 bg-black/50 z-40 md:hidden"
-					onClick={() => setSidebarOpen(false)}
+					className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+					onClick={closeSidebar}
+					aria-label="Close sidebar"
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							closeSidebar();
+						}
+					}}
 				/>
 			)}
 
-			{/* Main Content */}
-			<main className="flex-1 bg-white overflow-y-auto md:h-auto">
-				{/* Topbar for mobile */}
-				<div className="flex items-center justify-between mb-6 md:hidden bg-black w-full py-4 px-3">
-					<Button onClick={() => setSidebarOpen(true)}>
-						<Menu size={28} className="text-white" />
-					</Button>
-					<h2 className="text-lg font-semibold text-white">
-						Admin Panel
-					</h2>
+			{/* Main Content - flex-1 akan otomatis mengambil sisa ruang */}
+			<main className="flex-1 flex flex-col overflow-hidden">
+				{/* Mobile Header */}
+				<header className="md:hidden bg-white border-b border-gray-200 shadow-sm">
+					<div className="flex items-center justify-between px-4 py-3">
+						<Button
+							onClick={openSidebar}
+							className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+							aria-label="Open navigation menu"
+						>
+							<Menu size={24} className="text-gray-700" />
+						</Button>
+
+						<h1 className="text-lg font-semibold text-gray-900">
+							Admin Panel
+						</h1>
+
+						{/* Placeholder for potential user menu */}
+						<div className="w-8" />
+					</div>
+				</header>
+
+				{/* Content Area */}
+				<div className="flex-1 overflow-y-auto scrollbar-none bg-gray-50">
+					<div className="p-6">{children}</div>
 				</div>
-				{children}
 			</main>
 		</div>
 	);
