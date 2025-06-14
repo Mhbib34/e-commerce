@@ -8,6 +8,7 @@ import {
   verifyEmail,
   verifyOtp,
   update,
+  getAll,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
@@ -108,6 +109,18 @@ const getUserHandler = async (req, res, next) => {
   }
 };
 
+const getAllUserHandler = async (req, res, next) => {
+  try {
+    const result = await getAll();
+    res.status(200).json({
+      success: true,
+      message: "Get All User successfully",
+      user: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const verifyOtpHandler = async (req, res, next) => {
   try {
     const id = req.user.id;
@@ -219,4 +232,5 @@ export default {
   sendresetPasswordOtp: sendResetPasswordOtpHandler,
   resetPassword: resetPasswordHandler,
   update: updateUserHandler,
+  getAll: getAllUserHandler,
 };

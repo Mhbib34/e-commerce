@@ -15,8 +15,8 @@ type UseProductsPagination = {
 };
 
 export const useProducts = (
-	page: number,
-	limit: number
+	page?: number,
+	limit?: number
 ): UseProductsPagination => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);

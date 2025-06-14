@@ -2,6 +2,7 @@ import express from "express";
 import userController from "../controller/user-controller.js";
 import userAuth from "../middleware/user-auth-middleware.js";
 export const userRouter = new express.Router();
+import { isAdmin } from "../middleware/is-admin.js";
 
 userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
@@ -15,3 +16,4 @@ userRouter.post(
   userController.sendresetPasswordOtp
 );
 userRouter.post("/reset-password", userController.resetPassword);
+userRouter.get("/list", userAuth, isAdmin, userController.getAll);

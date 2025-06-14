@@ -89,6 +89,20 @@ export const get = async (id) => {
   return user;
 };
 
+export const getAll = async () => {
+  const users = await prismaClient.user.findMany({
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      name: true,
+      isAccountVerified: true,
+      role: true,
+    },
+  });
+  return users;
+};
+
 export const verifyOtp = async (id) => {
   id = validate(getUserValidation, id);
   const user = await prismaClient.user.findUnique({

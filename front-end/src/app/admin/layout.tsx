@@ -4,6 +4,8 @@ import { ReactNode, useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Button from "@/components/common/Button";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface AdminLayoutProps {
 	children: ReactNode;
@@ -11,6 +13,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
 	const [isSidebarOpen, setSidebarOpen] = useState(false);
+	const router = useRouter();
 
 	// Handle keyboard shortcuts
 	useEffect(() => {
@@ -39,6 +42,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
 	const closeSidebar = () => setSidebarOpen(false);
 	const openSidebar = () => setSidebarOpen(true);
+
+	const { isAuthenticated } = useAuth();
+	if (!isAuthenticated) {
+		router.push("/login");
+	}
 
 	return (
 		<div className="flex h-screen overflow-hidden bg-gray-50">
