@@ -163,3 +163,40 @@ export const getOrderByUserParams = async (userId) => {
 
   return orderItems;
 };
+
+export const getPaginatedOrders = async (page, limit) => {
+  const skip = (page - 1) * limit;
+
+  const [orders, total] = await Promise.all([
+    prismaClient.order.findMany({
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+    prismaClient.order.count(),
+  ]);
+  return {
+    data: orders,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};

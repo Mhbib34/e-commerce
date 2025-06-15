@@ -42,6 +42,7 @@ export const useAuth = () => {
 
 			fetchUsers();
 		}
+		//eslint-disable-next-line
 	}, []);
 
 	return {

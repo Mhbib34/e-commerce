@@ -3,6 +3,7 @@ import {
   getAllOrder,
   getOrderById,
   getOrderByUser,
+  getPaginatedOrders,
 } from "../services/order-services.js";
 
 const createOrderHandler = async (req, res, next) => {
@@ -73,10 +74,27 @@ const getOrderByUserParamsHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+const getAllOrdersPaginations = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await getPaginatedOrders(page, limit);
+    res.status(200).json({
+      status: "success",
+      message: "Orders fetched successfully",
+      order: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   create: createOrderHandler,
   getOrderByUserId: getOrderByUserHandler,
   getById: getOrderByIdHandler,
   getAll: getAllOrderHandler,
   getByParams: getOrderByUserParamsHandler,
+  getPage: getAllOrdersPaginations,
 };
