@@ -200,3 +200,25 @@ export const getPaginatedOrders = async (page, limit) => {
     totalPages: Math.ceil(total / limit),
   };
 };
+
+export const updateOrderStatus = async (orderId, status) => {
+  const findOrder = await prismaClient.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!findOrder) throw new ResponseError(404, "Order is not found!");
+
+  if (!orderId) throw new ResponseError(400, "Order ID is required");
+
+  const order = await prismaClient.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status,
+    },
+  });
+  return order;
+};

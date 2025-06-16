@@ -4,6 +4,7 @@ import {
   getOrderById,
   getOrderByUser,
   getPaginatedOrders,
+  updateOrderStatus,
 } from "../services/order-services.js";
 
 const createOrderHandler = async (req, res, next) => {
@@ -90,6 +91,21 @@ const getAllOrdersPaginations = async (req, res, next) => {
     next(error);
   }
 };
+
+const updateOrderStatusHandler = async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    const status = req.body.status;
+    const result = await updateOrderStatus(orderId, status);
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      order: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   create: createOrderHandler,
   getOrderByUserId: getOrderByUserHandler,
@@ -97,4 +113,5 @@ export default {
   getAll: getAllOrderHandler,
   getByParams: getOrderByUserParamsHandler,
   getPage: getAllOrdersPaginations,
+  update: updateOrderStatusHandler,
 };
