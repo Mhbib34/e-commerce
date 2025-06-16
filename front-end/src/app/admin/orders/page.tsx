@@ -8,6 +8,7 @@ import { formatCurrency, formatDate } from "@/utils/format";
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaFilter, FaEye, FaSync } from "react-icons/fa";
 import { toast } from "sonner";
+import OrderModal from "@/components/template/order/OrderModal";
 
 const OrdersAdminPage = () => {
 	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder({
@@ -22,12 +23,27 @@ const OrdersAdminPage = () => {
 	const [refreshing, setRefreshing] = useState(false);
 	const itemsPerPage = 10;
 
-	// Fetch orders when page changes
 	useEffect(() => {
 		if (fetchOrders && !searchResult) {
 			fetchOrders(page, itemsPerPage);
 		}
 	}, [page, fetchOrders, searchResult]);
+
+	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleViewOrder = (orderId: string) => {
+		const order = displayedProducts.find((order) => order.id === orderId);
+		if (order) {
+			setSelectedOrder(order);
+			setIsModalOpen(true);
+		}
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedOrder(null);
+	};
 
 	const handleSearch = async () => {
 		const keyword = search.toLowerCase().trim();
@@ -139,13 +155,6 @@ const OrdersAdminPage = () => {
 		} finally {
 			setRefreshing(false);
 		}
-	};
-
-	const handleViewOrder = (orderId: string) => {
-		// Navigate to order detail page or open modal
-		console.log("View order:", orderId);
-		// You can implement navigation here
-		// router.push(`/admin/orders/${orderId}`);
 	};
 
 	const isSearching = searching || searchResult !== null;
@@ -365,6 +374,13 @@ const OrdersAdminPage = () => {
 					displayedProducts={paginatedProducts}
 				/>
 			)}
+
+			{/* Modal */}
+			<OrderModal
+				isModalOpen={isModalOpen}
+				selectedOrder={selectedOrder}
+				handleCloseModal={handleCloseModal}
+			/>
 		</div>
 	);
 };

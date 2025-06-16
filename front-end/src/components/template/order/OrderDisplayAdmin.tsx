@@ -1,4 +1,5 @@
 import { Order } from "@/type/orderType";
+import { formatCurrency, formatDate } from "@/utils/format";
 import React from "react";
 
 type OrderDisplayAdminProps = {
@@ -21,42 +22,17 @@ const OrderDisplayAdmin: React.FC<OrderDisplayAdminProps> = ({
 	const getStatusColor = (status: string) => {
 		switch (status.toLowerCase()) {
 			case "create":
-			case "completed":
+			case "delivered":
 				return "bg-green-100 text-green-800";
 			case "pending":
 				return "bg-yellow-100 text-yellow-800";
-			case "processing":
+			case "shipped":
 				return "bg-blue-100 text-blue-800";
 			case "cancelled":
 				return "bg-red-100 text-red-800";
-			case "shipped":
-				return "bg-purple-100 text-purple-800";
 			default:
 				return "bg-gray-100 text-gray-800";
 		}
-	};
-
-	const formatDate = (dateString: string) => {
-		try {
-			return new Date(dateString).toLocaleString("id-ID", {
-				year: "numeric",
-				month: "short",
-				day: "numeric",
-				hour: "2-digit",
-				minute: "2-digit",
-			});
-		} catch (error) {
-			console.error("Error parsing date:", error);
-			return "Invalid Date";
-		}
-	};
-
-	const formatCurrency = (amount: number) => {
-		return new Intl.NumberFormat("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-		}).format(amount);
 	};
 
 	// Loading skeleton component
