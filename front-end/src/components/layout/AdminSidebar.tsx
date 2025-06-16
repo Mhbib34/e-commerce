@@ -11,7 +11,6 @@ import {
 	ChevronLeft,
 	ChevronRight,
 	ShoppingBag,
-	BarChart3,
 	Bell,
 	User,
 } from "lucide-react";
@@ -62,12 +61,6 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 			label: "Customers",
 			path: "/admin/users",
 			active: pathname === "/admin/users",
-		},
-		{
-			icon: <BarChart3 size={20} />,
-			label: "Analytics",
-			path: "/admin/analytics",
-			active: pathname === "/admin/analytics",
 		},
 		{
 			icon: <Settings size={20} />,

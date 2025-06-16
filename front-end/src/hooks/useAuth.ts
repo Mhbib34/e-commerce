@@ -29,7 +29,6 @@ export const useAuth = () => {
 						(u: User) => u.role !== "ADMIN"
 					);
 					setUsers(nonAdmins);
-					console.log("Non-admin users:", nonAdmins);
 				} catch (err) {
 					const error = err as AxiosError<{ errors: string }>;
 					if (error.response?.status === 401) {

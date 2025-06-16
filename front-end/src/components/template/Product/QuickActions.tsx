@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import { Eye, Plus, TrendingUp, Users } from "lucide-react";
+import { Eye, Plus, Users, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -36,9 +36,9 @@ const QuickActions = () => {
 						</span>
 					</Button>
 					<Button className="flex flex-col items-center p-4 border border-gray-200 cursor-pointer rounded-lg hover:bg-gray-50 transition-colors">
-						<TrendingUp className="h-8 w-8 text-orange-600 mb-2" />
+						<Settings className="h-8 w-8 text-orange-600 mb-2" />
 						<span className="text-sm font-medium text-gray-900">
-							Analytics
+							Settings
 						</span>
 					</Button>
 				</div>

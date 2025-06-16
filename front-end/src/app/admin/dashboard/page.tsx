@@ -16,7 +16,6 @@ const AdminDashboardPage: FC = () => {
 		page,
 		limit: itemsPerPage,
 	});
-	console.log(orderPage);
 
 	const handlePageChange = useCallback((newPage: number) => {
 		setPage(newPage);
