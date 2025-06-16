@@ -1,4 +1,4 @@
-import { Order } from "@/stores/OrderStores";
+import { Order } from "@/type/orderType";
 import React from "react";
 
 type OrderDisplayAdminProps = {

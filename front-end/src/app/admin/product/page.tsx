@@ -7,7 +7,7 @@ import SearchFilterProduct from "@/components/template/Product/SearchFilterProdu
 import StatsCard from "@/components/template/Product/StatsCard";
 import { useProducts } from "@/hooks/useProducts";
 import axiosInstance from "@/lib/axiosInstance";
-import { Product } from "@/stores/productStores";
+import { Product } from "@/type/productType";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
@@ -128,7 +128,7 @@ const AdminProductPage: FC = () => {
 					totalPages={totalPages}
 					onPageChange={setPage}
 					itemsPerPage={itemsPerPage}
-					totalItems={displayedProducts.length}
+					totalItems={allProducts.length}
 				/>
 			</div>
 		</div>

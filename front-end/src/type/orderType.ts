@@ -21,3 +21,20 @@ export type Order = {
 	orderItems: OrderItem[];
 	user: OrderProduct;
 };
+
+export type OrderProps = {
+	page?: number;
+	limit?: number;
+};
+
+export type OrderData = {
+	order: Order[];
+	allOrder: Order[];
+	totalRevenue: number;
+	loading: boolean;
+	total: number;
+	orderPage: Order[];
+	error: string | null;
+	refetch: () => Promise<void>;
+	fetchOrders: (page: number, limit: number) => Promise<void>;
+};

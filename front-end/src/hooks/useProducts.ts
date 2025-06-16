@@ -1,18 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
-import { Product } from "@/stores/productStores";
-
-type UseProductsPagination = {
-	products: Product[];
-	total: number;
-	loading: boolean;
-	error: string | null;
-	deleteProduct: (id: string) => Promise<void>;
-	updateProduct: (id: string, data: FormData) => Promise<Product>;
-	getProductById: (id: string) => Promise<Product>;
-	getAllProducts: () => Promise<Product[]>;
-	allProducts: Product[];
-};
+import { Product, UseProductsPagination } from "@/type/productType";
 
 export const useProducts = (
 	page?: number,

@@ -1,16 +1,8 @@
 import { AuthContext } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
+import { User } from "@/type/userType";
 import { AxiosError } from "axios";
 import { useContext, useEffect, useState } from "react";
-
-type User = {
-	id: string;
-	email: string;
-	username: string;
-	name: string;
-	isAccountVerified: boolean;
-	role: string;
-};
 
 export const useAuth = () => {
 	const context = useContext(AuthContext);

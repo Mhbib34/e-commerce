@@ -1,25 +1,5 @@
+import { Product, ProductStore } from "@/type/productType";
 import { create } from "zustand";
-
-type Category = {
-	id: string;
-	name: string;
-};
-export type Product = {
-	id: string;
-	name: string;
-	description: string;
-	brand: string;
-	price: number;
-	stock: number;
-	category: Category;
-};
-
-type ProductStore = {
-	products: Product[];
-	setProducts: (products: Product[]) => void;
-	removeProduct: (id: string) => void;
-	updateProductStore: (id: string, product: Product) => void;
-};
 
 const useProductStore = create<ProductStore>((set) => ({
 	products: [],

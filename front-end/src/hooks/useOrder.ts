@@ -1,23 +1,7 @@
 import axiosInstance from "@/lib/axiosInstance";
-import { Order } from "@/stores/OrderStores";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
-
-type OrderProps = {
-	page?: number;
-	limit?: number;
-};
-
-type OrderData = {
-	order: Order[];
-	allOrder: Order[];
-	totalRevenue: number;
-	loading: boolean;
-	total: number;
-	orderPage: Order[];
-	error: string | null;
-	refetch: () => Promise<void>;
-};
+import { Order, OrderData, OrderProps } from "@/type/orderType";
 
 export const useOrder = ({
 	page = 1,
@@ -32,6 +16,64 @@ export const useOrder = ({
 	const [error, setError] = useState<string | null>(null);
 	const { isAuthenticated } = useAuth();
 
+	// Main fetch function that can be called with different parameters
+	const fetchOrders = useCallback(
+		async (currentPage: number = page, currentLimit: number = limit) => {
+			if (!isAuthenticated) return;
+
+			setLoading(true);
+			setError(null);
+
+			try {
+				// Fetch paginated orders for the table
+				const pageOrderRes = await axiosInstance.get(
+					`/order/page?page=${currentPage}&limit=${currentLimit}`
+				);
+
+				// Fetch all orders for search functionality and total revenue
+				const allOrderRes = await axiosInstance.get("/order/list");
+
+				// Set paginated orders
+				setOrderPage(pageOrderRes.data.order.data || []);
+
+				// Set total count from pagination response
+				// Assuming the API returns totalItems or totalCount
+				const totalItems =
+					pageOrderRes.data.order.totalItems ||
+					pageOrderRes.data.order.total ||
+					pageOrderRes.data.order.count ||
+					0;
+				setTotal(totalItems);
+
+				// Set all orders for search functionality
+				setAllOrder(allOrderRes.data.order || []);
+
+				// Calculate total revenue from all orders
+				const sumTotalRevenue = (allOrderRes.data.order || []).reduce(
+					(total: number, order: Order) => total + (order.total || 0),
+					0
+				);
+				setTotalRevenue(sumTotalRevenue);
+				//eslint-disable-next-line
+			} catch (error: any) {
+				console.error("Error fetching orders:", error);
+				setError(
+					error?.response?.data?.message || "Failed to fetch orders"
+				);
+
+				// Reset states on error
+				setOrderPage([]);
+				setAllOrder([]);
+				setTotal(0);
+				setTotalRevenue(0);
+			} finally {
+				setLoading(false);
+			}
+		},
+		[isAuthenticated, page, limit]
+	);
+
+	// Legacy fetch function for backward compatibility
 	const fetchOrder = useCallback(async () => {
 		if (!isAuthenticated) return;
 
@@ -41,31 +83,55 @@ export const useOrder = ({
 		try {
 			// Use Promise.all for concurrent requests to improve performance
 			const [orderRes, allOrderRes, pageOrderRes] = await Promise.all([
-				axiosInstance.get("/order"),
+				axiosInstance
+					.get("/order")
+					.catch(() => ({ data: { order: [] } })), // Make this optional
 				axiosInstance.get("/order/list"),
 				axiosInstance.get(`/order/page?page=${page}&limit=${limit}`),
 			]);
 
-			setOrder(orderRes.data.order);
-			setAllOrder(allOrderRes.data.order);
+			// Set individual user orders (if applicable)
+			setOrder(orderRes.data.order || []);
+
+			// Set all orders
+			setAllOrder(allOrderRes.data.order || []);
 
 			// Calculate total revenue
-			const sumTotalRevenue = allOrderRes.data.order.reduce(
-				(total: number, order: Order) => total + order.total,
+			const sumTotalRevenue = (allOrderRes.data.order || []).reduce(
+				(total: number, order: Order) => total + (order.total || 0),
 				0
 			);
 			setTotalRevenue(sumTotalRevenue);
 
-			setOrderPage(pageOrderRes.data.order.data);
-			setTotal(pageOrderRes.data.order.totalPages);
-		} catch (error) {
+			// Set paginated orders
+			setOrderPage(pageOrderRes.data.order.data || []);
+
+			// Set total - this should be total items, not total pages
+			const totalItems =
+				pageOrderRes.data.order.totalItems ||
+				pageOrderRes.data.order.total ||
+				pageOrderRes.data.order.count ||
+				0;
+			setTotal(totalItems);
+			//eslint-disable-next-line
+		} catch (error: any) {
 			console.error("Error fetching orders:", error);
-			setError("Failed to fetch orders");
+			setError(
+				error?.response?.data?.message || "Failed to fetch orders"
+			);
+
+			// Reset states on error
+			setOrder([]);
+			setOrderPage([]);
+			setAllOrder([]);
+			setTotal(0);
+			setTotalRevenue(0);
 		} finally {
 			setLoading(false);
 		}
 	}, [isAuthenticated, page, limit]);
 
+	// Initial fetch on mount and when dependencies change
 	useEffect(() => {
 		fetchOrder();
 	}, [fetchOrder]);
@@ -79,5 +145,6 @@ export const useOrder = ({
 		orderPage,
 		total,
 		refetch: fetchOrder,
+		fetchOrders, // New function for manual pagination
 	};
 };

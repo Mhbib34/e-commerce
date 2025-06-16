@@ -1,10 +1,11 @@
 import Button from "@/components/common/Button";
 import { showConfirm } from "@/lib/tasterHelper";
-import { Product } from "@/stores/productStores";
 import { Eye, Package, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import ProductDisplayPagination from "./ProductDisplayPagination";
+import { formatCurrency } from "@/utils/format";
+import { Product } from "@/type/productType";
 
 type ProductAdminDisplayProps = {
 	displayedProducts: Product[];
@@ -12,8 +13,8 @@ type ProductAdminDisplayProps = {
 	currentPage: number;
 	totalPages: number;
 	onPageChange: (page: number) => void;
-	itemsPerPage: number; // 🆕
-	totalItems: number; // 🆕
+	itemsPerPage: number;
+	totalItems: number;
 };
 const ProductAdminDisplay = ({
 	displayedProducts,
@@ -25,12 +26,6 @@ const ProductAdminDisplay = ({
 	totalItems, // 🆕
 }: ProductAdminDisplayProps) => {
 	const router = useRouter();
-	const formatRupiah = (value: number) =>
-		new Intl.NumberFormat("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-		}).format(value);
 	const getStockStatus = (stock: number) => {
 		if (stock === 0)
 			return { text: "Out of Stock", color: "bg-red-100 text-red-800" };
@@ -88,7 +83,7 @@ const ProductAdminDisplay = ({
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap">
 												<div className="text-sm font-semibold text-gray-900">
-													{formatRupiah(
+													{formatCurrency(
 														product.price
 													)}
 												</div>

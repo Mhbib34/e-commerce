@@ -1,81 +1,165 @@
 "use client";
 
+import ProductDisplayPagination from "@/components/template/Product/ProductDisplayPagination";
+import { useOrder } from "@/hooks/useOrder";
+import axiosInstance from "@/lib/axiosInstance";
+import { Order } from "@/type/orderType";
+import { formatCurrency, formatDate } from "@/utils/format";
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaFilter, FaEye, FaSync } from "react-icons/fa";
-
-// Mock API function (replace with your actual API)
-const fetchOrders = async (page = 1, search = "", filter = {}) => {
-	// Simulating API call
-	return {
-		data: [
-			{
-				id: 1,
-				customer: "John Doe",
-				date: "2025-06-15",
-				total: 299.99,
-				status: "Pending",
-				items: 3,
-			},
-			{
-				id: 2,
-				customer: "Jane Smith",
-				date: "2025-06-14",
-				total: 149.5,
-				status: "Shipped",
-				items: 2,
-			},
-			// Add more mock data as needed
-		],
-		total: 50,
-		page,
-		limit: 10,
-	};
-};
+import { toast } from "sonner";
 
 const OrdersAdminPage = () => {
-	const [orders, setOrders] = useState([]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [searchQuery, setSearchQuery] = useState("");
+	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder({
+		page: 1,
+		limit: 5,
+	});
+	const [search, setSearch] = useState("");
+	const [searchResult, setSearchResult] = useState<Order[] | null>(null);
+	const [searching, setSearching] = useState(false);
+	const [page, setPage] = useState(1);
 	const [filterStatus, setFilterStatus] = useState("");
-	const [totalPages, setTotalPages] = useState(1);
-	const [isLoading, setIsLoading] = useState(false);
+	const [refreshing, setRefreshing] = useState(false);
+	const itemsPerPage = 10;
 
+	// Fetch orders when page changes
 	useEffect(() => {
-		loadOrders();
-	}, [currentPage, searchQuery, filterStatus]);
-
-	const loadOrders = async () => {
-		setIsLoading(true);
-		try {
-			const response = await fetchOrders(currentPage, searchQuery, {
-				status: filterStatus,
-			});
-			setOrders(response.data);
-			setTotalPages(Math.ceil(response.total / response.limit));
-		} catch (error) {
-			console.error("Error fetching orders:", error);
+		if (fetchOrders && !searchResult) {
+			fetchOrders(page, itemsPerPage);
 		}
-		setIsLoading(false);
+	}, [page, fetchOrders, searchResult]);
+
+	const handleSearch = async () => {
+		const keyword = search.toLowerCase().trim();
+
+		// Jika search kosong dan filter all, kembali ke default
+		if (!keyword && filterStatus === "") {
+			setSearchResult(null);
+			setSearching(false);
+			return;
+		}
+
+		setSearching(true);
+
+		try {
+			// Use allOrder from hook if available, otherwise fetch
+			let ordersToSearch = allOrder;
+
+			if (!ordersToSearch || ordersToSearch.length === 0) {
+				const res = await axiosInstance.get("/order/list");
+				ordersToSearch = res.data.order;
+			}
+
+			const result = ordersToSearch.filter((order) => {
+				const matchesKeyword =
+					!keyword ||
+					order.user.name.toLowerCase().includes(keyword) ||
+					order.id.toLowerCase().includes(keyword);
+
+				const matchesStatus =
+					!filterStatus || order.status === filterStatus;
+
+				return matchesKeyword && matchesStatus;
+			});
+
+			setSearchResult(result);
+			setPage(1);
+		} catch (err) {
+			console.error("Search failed:", err);
+			toast.error("Failed to search orders");
+		} finally {
+			setSearching(false);
+		}
 	};
 
-	const handleSearch = (e) => {
-		setSearchQuery(e.target.value);
-		setCurrentPage(1);
+	const handleSearchInputChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setSearch(e.target.value);
 	};
 
-	const handleFilter = (status) => {
+	const handleFilter = (status: string) => {
 		setFilterStatus(status);
-		setCurrentPage(1);
+		// Auto trigger search when filter changes
+		setTimeout(() => {
+			handleSearch();
+		}, 100);
 	};
 
-	const handleUpdateStatus = (id, newStatus) => {
-		// Implement status update API call here
-		setOrders(
-			orders.map((order) =>
-				order.id === id ? { ...order, status: newStatus } : order
-			)
-		);
+	const handleUpdateStatus = async (orderId: string, newStatus: string) => {
+		try {
+			await axiosInstance.patch(`/order/${orderId}`, {
+				status: newStatus,
+			});
+
+			toast.success("Order status updated successfully");
+
+			// Refresh data
+			if (searchResult) {
+				// Update search result
+				setSearchResult((prev) =>
+					prev
+						? prev.map((order) =>
+								order.id === orderId
+									? { ...order, status: newStatus }
+									: order
+						  )
+						: null
+				);
+			} else {
+				// Refresh main data
+				if (fetchOrders) {
+					fetchOrders(page, itemsPerPage);
+				}
+			}
+		} catch (err) {
+			console.error("Failed to update status:", err);
+			toast.error("Failed to update order status");
+		}
 	};
+
+	const handleRefresh = async () => {
+		setRefreshing(true);
+		try {
+			// Clear search results
+			setSearchResult(null);
+			setSearch("");
+			setFilterStatus("");
+			setSearching(false);
+
+			// Refresh main data
+			if (fetchOrders) {
+				await fetchOrders(page, itemsPerPage);
+			}
+
+			toast.success("Orders refreshed successfully");
+		} catch (err) {
+			console.error("Failed to refresh:", err);
+			toast.error("Failed to refresh orders");
+		} finally {
+			setRefreshing(false);
+		}
+	};
+
+	const handleViewOrder = (orderId: string) => {
+		// Navigate to order detail page or open modal
+		console.log("View order:", orderId);
+		// You can implement navigation here
+		// router.push(`/admin/orders/${orderId}`);
+	};
+
+	const isSearching = searching || searchResult !== null;
+	const displayedProducts = searchResult ?? orderPage;
+	const totalPages = isSearching
+		? Math.ceil(displayedProducts.length / itemsPerPage)
+		: Math.ceil(total / itemsPerPage);
+
+	// Paginate for search results
+	const startIndex = (page - 1) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const paginatedProducts = isSearching
+		? displayedProducts.slice(startIndex, endIndex)
+		: displayedProducts;
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -84,26 +168,47 @@ const OrdersAdminPage = () => {
 				<h1 className="text-2xl font-bold text-gray-800">
 					Orders Management
 				</h1>
+				<button
+					onClick={handleRefresh}
+					disabled={refreshing}
+					className="inline-flex items-center gap-2 border-2 bg-black cursor-pointer hover:bg-white hover:text-black text-white px-4 py-1 rounded-lg font-medium transition-colors shadow-sm"
+				>
+					<FaSync className={refreshing ? "animate-spin" : ""} />
+					{refreshing ? "Refreshing..." : "Refresh"}
+				</button>
 			</div>
 
 			{/* Search and Filter */}
 			<div className="flex flex-col md:flex-row gap-4 mb-6">
-				<div className="relative flex-1">
-					<input
-						type="text"
-						placeholder="Search orders by customer or ID..."
-						value={searchQuery}
-						onChange={handleSearch}
-						className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-					<FaSearch className="absolute left-3 top-3 text-gray-400" />
+				<div className="relative flex justify-between items-center w-full px-4 gap-2 py-1 border rounded-md">
+					<div className="flex items-center  gap-2 w-full">
+						<FaSearch className=" text-gray-400" />
+						<input
+							type="text"
+							placeholder="Search orders by user name"
+							value={search}
+							onChange={handleSearchInputChange}
+							onKeyPress={(e) =>
+								e.key === "Enter" && handleSearch()
+							}
+							className="focus:outline-none md:w-full w-[90%]"
+						/>
+					</div>
+					<button
+						onClick={handleSearch}
+						disabled={searching}
+						className="inline-flex items-center gap-2 border-2 bg-black cursor-pointer hover:bg-white hover:text-black text-white px-4 py-1 rounded-lg font-medium transition-colors shadow-sm"
+					>
+						{searching ? "Searching..." : "Search"}
+					</button>
 				</div>
-				<div className="flex items-center gap-2">
+
+				<div className="flex items-center gap-2 ">
 					<FaFilter className="text-gray-600" />
 					<select
 						value={filterStatus}
 						onChange={(e) => handleFilter(e.target.value)}
-						className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
 					>
 						<option value="">All Status</option>
 						<option value="Pending">Pending</option>
@@ -114,8 +219,19 @@ const OrdersAdminPage = () => {
 				</div>
 			</div>
 
+			{/* Search Results Info */}
+			{isSearching && (
+				<div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+					<p className="text-blue-800">
+						Showing {displayedProducts.length} search results
+						{search && ` for "${search}"`}
+						{filterStatus && ` with status "${filterStatus}"`}
+					</p>
+				</div>
+			)}
+
 			{/* Orders Table */}
-			<div className="bg-white shadow-md rounded-lg overflow-hidden">
+			<div className="bg-white shadow-md rounded-lg overflow-x-auto">
 				<table className="w-full">
 					<thead className="bg-gray-50">
 						<tr>
@@ -143,41 +259,49 @@ const OrdersAdminPage = () => {
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-gray-200">
-						{isLoading ? (
+						{loading ? (
 							<tr>
 								<td
-									colSpan="7"
+									colSpan={7}
 									className="px-6 py-4 text-center"
 								>
-									Loading...
+									<div className="flex items-center justify-center">
+										<FaSync className="animate-spin mr-2" />
+										Loading...
+									</div>
 								</td>
 							</tr>
-						) : orders.length === 0 ? (
+						) : paginatedProducts.length === 0 ? (
 							<tr>
 								<td
-									colSpan="7"
-									className="px-6 py-4 text-center"
+									colSpan={7}
+									className="px-6 py-4 text-center text-gray-500"
 								>
-									No orders found
+									{isSearching
+										? "No orders found matching your search criteria"
+										: "No orders found"}
 								</td>
 							</tr>
 						) : (
-							orders.map((order) => (
-								<tr key={order.id}>
-									<td className="px-6 py-4 whitespace-nowrap">
-										#{order.id}
+							paginatedProducts.map((order) => (
+								<tr key={order.id} className="hover:bg-gray-50">
+									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+										#
+										{order.id.length > 10
+											? order.id.slice(0, 10) + "..."
+											: order.id}
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										{order.customer}
+									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{order.user.name}
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										{order.date}
+									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+										{formatDate(order.createdAt)}
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										{order.items}
+									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{order.orderItems.length} item(s)
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										${order.total.toFixed(2)}
+									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+										{formatCurrency(order.total)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
 										<select
@@ -188,15 +312,15 @@ const OrdersAdminPage = () => {
 													e.target.value
 												)
 											}
-											className={`border rounded-md px-2 py-1 text-xs ${
+											className={`border rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
 												order.status === "Pending"
-													? "bg-yellow-100 text-yellow-800"
+													? "bg-yellow-100 text-yellow-800 border-yellow-300"
 													: order.status === "Shipped"
-													? "bg-blue-100 text-blue-800"
+													? "bg-blue-100 text-blue-800 border-blue-300"
 													: order.status ===
 													  "Delivered"
-													? "bg-green-100 text-green-800"
-													: "bg-red-100 text-red-800"
+													? "bg-green-100 text-green-800 border-green-300"
+													: "bg-red-100 text-red-800 border-red-300"
 											}`}
 										>
 											<option value="Pending">
@@ -213,9 +337,15 @@ const OrdersAdminPage = () => {
 											</option>
 										</select>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<button className="text-blue-600 hover:text-blue-800">
-											<FaEye />
+									<td className="px-6 py-4 whitespace-nowrap text-sm">
+										<button
+											onClick={() =>
+												handleViewOrder(order.id)
+											}
+											className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+											title="View order details"
+										>
+											<FaEye className="w-4 h-4" />
 										</button>
 									</td>
 								</tr>
@@ -225,36 +355,16 @@ const OrdersAdminPage = () => {
 				</table>
 			</div>
 
-			{/* Pagination */}
-			<div className="mt-6 flex justify-between items-center">
-				<div>
-					Showing {(currentPage - 1) * 10 + 1} to{" "}
-					{Math.min(currentPage * 10, totalPages * 10)} of{" "}
-					{totalPages * 10} orders
-				</div>
-				<div className="flex gap-2">
-					<button
-						onClick={() =>
-							setCurrentPage((prev) => Math.max(prev - 1, 1))
-						}
-						disabled={currentPage === 1}
-						className="px-4 py-2 border rounded-md disabled:opacity-50"
-					>
-						Previous
-					</button>
-					<button
-						onClick={() =>
-							setCurrentPage((prev) =>
-								Math.min(prev + 1, totalPages)
-							)
-						}
-						disabled={currentPage === totalPages}
-						className="px-4 py-2 border rounded-md disabled:opacity-50"
-					>
-						Next
-					</button>
-				</div>
-			</div>
+			{paginatedProducts.length > 0 && (
+				<ProductDisplayPagination
+					currentPage={page}
+					totalPages={totalPages}
+					onPageChange={setPage}
+					itemsPerPage={itemsPerPage}
+					totalItems={isSearching ? displayedProducts.length : total}
+					displayedProducts={paginatedProducts}
+				/>
+			)}
 		</div>
 	);
 };
