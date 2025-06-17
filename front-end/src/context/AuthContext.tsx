@@ -23,7 +23,6 @@ type AuthContextType = {
 	deleteUser: (id: string) => Promise<void>;
 	nonAdminUsers: User[];
 	fetchNonAdminUsers: () => Promise<void>;
-	// updateUser: (data: FormData) => Promise<User>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
