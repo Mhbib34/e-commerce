@@ -1,8 +1,9 @@
 import { Order } from "@/type/orderType";
 import { Product } from "@/type/productType";
+import { User } from "@/type/userType";
 
 type Props = {
-	displayedProducts: Product[] | Order[];
+	displayedProducts: Product[] | Order[] | User[];
 	currentPage: number;
 	totalPages: number;
 	itemsPerPage: number;

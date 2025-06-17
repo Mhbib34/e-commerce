@@ -22,7 +22,7 @@ type AuthContextType = {
 	refetchUser: () => Promise<void>;
 	deleteUser: (id: string) => Promise<void>;
 	nonAdminUsers: User[];
-	fetchNonAdminUsers: () => Promise<void>;
+	setNonAdminUsers: (users: User[]) => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -70,25 +70,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	};
 
-	const fetchNonAdminUsers = async () => {
-		try {
-			const res = await axiosInstance.get("/user/list");
-			const nonAdmins = res.data.user.filter(
-				(u: User) => u.role !== "ADMIN"
-			);
-			setNonAdminUsers(nonAdmins);
-		} catch (err) {
-			const error = err as AxiosError<{ errors: string }>;
-			if (error.response?.status === 401) {
-			} else {
-				console.error("Error fetching users:", err);
-			}
-		}
-	};
-
 	useEffect(() => {
 		refetchUser();
-		fetchNonAdminUsers();
 	}, []);
 
 	return (
@@ -101,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				refetchUser,
 				deleteUser,
 				nonAdminUsers,
-				fetchNonAdminUsers,
+				setNonAdminUsers,
 			}}
 		>
 			{children}
