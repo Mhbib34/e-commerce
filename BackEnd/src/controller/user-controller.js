@@ -10,6 +10,7 @@ import {
   update,
   getAll,
   deleted,
+  getPaginatedUsers,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
@@ -235,6 +236,21 @@ const deleteUserHandler = async (req, res, next) => {
   }
 };
 
+const getAllUsersPaginations = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await getPaginatedUsers(page, limit);
+    res.status(200).json({
+      status: "success",
+      message: "Products fetched successfully",
+      user: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -247,4 +263,5 @@ export default {
   update: updateUserHandler,
   getAll: getAllUserHandler,
   delete: deleteUserHandler,
+  getPage: getAllUsersPaginations,
 };

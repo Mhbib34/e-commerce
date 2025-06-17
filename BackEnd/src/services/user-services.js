@@ -268,3 +268,24 @@ export const deleted = async (id) => {
     },
   });
 };
+
+export const getPaginatedUsers = async (page, limit) => {
+  const skip = (page - 1) * limit;
+
+  const [users, total] = await Promise.all([
+    prismaClient.user.findMany({
+      where: { role: "USER" },
+      skip,
+      take: limit,
+    }),
+    prismaClient.user.count({ where: { role: "USER" } }),
+  ]);
+
+  return {
+    data: users,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};
