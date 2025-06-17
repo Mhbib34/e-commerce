@@ -16,6 +16,7 @@ type ProductAdminDisplayProps = {
 	itemsPerPage: number;
 	totalItems: number;
 };
+
 const ProductAdminDisplay = ({
 	displayedProducts,
 	deleteProduct,

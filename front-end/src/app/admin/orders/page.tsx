@@ -48,7 +48,6 @@ const OrdersAdminPage = () => {
 	const handleSearch = async () => {
 		const keyword = search.toLowerCase().trim();
 
-		// Jika search kosong dan filter all, kembali ke default
 		if (!keyword && filterStatus === "") {
 			setSearchResult(null);
 			setSearching(false);
@@ -58,7 +57,6 @@ const OrdersAdminPage = () => {
 		setSearching(true);
 
 		try {
-			// Use allOrder from hook if available, otherwise fetch
 			let ordersToSearch = allOrder;
 
 			if (!ordersToSearch || ordersToSearch.length === 0) {
@@ -137,13 +135,11 @@ const OrdersAdminPage = () => {
 	const handleRefresh = async () => {
 		setRefreshing(true);
 		try {
-			// Clear search results
 			setSearchResult(null);
 			setSearch("");
 			setFilterStatus("");
 			setSearching(false);
 
-			// Refresh main data
 			if (fetchOrders) {
 				await fetchOrders(page, itemsPerPage);
 			}

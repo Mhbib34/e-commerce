@@ -2,6 +2,7 @@
 
 import Button from "@/components/common/Button";
 import { useAuth } from "@/hooks/useAuth";
+import { showConfirm } from "@/lib/tasterHelper";
 // import React, { useState, useEffect } from "react";
 import {
 	FaSearch,
@@ -20,7 +21,9 @@ const UserAdminPage = () => {
 	// const [filterStatus, setFilterStatus] = useState("");
 	// const [showAddModal, setShowAddModal] = useState(false);
 
-	const { nonAdminUsers, isLoading } = useAuth();
+	const { nonAdminUsers, isLoading, deleteUser, fetchNonAdminUsers } =
+		useAuth();
+
 	console.log(nonAdminUsers);
 
 	// const handleSearch = (e) => {
@@ -33,12 +36,10 @@ const UserAdminPage = () => {
 	// 	setCurrentPage(1);
 	// };
 
-	// const handleDelete = (id) => {
-	// 	if (window.confirm("Are you sure you want to delete this customer?")) {
-	// 		// Implement delete API call here
-	// 		setCustomers(customers.filter((customer) => customer.id !== id));
-	// 	}
-	// };
+	const handleDelete = async (id: string) => {
+		await deleteUser(id);
+		await fetchNonAdminUsers();
+	};
 
 	// const handleAddCustomer = (e) => {
 	// 	e.preventDefault();
@@ -163,9 +164,16 @@ const UserAdminPage = () => {
 										</Button>
 										<Button
 											title="Delete"
-											// onClick={() =>
-											// 	handleDelete(customer.id)
-											// }
+											onClick={() =>
+												showConfirm(
+													"Are you sure you want to delete this product?",
+													customer.name,
+													() =>
+														handleDelete(
+															customer.id
+														)
+												)
+											}
 											className="text-red-600 hover:text-red-800"
 										>
 											<FaTrash />
