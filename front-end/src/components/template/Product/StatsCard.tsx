@@ -1,4 +1,4 @@
-import { Product } from "@/stores/productStores";
+import { Product } from "@/type/productType";
 import { Package } from "lucide-react";
 import React from "react";
 

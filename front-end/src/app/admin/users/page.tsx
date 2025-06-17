@@ -1,88 +1,50 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-
-// Mock API function (replace with your actual API)
-const fetchCustomers = async (page = 1, search = "", filter = {}) => {
-	// Simulating API call
-	return {
-		data: [
-			{
-				id: 1,
-				name: "John Doe",
-				email: "john@example.com",
-				phone: "+1234567890",
-				orders: 5,
-				totalSpent: 1250.5,
-				status: "Active",
-			},
-			{
-				id: 2,
-				name: "Jane Smith",
-				email: "jane@example.com",
-				phone: "+1234567891",
-				orders: 3,
-				totalSpent: 899.99,
-				status: "Inactive",
-			},
-			// Add more mock data as needed
-		],
-		total: 100,
-		page,
-		limit: 10,
-	};
-};
+import Button from "@/components/common/Button";
+import { useAuth } from "@/hooks/useAuth";
+// import React, { useState, useEffect } from "react";
+import {
+	FaSearch,
+	FaFilter,
+	FaEdit,
+	FaTrash,
+	FaPlus,
+	FaTimesCircle,
+	FaCheckCircle,
+} from "react-icons/fa";
 
 const UserAdminPage = () => {
-	const [customers, setCustomers] = useState([]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [filterStatus, setFilterStatus] = useState("");
-	const [totalPages, setTotalPages] = useState(1);
-	const [isLoading, setIsLoading] = useState(false);
-	const [showAddModal, setShowAddModal] = useState(false);
+	// const [customers, setCustomers] = useState([]);
+	// const [currentPage, setCurrentPage] = useState(1);
+	// const [searchQuery, setSearchQuery] = useState("");
+	// const [filterStatus, setFilterStatus] = useState("");
+	// const [showAddModal, setShowAddModal] = useState(false);
 
-	useEffect(() => {
-		loadCustomers();
-	}, [currentPage, searchQuery, filterStatus]);
+	const { nonAdminUsers, isLoading } = useAuth();
+	console.log(nonAdminUsers);
 
-	const loadCustomers = async () => {
-		setIsLoading(true);
-		try {
-			const response = await fetchCustomers(currentPage, searchQuery, {
-				status: filterStatus,
-			});
-			setCustomers(response.data);
-			setTotalPages(Math.ceil(response.total / response.limit));
-		} catch (error) {
-			console.error("Error fetching customers:", error);
-		}
-		setIsLoading(false);
-	};
+	// const handleSearch = (e) => {
+	// 	setSearchQuery(e.target.value);
+	// 	setCurrentPage(1);
+	// };
 
-	const handleSearch = (e) => {
-		setSearchQuery(e.target.value);
-		setCurrentPage(1);
-	};
+	// const handleFilter = (status) => {
+	// 	setFilterStatus(status);
+	// 	setCurrentPage(1);
+	// };
 
-	const handleFilter = (status) => {
-		setFilterStatus(status);
-		setCurrentPage(1);
-	};
+	// const handleDelete = (id) => {
+	// 	if (window.confirm("Are you sure you want to delete this customer?")) {
+	// 		// Implement delete API call here
+	// 		setCustomers(customers.filter((customer) => customer.id !== id));
+	// 	}
+	// };
 
-	const handleDelete = (id) => {
-		if (window.confirm("Are you sure you want to delete this customer?")) {
-			// Implement delete API call here
-			setCustomers(customers.filter((customer) => customer.id !== id));
-		}
-	};
-
-	const handleAddCustomer = (e) => {
-		e.preventDefault();
-		// Implement add customer API call here
-		setShowAddModal(false);
-	};
+	// const handleAddCustomer = (e) => {
+	// 	e.preventDefault();
+	// 	// Implement add customer API call here
+	// 	setShowAddModal(false);
+	// };
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -92,7 +54,7 @@ const UserAdminPage = () => {
 					Customer Management
 				</h1>
 				<button
-					onClick={() => setShowAddModal(true)}
+					// onClick={() => setShowAddModal(true)}
 					className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
 				>
 					<FaPlus className="mr-2" /> Add Customer
@@ -100,7 +62,7 @@ const UserAdminPage = () => {
 			</div>
 
 			{/* Search and Filter */}
-			<div className="flex flex-col md:flex-row gap-4 mb-6">
+			{/* <div className="flex flex-col md:flex-row gap-4 mb-6">
 				<div className="relative flex-1">
 					<input
 						type="text"
@@ -123,7 +85,7 @@ const UserAdminPage = () => {
 						<option value="Inactive">Inactive</option>
 					</select>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Customer Table */}
 			<div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -137,16 +99,13 @@ const UserAdminPage = () => {
 								Email
 							</th>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Phone
+								Username
 							</th>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Orders
+								Veryfied
 							</th>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Total Spent
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Status
 							</th>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Actions
@@ -163,7 +122,7 @@ const UserAdminPage = () => {
 									Loading...
 								</td>
 							</tr>
-						) : customers.length === 0 ? (
+						) : nonAdminUsers.length === 0 ? (
 							<tr>
 								<td
 									colSpan="7"
@@ -173,7 +132,7 @@ const UserAdminPage = () => {
 								</td>
 							</tr>
 						) : (
-							customers.map((customer) => (
+							nonAdminUsers.map((customer) => (
 								<tr key={customer.id}>
 									<td className="px-6 py-4 whitespace-nowrap">
 										{customer.name}
@@ -182,37 +141,35 @@ const UserAdminPage = () => {
 										{customer.email}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
-										{customer.phone}
+										{customer.username}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
-										{customer.orders}
+										{customer.isAccountVerified ? (
+											<FaCheckCircle className="text-green-500" />
+										) : (
+											<FaTimesCircle className="text-red-500" />
+										)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
-										${customer.totalSpent.toFixed(2)}
+										{/* ${customer.totalSpent.toFixed(2)} */}
 									</td>
+
 									<td className="px-6 py-4 whitespace-nowrap">
-										<span
-											className={`px-2 py-1 rounded-full text-xs ${
-												customer.status === "Active"
-													? "bg-green-100 text-green-800"
-													: "bg-red-100 text-red-800"
-											}`}
+										<Button
+											className="text-blue-600 hover:text-blue-800 mr-4"
+											title="Edit"
 										>
-											{customer.status}
-										</span>
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<button className="text-blue-600 hover:text-blue-800 mr-4">
 											<FaEdit />
-										</button>
-										<button
-											onClick={() =>
-												handleDelete(customer.id)
-											}
+										</Button>
+										<Button
+											title="Delete"
+											// onClick={() =>
+											// 	handleDelete(customer.id)
+											// }
 											className="text-red-600 hover:text-red-800"
 										>
 											<FaTrash />
-										</button>
+										</Button>
 									</td>
 								</tr>
 							))
@@ -222,7 +179,7 @@ const UserAdminPage = () => {
 			</div>
 
 			{/* Pagination */}
-			<div className="mt-6 flex justify-between items-center">
+			{/* <div className="mt-6 flex justify-between items-center">
 				<div>
 					Showing {(currentPage - 1) * 10 + 1} to{" "}
 					{Math.min(currentPage * 10, totalPages * 10)} of{" "}
@@ -250,10 +207,10 @@ const UserAdminPage = () => {
 						Next
 					</button>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Add Customer Modal */}
-			{showAddModal && (
+			{/* {showAddModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 					<div className="bg-white p-6 rounded-lg max-w-md w-full">
 						<h2 className="text-xl font-bold mb-4">
@@ -307,7 +264,7 @@ const UserAdminPage = () => {
 						</form>
 					</div>
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 };
