@@ -7,6 +7,7 @@ import { isAdmin } from "../middleware/is-admin.js";
 userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
 userRouter.post("/logout", userAuth, userController.logout);
+userRouter.delete("/:id", userAuth, isAdmin, userController.delete);
 userRouter.patch("/", userAuth, userController.update);
 userRouter.get("/", userAuth, userController.get);
 userRouter.post("/send-verify-otp", userAuth, userController.verifyOtp);

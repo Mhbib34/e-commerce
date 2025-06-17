@@ -251,3 +251,20 @@ export const update = async (request) => {
     },
   });
 };
+
+export const deleted = async (id) => {
+  id = validate(getUserValidation, id);
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!user) throw new ResponseError(404, "User is not found!");
+
+  return prismaClient.user.delete({
+    where: {
+      id,
+    },
+  });
+};

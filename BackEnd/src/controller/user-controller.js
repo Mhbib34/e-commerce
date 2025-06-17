@@ -9,6 +9,7 @@ import {
   verifyOtp,
   update,
   getAll,
+  deleted,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
@@ -222,6 +223,18 @@ const updateUserHandler = async (req, res, next) => {
   }
 };
 
+const deleteUserHandler = async (req, res, next) => {
+  try {
+    await deleted(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "User deleted Successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -233,4 +246,5 @@ export default {
   resetPassword: resetPasswordHandler,
   update: updateUserHandler,
   getAll: getAllUserHandler,
+  delete: deleteUserHandler,
 };
