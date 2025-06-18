@@ -9,6 +9,7 @@ import { useProducts } from "@/hooks/useProducts";
 import axiosInstance from "@/lib/axiosInstance";
 import { Product } from "@/type/productType";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 
@@ -97,13 +98,13 @@ const AdminProductPage: FC = () => {
 								Manage your product inventory
 							</p>
 						</div>
-						<Button
-							onClick={() => router.push("/admin/product/add")}
+						<Link
+							href="/admin/product/add"
 							className="inline-flex items-center gap-2 border-2 bg-black cursor-pointer hover:bg-white hover:text-black text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm"
 						>
 							<Plus size={20} />
 							Add Product
-						</Button>
+						</Link>
 					</div>
 				</div>
 

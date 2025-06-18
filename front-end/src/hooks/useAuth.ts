@@ -112,6 +112,7 @@ export const useAuth = ({ page = 1, limit = 5 }: PaginationParams = {}) => {
 
 	useEffect(() => {
 		fetchUserPage(page, limit);
+		// eslint-disable-next-line
 	}, []);
 
 	return {
