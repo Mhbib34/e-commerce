@@ -43,8 +43,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 	const closeSidebar = () => setSidebarOpen(false);
 	const openSidebar = () => setSidebarOpen(true);
 
-	const { isAuthenticated } = useAuth();
-	if (!isAuthenticated) {
+	const { isAuthenticated, user } = useAuth();
+	if (!isAuthenticated || user?.role !== "ADMIN") {
 		router.push("/login");
 	}
 

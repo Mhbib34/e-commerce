@@ -26,7 +26,7 @@ interface PaginationResponse {
 	hasPrevPage: boolean;
 }
 
-export const useAuth = ({ page = 1, limit = 5 }: PaginationParams = {}) => {
+export const useAuth = ({ page = 1, limit = 10 }: PaginationParams = {}) => {
 	const context = useContext(AuthContext);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);

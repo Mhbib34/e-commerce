@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/common/Button";
 import LoadingAdmin from "@/components/fragment/LoadingAdmin";
 import ProductAdminDisplay from "@/components/template/Product/ProductAdminDisplay";
 import SearchFilterProduct from "@/components/template/Product/SearchFilterProduct";
@@ -10,7 +9,6 @@ import axiosInstance from "@/lib/axiosInstance";
 import { Product } from "@/type/productType";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 
 const AdminProductPage: FC = () => {
@@ -29,7 +27,6 @@ const AdminProductPage: FC = () => {
 		allProducts,
 		getAllProducts,
 	} = useProducts(page, itemsPerPage);
-	const router = useRouter();
 
 	useEffect(() => {
 		getAllProducts();

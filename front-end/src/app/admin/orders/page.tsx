@@ -11,10 +11,7 @@ import { toast } from "sonner";
 import OrderModal from "@/components/template/order/OrderModal";
 
 const OrdersAdminPage = () => {
-	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder({
-		page: 1,
-		limit: 5,
-	});
+	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder();
 	const [search, setSearch] = useState("");
 	const [searchResult, setSearchResult] = useState<Order[] | null>(null);
 	const [searching, setSearching] = useState(false);
@@ -360,7 +357,7 @@ const OrdersAdminPage = () => {
 				</table>
 			</div>
 
-			{paginatedProducts.length > 0 && (
+			{totalPages > 1 && (
 				<ProductDisplayPagination
 					currentPage={page}
 					totalPages={totalPages}

@@ -178,14 +178,16 @@ const ProductAdminDisplay = ({
 				</div>
 			</div>
 			{/* Pagination */}
-			<ProductDisplayPagination
-				displayedProducts={displayedProducts}
-				currentPage={currentPage}
-				totalPages={totalPages}
-				onPageChange={onPageChange}
-				itemsPerPage={itemsPerPage} // 🆕
-				totalItems={totalItems}
-			/>
+			{totalPages > 1 && (
+				<ProductDisplayPagination
+					displayedProducts={displayedProducts}
+					currentPage={currentPage}
+					totalPages={totalPages}
+					onPageChange={onPageChange}
+					itemsPerPage={itemsPerPage} // 🆕
+					totalItems={totalItems}
+				/>
+			)}
 		</>
 	);
 };
