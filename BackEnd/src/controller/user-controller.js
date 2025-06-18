@@ -22,21 +22,6 @@ import {
 const registerUserHandler = async (req, res, next) => {
   try {
     const result = await create(req.body);
-    const token = jwt.sign(
-      { id: result.id, email: result.email, role: result.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     const mailOption = {
       from: process.env.SENDER_EMAIL,
       to: result.email,
@@ -49,7 +34,6 @@ const registerUserHandler = async (req, res, next) => {
       success: true,
       message: "User created Successfully",
       user: result,
-      token,
     });
   } catch (error) {
     next(error);
