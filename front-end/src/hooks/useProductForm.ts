@@ -1,40 +1,55 @@
-// hooks/useProductForm.ts
 import { useState } from "react";
 
 export const useProductForm = () => {
-	const [name, setName] = useState("");
-	const [price, setPrice] = useState("");
-	const [stock, setStock] = useState("");
-	const [brand, setBrand] = useState("");
-	const [description, setDescription] = useState("");
-	const [categoryName, setCategoryName] = useState("");
-	const [image, setImage] = useState<File | null>(null);
+	const [products, setProducts] = useState({
+		name: "",
+		price: "",
+		stock: "",
+		brand: "",
+		description: "",
+		categoryName: "",
+		image: null as File | null,
+	});
 
 	const resetForm = () => {
-		setName("");
-		setPrice("");
-		setStock("");
-		setBrand("");
-		setDescription("");
-		setCategoryName("");
-		setImage(null);
+		setProducts({
+			name: "",
+			price: "",
+			stock: "",
+			brand: "",
+			description: "",
+			categoryName: "",
+			image: null,
+		});
 	};
 
+	const setField = <T extends keyof typeof products>(
+		field: T,
+		value: (typeof products)[T]
+	) => {
+		setProducts((prev) => ({ ...prev, [field]: value }));
+	};
+
+	// Individual setters for easier use
+	const setName = (value: string) => setField("name", value);
+	const setPrice = (value: string) => setField("price", value);
+	const setStock = (value: string) => setField("stock", value);
+	const setBrand = (value: string) => setField("brand", value);
+	const setDescription = (value: string) => setField("description", value);
+	const setCategoryName = (value: string) => setField("categoryName", value);
+	const setImage = (value: File | null) => setField("image", value);
+
 	return {
-		name,
-		setName,
-		price,
-		setPrice,
-		stock,
-		setStock,
-		brand,
-		setBrand,
-		description,
-		setDescription,
-		categoryName,
-		setCategoryName,
-		image,
-		setImage,
+		...products,
+		setProducts,
 		resetForm,
+		setField,
+		setName,
+		setPrice,
+		setStock,
+		setBrand,
+		setDescription,
+		setCategoryName,
+		setImage,
 	};
 };

@@ -11,17 +11,24 @@ import axiosInstance from "@/lib/axiosInstance";
 import { showError, showSuccess } from "@/lib/tasterHelper";
 
 const LoginPage = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [user, setUser] = useState({ email: "", password: "" });
 	const [showPassword, setShowPassword] = useState(false);
 	const { refetchUser } = useAuth();
 	const router = useRouter();
+
+	const handleLoginUserChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setUser((prev) => ({ ...prev, [name]: value }));
+	};
+
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
 			const response = await axiosInstance.post(`/user/login`, {
-				email,
-				password,
+				email: user.email,
+				password: user.password,
 			});
 
 			const loggedInUser = response.data.user;
@@ -59,17 +66,19 @@ const LoginPage = () => {
 				<Input
 					type="email"
 					text="Email"
+					name="email"
 					placeholder="example@gmail.com"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
+					value={user.email}
+					onChange={handleLoginUserChange}
 				/>
 
 				<Input
 					type={showPassword ? "text" : "password"}
 					text="Password"
+					name="password"
 					placeholder="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
+					value={user.password}
+					onChange={handleLoginUserChange}
 				/>
 
 				<div className="flex items-center gap-2 text-black text-sm">

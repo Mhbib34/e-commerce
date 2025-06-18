@@ -1,3 +1,4 @@
+// UpdateProductPage.tsx
 "use client";
 
 import LoadingSpinner from "@/components/fragment/Loading";
@@ -20,18 +21,18 @@ const UpdateProductPage = () => {
 	const [product, setProduct] = useState<any>(null);
 	const {
 		name,
-		setName,
 		price,
-		setPrice,
 		stock,
-		setStock,
 		brand,
-		setBrand,
 		description,
-		setDescription,
 		categoryName,
-		setCategoryName,
 		image,
+		setName,
+		setPrice,
+		setStock,
+		setBrand,
+		setDescription,
+		setCategoryName,
 		setImage,
 	} = useProductForm();
 
@@ -79,7 +80,7 @@ const UpdateProductPage = () => {
 			const err = error as AxiosError<{ errors?: string }>;
 			const errorMessage =
 				err.response?.data?.errors ||
-				"Failed to add product. Please try again.";
+				"Failed to update product. Please try again.";
 			showError(errorMessage);
 			console.log(errorMessage);
 		}

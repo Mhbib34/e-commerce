@@ -10,27 +10,38 @@ import axiosInstance from "@/lib/axiosInstance";
 import { showError, showSuccess } from "@/lib/tasterHelper";
 
 const RegisterPage = () => {
-	const [name, setName] = useState("");
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [newUser, setNewUser] = useState({
+		name: "",
+		email: "",
+		password: "",
+		username: "",
+	});
 	const [showPassword, setShowPassword] = useState(false);
 	const router = useRouter();
+
+	const handleNewUserChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setNewUser((prev) => ({ ...prev, [name]: value }));
+	};
 
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
 			const response = await axiosInstance.post(`user/register`, {
-				name,
-				username,
-				email,
-				password,
+				name: newUser.name,
+				username: newUser.username,
+				email: newUser.email,
+				password: newUser.password,
 			});
 			showSuccess(`${response.data.message} 🎉`);
-			setName("");
-			setUsername("");
-			setEmail("");
-			setPassword("");
+			setNewUser({
+				name: "",
+				email: "",
+				password: "",
+				username: "",
+			});
 			router.push("/login");
 		} catch (error) {
 			console.error(error);
@@ -55,30 +66,34 @@ const RegisterPage = () => {
 				<Input
 					type="text"
 					text="Full Name"
+					name="name"
 					placeholder="full name"
-					onChange={(e) => setName(e.target.value)}
-					value={name}
+					onChange={handleNewUserChange}
+					value={newUser.name}
 				/>
 				<Input
 					type="text"
 					text="Username"
+					name="username"
 					placeholder="username"
-					onChange={(e) => setUsername(e.target.value)}
-					value={username}
+					onChange={handleNewUserChange}
+					value={newUser.username}
 				/>
 				<Input
 					type="email"
 					text="Email"
+					name="email"
 					placeholder="example@gmail.com"
-					onChange={(e) => setEmail(e.target.value)}
-					value={email}
+					onChange={handleNewUserChange}
+					value={newUser.email}
 				/>
 				<Input
 					type={showPassword ? "text" : "password"}
 					text="Password"
+					name="password"
 					placeholder="*********"
-					onChange={(e) => setPassword(e.target.value)}
-					value={password}
+					onChange={handleNewUserChange}
+					value={newUser.password}
 				/>
 				<div className="flex items-center gap-2 text-black text-sm">
 					<input

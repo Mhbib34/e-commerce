@@ -68,6 +68,7 @@ const ProductForm = ({
 					<Input
 						type="text"
 						text="Product Name"
+						name="name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						placeholder="Product Name"
@@ -75,6 +76,7 @@ const ProductForm = ({
 					<Input
 						type="number"
 						text="Product Price"
+						name="price"
 						value={price}
 						onChange={(e) => setPrice(e.target.value)}
 						placeholder="Product Price"
@@ -82,6 +84,7 @@ const ProductForm = ({
 					<Input
 						type="number"
 						text="Product Stock"
+						name="stock"
 						value={stock}
 						onChange={(e) => setStock(e.target.value)}
 						placeholder="Product Stock"
@@ -89,6 +92,7 @@ const ProductForm = ({
 					<Input
 						type="text"
 						text="Product Category"
+						name="categoryName"
 						value={categoryName}
 						onChange={(e) => setCategoryName(e.target.value)}
 						placeholder="Product Category"
@@ -99,6 +103,7 @@ const ProductForm = ({
 					type="text"
 					text="Product Brand"
 					value={brand}
+					name="brand"
 					onChange={(e) => setBrand(e.target.value)}
 					placeholder="Product Brand"
 				/>
@@ -108,6 +113,7 @@ const ProductForm = ({
 					<textarea
 						id="description"
 						value={description}
+						name="description"
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Product Description"
 						className="w-full p-2 border border-black rounded-md mt-1"
@@ -119,6 +125,7 @@ const ProductForm = ({
 					<input
 						type="file"
 						accept="image/*"
+						name="image"
 						className="block w-full text-sm border border-black rounded-md cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white transition file:cursor-pointer"
 						onChange={(e) => {
 							if (e.target.files?.[0]) {

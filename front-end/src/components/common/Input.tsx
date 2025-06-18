@@ -4,6 +4,7 @@ type InputProps = {
 	value: string;
 	placeholder: string;
 	text?: string;
+	name?: string;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -12,6 +13,7 @@ const Input = ({
 	value,
 	placeholder,
 	text,
+	name,
 	onChange,
 	children,
 }: InputProps) => {
@@ -29,6 +31,7 @@ const Input = ({
 					value={value}
 					placeholder={placeholder}
 					onChange={onChange}
+					name={name}
 					className="border border-black rounded-md p-2 w-full"
 				/>
 				{children}
