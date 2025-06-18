@@ -8,6 +8,7 @@ export type Product = {
 	price: number;
 	stock: number;
 	category: Category;
+	image: string;
 };
 
 export type ProductStore = {

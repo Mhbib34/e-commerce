@@ -59,7 +59,6 @@ export const useAuth = ({ page = 1, limit = 10 }: PaginationParams = {}) => {
 			});
 
 			const { data, totalPages } = res.data.user;
-			console.log(res.data.user);
 
 			const paginationData: PaginationResponse = {
 				users: data,

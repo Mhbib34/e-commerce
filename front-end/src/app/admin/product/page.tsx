@@ -2,6 +2,7 @@
 
 import LoadingAdmin from "@/components/fragment/LoadingAdmin";
 import ProductAdminDisplay from "@/components/template/Product/ProductAdminDisplay";
+import ProductModal from "@/components/template/Product/ProductModal";
 import SearchFilterProduct from "@/components/template/Product/SearchFilterProduct";
 import StatsCard from "@/components/template/Product/StatsCard";
 import { useProducts } from "@/hooks/useProducts";
@@ -77,6 +78,26 @@ const AdminProductPage: FC = () => {
 		: Math.ceil(total);
 	const paginatedProducts = displayedProducts;
 
+	const [selectedProduct, setSelectedProduct] = useState<Product | null>(
+		null
+	);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleViewProduct = (ProductId: string) => {
+		const Product = paginatedProducts.find(
+			(Product) => Product.id === ProductId
+		);
+		if (Product) {
+			setSelectedProduct(Product);
+			setIsModalOpen(true);
+		}
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedProduct(null);
+	};
+
 	if (loading) {
 		return <LoadingAdmin />;
 	}
@@ -127,8 +148,14 @@ const AdminProductPage: FC = () => {
 					onPageChange={setPage}
 					itemsPerPage={itemsPerPage}
 					totalItems={allProducts.length}
+					onClick={handleViewProduct}
 				/>
 			</div>
+			<ProductModal
+				selectedProduct={selectedProduct}
+				isModalOpen={isModalOpen}
+				handleCloseModal={handleCloseModal}
+			/>
 		</div>
 	);
 };

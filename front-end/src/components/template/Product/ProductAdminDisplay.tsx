@@ -15,6 +15,7 @@ type ProductAdminDisplayProps = {
 	onPageChange: (page: number) => void;
 	itemsPerPage: number;
 	totalItems: number;
+	onClick?: (id: string) => void;
 };
 
 const ProductAdminDisplay = ({
@@ -25,6 +26,7 @@ const ProductAdminDisplay = ({
 	onPageChange,
 	itemsPerPage, // 🆕
 	totalItems, // 🆕
+	onClick,
 }: ProductAdminDisplayProps) => {
 	const router = useRouter();
 	const getStockStatus = (stock: number) => {
@@ -117,18 +119,18 @@ const ProductAdminDisplay = ({
 																`/admin/product/update/${product.id}`
 															)
 														}
-														className="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+														className="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg cursor-pointer"
 														title="Edit Product"
 													>
 														<Pencil size={16} />
 													</Button>
 													<Button
 														onClick={() =>
-															console.log(
-																`View product: ${product.name}`
+															onClick?.(
+																product.id
 															)
 														}
-														className="text-green-600 hover:text-green-800 transition-colors p-2 hover:bg-green-50 rounded-lg"
+														className="text-green-600 hover:text-green-800 transition-colors p-2 hover:bg-green-50 rounded-lg cursor-pointer"
 														title="View Product"
 													>
 														<Eye size={16} />
@@ -144,7 +146,7 @@ const ProductAdminDisplay = ({
 																	)
 															)
 														}
-														className="text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded-lg"
+														className="text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded-lg cursor-pointer"
 														title="Delete Product"
 													>
 														<Trash2 size={16} />
@@ -178,16 +180,14 @@ const ProductAdminDisplay = ({
 				</div>
 			</div>
 			{/* Pagination */}
-			{totalPages > 1 && (
-				<ProductDisplayPagination
-					displayedProducts={displayedProducts}
-					currentPage={currentPage}
-					totalPages={totalPages}
-					onPageChange={onPageChange}
-					itemsPerPage={itemsPerPage} // 🆕
-					totalItems={totalItems}
-				/>
-			)}
+			<ProductDisplayPagination
+				displayedProducts={displayedProducts}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={onPageChange}
+				itemsPerPage={itemsPerPage} // 🆕
+				totalItems={totalItems}
+			/>
 		</>
 	);
 };
