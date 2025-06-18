@@ -1,5 +1,8 @@
 "use client";
 
+import Button from "@/components/common/Button";
+import axiosInstance from "@/lib/axiosInstance";
+import { showSuccess } from "@/lib/tasterHelper";
 import React, { useState } from "react";
 import { FaSave, FaUserPlus } from "react-icons/fa";
 
@@ -11,20 +14,23 @@ const saveSettings = async (settings) => {
 };
 
 const SettingsPage = () => {
+	const [newUser, setNewUser] = useState({
+		name: "",
+		email: "",
+		role: "ADMIN",
+		password: "",
+		username: "",
+	});
+
 	const [storeSettings, setStoreSettings] = useState({
-		storeName: "My E-commerce Store",
-		currency: "USD",
+		storeName: "Velora",
+		currency: "IDR",
 		taxRate: 10,
 	});
 	const [notificationSettings, setNotificationSettings] = useState({
 		orderEmails: true,
 		lowStockAlerts: true,
 		customerEmails: false,
-	});
-	const [newUser, setNewUser] = useState({
-		name: "",
-		email: "",
-		role: "Admin",
 	});
 	const [isSaving, setIsSaving] = useState(false);
 
@@ -38,7 +44,9 @@ const SettingsPage = () => {
 		setNotificationSettings((prev) => ({ ...prev, [name]: checked }));
 	};
 
-	const handleNewUserChange = (e) => {
+	const handleNewUserChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
 		const { name, value } = e.target;
 		setNewUser((prev) => ({ ...prev, [name]: value }));
 	};
@@ -56,13 +64,32 @@ const SettingsPage = () => {
 		setIsSaving(false);
 	};
 
-	const handleAddUser = async (e) => {
+	const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		// Implement add user API call here
-		console.log("Adding user:", newUser);
-		setNewUser({ name: "", email: "", role: "Admin" });
-		alert("User added successfully!");
+		try {
+			const response = await axiosInstance.post(`/user/register`, {
+				name: newUser.name,
+				username: newUser.username,
+				email: newUser.email,
+				password: newUser.password,
+				role: newUser.role,
+			});
+			console.log(response);
+			showSuccess(`${response.data.message} 🎉`);
+
+			setNewUser({
+				name: "",
+				email: "",
+				role: "ADMIN",
+				password: "",
+				username: "",
+			});
+		} catch (error) {
+			console.error(error);
+		}
 	};
+
+	console.log(newUser.role);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -115,9 +142,8 @@ const SettingsPage = () => {
 							/>
 						</div>
 						<button
-							type="submit"
 							disabled={isSaving}
-							className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+							className="w-full bg-black cursor-pointer text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 transition-all duration-200 ease-in-out flex items-center justify-center"
 						>
 							<FaSave className="mr-2" />{" "}
 							{isSaving ? "Saving..." : "Save Store Settings"}
@@ -177,16 +203,15 @@ const SettingsPage = () => {
 								</span>
 							</label>
 						</div>
-						<button
-							type="submit"
+						<Button
 							disabled={isSaving}
-							className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+							className="w-full bg-black cursor-pointer text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 transition-all duration-200 ease-in-out flex items-center justify-center"
 						>
 							<FaSave className="mr-2" />{" "}
 							{isSaving
 								? "Saving..."
 								: "Save Notification Settings"}
-						</button>
+						</Button>
 					</form>
 				</div>
 
@@ -196,7 +221,7 @@ const SettingsPage = () => {
 					<form onSubmit={handleAddUser}>
 						<div className="mb-4">
 							<label className="block text-sm font-medium text-gray-700">
-								Name
+								Full Name
 							</label>
 							<input
 								type="text"
@@ -204,7 +229,20 @@ const SettingsPage = () => {
 								value={newUser.name}
 								onChange={handleNewUserChange}
 								required
-								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+							/>
+						</div>
+						<div className="mb-4">
+							<label className="block text-sm font-medium text-gray-700">
+								Username
+							</label>
+							<input
+								type="text"
+								name="username"
+								value={newUser.username}
+								onChange={handleNewUserChange}
+								required
+								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
 							/>
 						</div>
 						<div className="mb-4">
@@ -217,9 +255,24 @@ const SettingsPage = () => {
 								value={newUser.email}
 								onChange={handleNewUserChange}
 								required
-								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
 							/>
 						</div>
+
+						<div className="mb-4">
+							<label className="block text-sm font-medium text-gray-700">
+								Password
+							</label>
+							<input
+								type="password"
+								name="password"
+								value={newUser.password}
+								onChange={handleNewUserChange}
+								required
+								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+							/>
+						</div>
+
 						<div className="mb-4">
 							<label className="block text-sm font-medium text-gray-700">
 								Role
@@ -228,19 +281,15 @@ const SettingsPage = () => {
 								name="role"
 								value={newUser.role}
 								onChange={handleNewUserChange}
-								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
 							>
-								<option value="Admin">Admin</option>
-								<option value="Editor">Editor</option>
-								<option value="Viewer">Viewer</option>
+								<option value="ADMIN">ADMIN</option>
+								<option value="USER">USER</option>
 							</select>
 						</div>
-						<button
-							type="submit"
-							className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center"
-						>
+						<Button className="w-full bg-black cursor-pointer text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 transition-all duration-200 ease-in-out flex items-center justify-center">
 							<FaUserPlus className="mr-2" /> Add User
-						</button>
+						</Button>
 					</form>
 				</div>
 			</div>

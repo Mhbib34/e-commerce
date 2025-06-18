@@ -4,10 +4,23 @@ interface Button extends React.PropsWithChildren {
 	onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
 	text?: string;
 	title?: string;
+	disabled?: boolean;
 }
-const Button = ({ className, onClick, text, children, title }: Button) => {
+const Button = ({
+	className,
+	onClick,
+	text,
+	children,
+	title,
+	disabled,
+}: Button) => {
 	return (
-		<button className={className} onClick={onClick} title={title}>
+		<button
+			className={className}
+			onClick={onClick}
+			title={title}
+			disabled={disabled}
+		>
 			{text}
 			{children}
 		</button>
