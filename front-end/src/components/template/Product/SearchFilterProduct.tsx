@@ -1,5 +1,5 @@
 import Button from "@/components/common/Button";
-import { Product } from "@/stores/productStores";
+import { Product } from "@/type/productType";
 import { Search } from "lucide-react";
 
 type ProductFormProps = {
@@ -24,16 +24,16 @@ const SearchFilterProduct = ({
 		...new Set(products.map((p) => p.category.name)),
 	];
 	return (
-		<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+		<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 ">
 			<div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
 				{/* Search */}
-				<div className="flex-1 max-w-md">
-					<div className="relative">
-						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+				<div className=" w-[80%]">
+					<div className="relative flex gap-4 items-center w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent transition-colors">
+						<Search className="" />
 						<input
-							type="text"
+							type="search"
 							placeholder="Search products..."
-							className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+							className=" w-full focus:outline-none"
 							value={search}
 							onChange={(e) => setSearch(e.target.value)}
 							onKeyPress={(e) =>
