@@ -83,6 +83,16 @@ export const useProducts = (
 			throw new Error("Failed to fetch product");
 		}
 	};
+
+	const getTopProducts = async () => {
+		try {
+			const res = await axiosInstance.get(`/product/top`);
+			return res.data.product;
+		} catch (err) {
+			console.error(err);
+			throw new Error("Failed to fetch product");
+		}
+	};
 	return {
 		products,
 		total,
@@ -93,5 +103,6 @@ export const useProducts = (
 		getProductById,
 		getAllProducts,
 		allProducts,
+		getTopProducts,
 	};
 };

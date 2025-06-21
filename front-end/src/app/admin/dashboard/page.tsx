@@ -1,12 +1,14 @@
 "use client";
 
-import { FC, useState, useCallback } from "react";
+import { FC, useState, useCallback, useEffect } from "react";
 
 import QuickActions from "@/components/template/Product/QuickActions";
 import OrderDisplayAdmin from "@/components/template/order/OrderDisplayAdmin";
 import { useOrder } from "@/hooks/useOrder";
 import StatsCardAdmin from "@/components/template/order/StatsCardAdmin";
 import { useAuth } from "@/hooks/useAuth";
+import { useProducts } from "@/hooks/useProducts";
+import { Product } from "@/type/productType";
 
 const AdminDashboardPage: FC = () => {
 	const [page, setPage] = useState(1);
@@ -16,6 +18,22 @@ const AdminDashboardPage: FC = () => {
 		page,
 		limit: itemsPerPage,
 	});
+	const [topProducts, setTopProducts] = useState<Product[]>([]);
+
+	const { getTopProducts } = useProducts();
+
+	useEffect(() => {
+		const fetchTopProducts = async () => {
+			try {
+				const topProducts = await getTopProducts();
+				setTopProducts(topProducts);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchTopProducts();
+		//eslint-disable-next-line
+	}, []);
 
 	const handlePageChange = useCallback((newPage: number) => {
 		setPage(newPage);
@@ -80,10 +98,38 @@ const AdminDashboardPage: FC = () => {
 							</h3>
 						</div>
 						<div className="p-6">
-							<div className="text-center text-gray-500 py-8">
-								<div className="text-4xl mb-2">📊</div>
-								<p>Top products data coming soon</p>
-							</div>
+							{topProducts.length > 0 ? (
+								<ul className="space-y-4">
+									{topProducts.map((product, index) => (
+										<li
+											key={product.id}
+											className="flex items-center justify-between px-4 py-2 bg-gray-50 rounded-md shadow-sm hover:bg-gray-100 transition"
+										>
+											<div className="flex items-center gap-3">
+												<span className="text-lg font-bold text-gray-700 w-6">
+													{index === 0
+														? "🥇"
+														: index === 1
+														? "🥈"
+														: index === 2
+														? "🥉"
+														: `#${index + 1}`}
+												</span>
+												<p className="text-gray-800 font-medium">
+													{product.name}
+												</p>
+											</div>
+											<span className="text-sm font-semibold text-blue-600">
+												{product.quantity} sold
+											</span>
+										</li>
+									))}
+								</ul>
+							) : (
+								<div className="text-center text-gray-500 py-6">
+									<p>No top products available yet.</p>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

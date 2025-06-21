@@ -9,6 +9,7 @@ export type Product = {
 	stock: number;
 	category: Category;
 	image: string;
+	quantity: number;
 };
 
 export type ProductStore = {
@@ -28,4 +29,5 @@ export type UseProductsPagination = {
 	getProductById: (id: string) => Promise<Product>;
 	getAllProducts: () => Promise<Product[]>;
 	allProducts: Product[];
+	getTopProducts: () => Promise<Product[]>;
 };
