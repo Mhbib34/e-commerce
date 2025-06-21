@@ -62,7 +62,7 @@ model Order {
   userId String
   user User @relation(fields: [userId],references: [id])
   total Float
-  status String @default("Create")
+  status String @default("Pending")
   createdAt DateTime @default(now())
   orderItems OrderItem[]
   @@map("order")
