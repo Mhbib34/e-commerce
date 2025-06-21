@@ -206,3 +206,38 @@ export const getPaginatedProducts = async (page, limit) => {
     totalPages: Math.ceil(total / limit),
   };
 };
+
+export const getTopProducts = async () => {
+  const orders = await prismaClient.order.findMany({
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
+  });
+
+  const productMap = {};
+
+  for (const order of orders) {
+    for (const item of order.orderItems) {
+      const id = item.productId;
+      if (!productMap[id]) {
+        productMap[id] = {
+          name: item.product.name,
+          quantity: 0,
+        };
+      }
+      productMap[id].quantity += item.quantity;
+    }
+  }
+  const topProducts = Object.entries(productMap)
+    .map(([id, data]) => ({ id, ...data }))
+    .sort((a, b) => b.quantity - a.quantity)
+    .slice(0, 5); // ambil top 5
+
+  return topProducts;
+};

@@ -4,6 +4,7 @@ import {
   get,
   getAllProductsService,
   getPaginatedProducts,
+  getTopProducts,
   update,
 } from "../services/product-services.js";
 
@@ -96,6 +97,19 @@ const getAllProductsPaginations = async (req, res, next) => {
   }
 };
 
+const getTopProductsHandler = async (req, res, next) => {
+  try {
+    const result = await getTopProducts();
+    res.status(200).json({
+      success: true,
+      message: "Top products fetched successfully",
+      product: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   create: createProductHandler,
   get: getProductHandler,
@@ -103,4 +117,5 @@ export default {
   deleted: deletedProductHandler,
   getAll: getAllProducts,
   getPage: getAllProductsPaginations,
+  getTop: getTopProductsHandler,
 };

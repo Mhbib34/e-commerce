@@ -14,6 +14,7 @@ productRouter.post(
   productController.create
 );
 productRouter.get("/list", userAuth, productController.getAll);
+productRouter.get("/top", userAuth, productController.getTop);
 productRouter.get("/:id", userAuth, productController.get);
 productRouter.patch(
   "/:id",
