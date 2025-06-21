@@ -69,10 +69,6 @@ export const getOrderByUser = async (userId) => {
       },
     },
   });
-
-  if (!orderItems || orderItems.length === 0)
-    throw new ResponseError(400, "Your order is empty!");
-
   return orderItems;
 };
 
@@ -157,9 +153,6 @@ export const getOrderByUserParams = async (userId) => {
       },
     },
   });
-
-  if (!orderItems || orderItems.length === 0)
-    throw new ResponseError(400, "Your order is empty!");
 
   return orderItems;
 };

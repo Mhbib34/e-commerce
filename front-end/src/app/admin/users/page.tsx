@@ -1,14 +1,17 @@
 "use client";
 
 import Button from "@/components/common/Button";
+import SearchForm from "@/components/fragment/SearchForm";
+import CustomerModal from "@/components/template/customer/CustomerModal";
 import ProductDisplayPagination from "@/components/template/Product/ProductDisplayPagination";
 import { useAuth } from "@/hooks/useAuth";
+import { useOrder } from "@/hooks/useOrder";
 import axiosInstance from "@/lib/axiosInstance";
 import { showConfirm } from "@/lib/tasterHelper";
 import { User } from "@/type/userType";
+import { formatCurrency } from "@/utils/format";
 import { useState, useEffect } from "react";
 import {
-	FaSearch,
 	FaFilter,
 	FaTrash,
 	FaTimesCircle,
@@ -23,25 +26,47 @@ const UserAdminPage = () => {
 	const [filterStatus, setFilterStatus] = useState("");
 	const [page, setPage] = useState(1);
 	const itemsPerPage = 5;
+	const [selectedUserTotalSpent, setSelectedUserTotalSpent] =
+		useState<number>(0);
 
-	// Using the updated useAuth hook with pagination
 	const {
 		nonAdminUsers,
 		isLoading,
 		deleteUser,
 		refresh,
-
-		// Pagination data from useAuth hook
 		totalPages: authTotalPages,
 		currentPage: authCurrentPage,
 		totalUsers: authTotalUsers,
 		goToPage,
 	} = useAuth();
 
+	const { fetchOrderByUserId } = useOrder();
+
+	const getUserTotalSpent = async (userId: string) => {
+		try {
+			const orders = await fetchOrderByUserId(userId);
+			return orders.reduce((total, order) => total + order.total, 0);
+			//eslint-disable-next-line
+		} catch (err: any) {
+			if (
+				err.response?.status === 400 &&
+				err.response?.data?.message === "your order is empty"
+			) {
+				return 0;
+			}
+			console.error("Error fetching order for user:", userId, err);
+			return 0;
+		}
+	};
+
+	const [userTotalSpent, setUserTotalSpent] = useState<{
+		[userId: string]: number;
+	}>({}); // [ADDED]
+	// [ADDED]
+
 	const handleDelete = async (id: string) => {
 		await deleteUser(id);
 		await refresh();
-		// Refresh search results if we're in search mode
 		if (searchResult !== null) {
 			handleSearch();
 		}
@@ -49,25 +74,21 @@ const UserAdminPage = () => {
 
 	const handleFilterStatus = (status: string) => {
 		setFilterStatus(status);
-		setPage(1); // Reset to first page when filter changes
+		setPage(1);
 	};
 
 	const handleSearch = async () => {
 		const keyword = search.toLowerCase().trim();
-
 		if (!keyword && filterStatus === "") {
 			setSearchResult(null);
 			setSearching(false);
 			setPage(1);
 			return;
 		}
-
 		setSearching(true);
 
 		try {
 			let userToSearch = nonAdminUsers;
-
-			// If no users loaded yet, fetch them
 			if (!userToSearch || userToSearch.length === 0) {
 				const res = await axiosInstance.get("/user/list");
 				userToSearch = res.data.user.filter(
@@ -99,38 +120,30 @@ const UserAdminPage = () => {
 		}
 	};
 
-	// Clear search when search input is empty
 	useEffect(() => {
 		if (search === "" && filterStatus === "") {
 			setSearchResult(null);
 		}
 	}, [search, filterStatus]);
 
-	// Determine which data to display and pagination values
 	const isSearchMode = searchResult !== null;
 	const displayedUsers = isSearchMode ? searchResult : nonAdminUsers;
-
-	// Calculate pagination for search results
 	const searchTotalPages = isSearchMode
 		? Math.ceil(displayedUsers.length / itemsPerPage)
 		: 0;
-
 	const searchStartIndex = (page - 1) * itemsPerPage;
 	const searchEndIndex = searchStartIndex + itemsPerPage;
 	const paginatedSearchUsers = isSearchMode
 		? displayedUsers.slice(searchStartIndex, searchEndIndex)
 		: [];
 
-	// Final values for display and pagination
 	const finalDisplayedUsers = isSearchMode
 		? paginatedSearchUsers
 		: displayedUsers;
 	const currentPage = isSearchMode ? page : authCurrentPage;
 	const totalPages = isSearchMode ? searchTotalPages : authTotalPages;
 	const totalItems = isSearchMode ? displayedUsers.length : authTotalUsers;
-	console.log(totalPages);
 
-	// Handle page changes
 	const handlePageChange = (newPage: number) => {
 		if (isSearchMode) {
 			setPage(newPage);
@@ -139,12 +152,47 @@ const UserAdminPage = () => {
 		}
 	};
 
-	// Handle search on Enter key
 	const handleKeyPress = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			handleSearch();
 		}
 	};
+
+	const [selectedUser, setSelectedUser] = useState<User | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleViewUser = async (userId: string) => {
+		const user = finalDisplayedUsers.find((user) => user.id === userId);
+		if (user) {
+			setSelectedUser(user);
+			const total = await getUserTotalSpent(user.id);
+			setSelectedUserTotalSpent(total);
+			setIsModalOpen(true);
+		}
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedUser(null);
+	};
+
+	useEffect(() => {
+		const fetchTotalSpentForUsers = async () => {
+			const newTotals: { [userId: string]: number } = {};
+			for (const user of finalDisplayedUsers) {
+				if (user && !userTotalSpent[user.id]) {
+					const total = await getUserTotalSpent(user.id);
+					newTotals[user.id] = total;
+				}
+			}
+			setUserTotalSpent((prev) => ({ ...prev, ...newTotals }));
+		};
+
+		if (finalDisplayedUsers.length > 0) {
+			fetchTotalSpentForUsers();
+		}
+		//eslint-disable-next-line
+	}, [finalDisplayedUsers]);
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -152,42 +200,15 @@ const UserAdminPage = () => {
 				<h1 className="text-2xl font-bold text-gray-800">
 					Customer Management
 				</h1>
-				{isSearchMode && (
-					<Button
-						onClick={() => {
-							setSearch("");
-							setFilterStatus("");
-							setSearchResult(null);
-							setPage(1);
-						}}
-						className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-					>
-						Clear Search
-					</Button>
-				)}
 			</div>
 
-			<div className="flex flex-col md:flex-row gap-4 mb-6">
-				<div className="flex items-center justify-between w-full border-2 border-black px-2 py-1 rounded-md">
-					<div className="w-full flex items-center gap-2">
-						<FaSearch className="text-black" />
-						<input
-							type="search"
-							placeholder="Search customers..."
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							onKeyPress={handleKeyPress}
-							className="w-full focus:outline-none"
-						/>
-					</div>
-					<Button
-						onClick={handleSearch}
-						// disabled={searching}
-						className="bg-black px-2 py-1 text-white hover:bg-white transition-all duration-200 ease-in hover:text-black border-2 rounded-md cursor-pointer disabled:opacity-50"
-					>
-						{searching ? "..." : "Search"}
-					</Button>
-				</div>
+			<SearchForm
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+				searching={searching}
+				handleSearch={handleSearch}
+				handleKeyPress={handleKeyPress}
+			>
 				<div className="flex items-center gap-2">
 					<FaFilter className="text-gray-600" />
 					<select
@@ -200,9 +221,7 @@ const UserAdminPage = () => {
 						<option value="false">Unverified</option>
 					</select>
 				</div>
-			</div>
-
-			{/* Results info */}
+			</SearchForm>
 			<div className="mb-4">
 				<p className="text-sm text-gray-600">
 					{isSearchMode ? (
@@ -285,11 +304,18 @@ const UserAdminPage = () => {
 										)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
-										{/* {customer.totalSpent?.toFixed(2)} */}
-										-
+										{userTotalSpent[customer.id] !==
+										undefined
+											? formatCurrency(
+													userTotalSpent[customer.id]
+											  )
+											: "Loading..."}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
 										<Button
+											onClick={() =>
+												handleViewUser(customer.id)
+											}
 											className="text-green-600 hover:text-green-800 mr-4"
 											title="View"
 										>
@@ -319,7 +345,6 @@ const UserAdminPage = () => {
 				</table>
 			</div>
 
-			{/* Pagination */}
 			{totalPages > 1 && (
 				<ProductDisplayPagination
 					displayedProducts={finalDisplayedUsers}
@@ -330,6 +355,13 @@ const UserAdminPage = () => {
 					onPageChange={handlePageChange}
 				/>
 			)}
+
+			<CustomerModal
+				handleCloseModal={handleCloseModal}
+				isModalOpen={isModalOpen}
+				selectedUser={selectedUser}
+				totalSpent={selectedUserTotalSpent}
+			/>
 		</div>
 	);
 };

@@ -37,4 +37,5 @@ export type OrderData = {
 	error: string | null;
 	refetch: () => Promise<void>;
 	fetchOrders: (page: number, limit: number) => Promise<void>;
+	fetchOrderByUserId: (userId: string) => Promise<Order[]>;
 };

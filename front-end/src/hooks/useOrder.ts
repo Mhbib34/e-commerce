@@ -131,6 +131,15 @@ export const useOrder = ({
 		}
 	}, [isAuthenticated, page, limit]);
 
+	const fetchOrderByUserId = async (userId: string) => {
+		try {
+			const res = await axiosInstance.get(`/order/user/${userId}`);
+			return res.data.order;
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	// Initial fetch on mount and when dependencies change
 	useEffect(() => {
 		fetchOrder();
@@ -146,5 +155,6 @@ export const useOrder = ({
 		total,
 		refetch: fetchOrder,
 		fetchOrders, // New function for manual pagination
+		fetchOrderByUserId,
 	};
 };
