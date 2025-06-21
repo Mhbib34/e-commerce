@@ -226,7 +226,7 @@ const UserAdminPage = () => {
 				</p>
 			</div>
 
-			<div className="bg-white shadow-md rounded-lg overflow-hidden">
+			<div className="bg-white shadow-md rounded-lg overflow-auto">
 				<table className="w-full">
 					<thead className="bg-gray-50">
 						<tr>

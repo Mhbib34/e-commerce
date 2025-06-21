@@ -8,7 +8,6 @@ type OrderDisplayAdminProps = {
 	onPageChange?: (page: number) => void;
 	currentPage?: number;
 	totalPages?: number;
-	onViewAll?: () => void;
 };
 
 const OrderDisplayAdmin: React.FC<OrderDisplayAdminProps> = ({
@@ -17,7 +16,6 @@ const OrderDisplayAdmin: React.FC<OrderDisplayAdminProps> = ({
 	onPageChange,
 	currentPage = 1,
 	totalPages = 1,
-	onViewAll,
 }) => {
 	const getStatusColor = (status: string) => {
 		switch (status.toLowerCase()) {
@@ -118,12 +116,6 @@ const OrderDisplayAdmin: React.FC<OrderDisplayAdminProps> = ({
 					<h3 className="text-lg font-semibold text-gray-900">
 						Recent Orders
 					</h3>
-					<button
-						onClick={onViewAll}
-						className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-					>
-						View all
-					</button>
 				</div>
 			</div>
 
