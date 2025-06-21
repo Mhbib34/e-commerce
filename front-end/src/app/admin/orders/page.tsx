@@ -4,11 +4,12 @@ import ProductDisplayPagination from "@/components/template/Product/ProductDispl
 import { useOrder } from "@/hooks/useOrder";
 import axiosInstance from "@/lib/axiosInstance";
 import { Order } from "@/type/orderType";
-import { formatCurrency, formatDate } from "@/utils/format";
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaEye, FaSync } from "react-icons/fa";
+import { FaFilter, FaSync } from "react-icons/fa";
 import { toast } from "sonner";
 import OrderModal from "@/components/template/order/OrderModal";
+import SearchForm from "@/components/fragment/SearchForm";
+import OrderTable from "@/components/template/order/OrderTable";
 
 const OrdersAdminPage = () => {
 	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder();
@@ -30,7 +31,7 @@ const OrdersAdminPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const handleViewOrder = (orderId: string) => {
-		const order = displayedProducts.find((order) => order.id === orderId);
+		const order = displayedOrder.find((order) => order.id === orderId);
 		if (order) {
 			setSelectedOrder(order);
 			setIsModalOpen(true);
@@ -150,18 +151,24 @@ const OrdersAdminPage = () => {
 		}
 	};
 
+	const handleKeyPress = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter") {
+			handleSearch();
+		}
+	};
+
 	const isSearching = searching || searchResult !== null;
-	const displayedProducts = searchResult ?? orderPage;
+	const displayedOrder = searchResult ?? orderPage;
 	const totalPages = isSearching
-		? Math.ceil(displayedProducts.length / itemsPerPage)
+		? Math.ceil(displayedOrder.length / itemsPerPage)
 		: Math.ceil(total / itemsPerPage);
 
 	// Paginate for search results
 	const startIndex = (page - 1) * itemsPerPage;
 	const endIndex = startIndex + itemsPerPage;
-	const paginatedProducts = isSearching
-		? displayedProducts.slice(startIndex, endIndex)
-		: displayedProducts;
+	const paginatedOrder = isSearching
+		? displayedOrder.slice(startIndex, endIndex)
+		: displayedOrder;
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -179,32 +186,14 @@ const OrdersAdminPage = () => {
 					{refreshing ? "Refreshing..." : "Refresh"}
 				</button>
 			</div>
-
-			{/* Search and Filter */}
-			<div className="flex flex-col md:flex-row gap-4 mb-6">
-				<div className="relative flex justify-between items-center w-full px-4 gap-2 py-1 border rounded-md">
-					<div className="flex items-center  gap-2 w-full">
-						<FaSearch className=" text-gray-400" />
-						<input
-							type="text"
-							placeholder="Search orders by user name"
-							value={search}
-							onChange={handleSearchInputChange}
-							onKeyPress={(e) =>
-								e.key === "Enter" && handleSearch()
-							}
-							className="focus:outline-none md:w-full w-[90%]"
-						/>
-					</div>
-					<button
-						onClick={handleSearch}
-						disabled={searching}
-						className="inline-flex items-center gap-2 border-2 bg-black cursor-pointer hover:bg-white hover:text-black text-white px-4 py-1 rounded-lg font-medium transition-colors shadow-sm"
-					>
-						{searching ? "Searching..." : "Search"}
-					</button>
-				</div>
-
+			{/* search form */}
+			<SearchForm
+				value={search}
+				onChange={handleSearchInputChange}
+				searching={searching}
+				handleSearch={handleSearch}
+				handleKeyPress={handleKeyPress}
+			>
 				<div className="flex items-center gap-2 ">
 					<FaFilter className="text-gray-600" />
 					<select
@@ -219,13 +208,12 @@ const OrdersAdminPage = () => {
 						<option value="Cancelled">Cancelled</option>
 					</select>
 				</div>
-			</div>
-
+			</SearchForm>
 			{/* Search Results Info */}
 			{isSearching && (
 				<div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
 					<p className="text-blue-800">
-						Showing {displayedProducts.length} search results
+						Showing {displayedOrder.length} search results
 						{search && ` for "${search}"`}
 						{filterStatus && ` with status "${filterStatus}"`}
 					</p>
@@ -233,129 +221,13 @@ const OrdersAdminPage = () => {
 			)}
 
 			{/* Orders Table */}
-			<div className="bg-white shadow-md rounded-lg overflow-x-auto">
-				<table className="w-full">
-					<thead className="bg-gray-50">
-						<tr>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Order ID
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Customer
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Date
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Items
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Total
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Status
-							</th>
-							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Actions
-							</th>
-						</tr>
-					</thead>
-					<tbody className="divide-y divide-gray-200">
-						{loading ? (
-							<tr>
-								<td
-									colSpan={7}
-									className="px-6 py-4 text-center"
-								>
-									<div className="flex items-center justify-center">
-										<FaSync className="animate-spin mr-2" />
-										Loading...
-									</div>
-								</td>
-							</tr>
-						) : paginatedProducts.length === 0 ? (
-							<tr>
-								<td
-									colSpan={7}
-									className="px-6 py-4 text-center text-gray-500"
-								>
-									{isSearching
-										? "No orders found matching your search criteria"
-										: "No orders found"}
-								</td>
-							</tr>
-						) : (
-							paginatedProducts.map((order) => (
-								<tr key={order.id} className="hover:bg-gray-50">
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-										#
-										{order.id.length > 10
-											? order.id.slice(0, 10) + "..."
-											: order.id}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-										{order.user.name}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-										{formatDate(order.createdAt)}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-										{order.orderItems.length} item(s)
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-										{formatCurrency(order.total)}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<select
-											value={order.status}
-											onChange={(e) =>
-												handleUpdateStatus(
-													order.id,
-													e.target.value
-												)
-											}
-											className={`border rounded-md px-2 py-1 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-												order.status === "Pending"
-													? "bg-yellow-100 text-yellow-800 border-yellow-300"
-													: order.status === "Shipped"
-													? "bg-blue-100 text-blue-800 border-blue-300"
-													: order.status ===
-													  "Delivered"
-													? "bg-green-100 text-green-800 border-green-300"
-													: "bg-red-100 text-red-800 border-red-300"
-											}`}
-										>
-											<option value="Pending">
-												Pending
-											</option>
-											<option value="Shipped">
-												Shipped
-											</option>
-											<option value="Delivered">
-												Delivered
-											</option>
-											<option value="Cancelled">
-												Cancelled
-											</option>
-										</select>
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm">
-										<button
-											onClick={() =>
-												handleViewOrder(order.id)
-											}
-											className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
-											title="View order details"
-										>
-											<FaEye className="w-4 h-4" />
-										</button>
-									</td>
-								</tr>
-							))
-						)}
-					</tbody>
-				</table>
-			</div>
+			<OrderTable
+				loading={loading}
+				paginatedOrder={paginatedOrder}
+				isSearching={isSearching}
+				handleUpdateStatus={handleUpdateStatus}
+				handleViewOrder={handleViewOrder}
+			/>
 
 			{totalPages > 1 && (
 				<ProductDisplayPagination
@@ -363,8 +235,8 @@ const OrdersAdminPage = () => {
 					totalPages={totalPages}
 					onPageChange={setPage}
 					itemsPerPage={itemsPerPage}
-					totalItems={isSearching ? displayedProducts.length : total}
-					displayedProducts={paginatedProducts}
+					totalItems={isSearching ? displayedOrder.length : total}
+					displayedProducts={paginatedOrder}
 				/>
 			)}
 
