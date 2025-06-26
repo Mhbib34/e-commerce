@@ -94,7 +94,12 @@ export const useOrder = ({
 			setOrder(orderRes.data.order || []);
 
 			// Set all orders for search functionality
-			setAllOrder(allOrderRes.data.order || []);
+			const sortedAllOrders = (allOrderRes.data.order || []).sort(
+				(a: Order, b: Order) =>
+					new Date(b.createdAt).getTime() -
+					new Date(a.createdAt).getTime()
+			);
+			setAllOrder(sortedAllOrders);
 
 			// Calculate total revenue
 			const sumTotalRevenue = (allOrderRes.data.order || []).reduce(
@@ -104,7 +109,13 @@ export const useOrder = ({
 			setTotalRevenue(sumTotalRevenue);
 
 			// Set paginated orders
-			setOrderPage(pageOrderRes.data.order.data || []);
+			const sortedPageOrders = (pageOrderRes.data.order.data || []).sort(
+				(a: Order, b: Order) =>
+					new Date(b.createdAt).getTime() -
+					new Date(a.createdAt).getTime()
+			);
+			setOrderPage(sortedPageOrders);
+			console.log(sortedPageOrders);
 
 			// Set total - this should be total items, not total pages
 			const totalItems =

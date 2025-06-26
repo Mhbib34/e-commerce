@@ -62,17 +62,23 @@ const OrdersAdminPage = () => {
 				ordersToSearch = res.data.order;
 			}
 
-			const result = ordersToSearch.filter((order) => {
-				const matchesKeyword =
-					!keyword ||
-					order.user.name.toLowerCase().includes(keyword) ||
-					order.id.toLowerCase().includes(keyword);
+			const result = ordersToSearch
+				.filter((order) => {
+					const matchesKeyword =
+						!keyword ||
+						order.user.name.toLowerCase().includes(keyword) ||
+						order.id.toLowerCase().includes(keyword);
 
-				const matchesStatus =
-					!filterStatus || order.status === filterStatus;
+					const matchesStatus =
+						!filterStatus || order.status === filterStatus;
 
-				return matchesKeyword && matchesStatus;
-			});
+					return matchesKeyword && matchesStatus;
+				})
+				.sort(
+					(a, b) =>
+						new Date(b.createdAt).getTime() -
+						new Date(a.createdAt).getTime()
+				);
 
 			setSearchResult(result);
 			setPage(1);
