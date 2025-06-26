@@ -1,7 +1,7 @@
 // components/form/ProductForm.tsx
 import React from "react";
-import Input from "../../common/Input";
-import Form from "../../fragment/Form";
+import Input from "../../../common/Input";
+import Form from "../../../fragment/Form";
 import { imagesForm } from "@/assets/assets";
 import { StaticImageData } from "next/image";
 

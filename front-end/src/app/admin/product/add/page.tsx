@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import axiosInstance from "@/lib/axiosInstance";
 import { showError, showSuccess, showWarning } from "@/lib/tasterHelper";
 import { useProductForm } from "@/hooks/useProductForm";
-import ProductForm from "@/components/template/Product/ProductForm";
+import ProductForm from "@/components/template/Admin/Product/ProductForm";
 
 const AddProductPage = () => {
 	const {

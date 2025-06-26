@@ -1,9 +1,9 @@
 "use client";
 
 import SearchForm from "@/components/fragment/SearchForm";
-import CustomerModal from "@/components/template/customer/CustomerModal";
-import UserTable from "@/components/template/customer/UserTable";
-import ProductDisplayPagination from "@/components/template/Product/ProductDisplayPagination";
+import CustomerModal from "@/components/template/Admin/customer/CustomerModal";
+import UserTable from "@/components/template/Admin/customer/UserTable";
+import ProductDisplayPagination from "@/components/template/Admin/Product/ProductDisplayPagination";
 import { useAuth } from "@/hooks/useAuth";
 import { useOrder } from "@/hooks/useOrder";
 import axiosInstance from "@/lib/axiosInstance";

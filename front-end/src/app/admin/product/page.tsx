@@ -1,10 +1,10 @@
 "use client";
 
 import LoadingAdmin from "@/components/fragment/LoadingAdmin";
-import ProductAdminDisplay from "@/components/template/Product/ProductAdminDisplay";
-import ProductModal from "@/components/template/Product/ProductModal";
-import SearchFilterProduct from "@/components/template/Product/SearchFilterProduct";
-import StatsCard from "@/components/template/Product/StatsCard";
+import ProductAdminDisplay from "@/components/template/Admin/Product/ProductAdminDisplay";
+import ProductModal from "@/components/template/Admin/Product/ProductModal";
+import SearchFilterProduct from "@/components/template/Admin/Product/SearchFilterProduct";
+import StatsCard from "@/components/template/Admin/Product/StatsCard";
 import { useProducts } from "@/hooks/useProducts";
 import axiosInstance from "@/lib/axiosInstance";
 import { Product } from "@/type/productType";

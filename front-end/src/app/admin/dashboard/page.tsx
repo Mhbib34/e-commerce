@@ -2,10 +2,10 @@
 
 import { FC, useState, useCallback, useEffect } from "react";
 
-import QuickActions from "@/components/template/Product/QuickActions";
-import OrderDisplayAdmin from "@/components/template/order/OrderDisplayAdmin";
+import QuickActions from "@/components/template/Admin/Product/QuickActions";
+import OrderDisplayAdmin from "@/components/template/Admin/order/OrderDisplayAdmin";
 import { useOrder } from "@/hooks/useOrder";
-import StatsCardAdmin from "@/components/template/order/StatsCardAdmin";
+import StatsCardAdmin from "@/components/template/Admin/order/StatsCardAdmin";
 import { useAuth } from "@/hooks/useAuth";
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "@/type/productType";

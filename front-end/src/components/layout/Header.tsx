@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { UserRound } from "lucide-react";
+import { UserRound, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
@@ -40,12 +40,19 @@ const Header = ({ children }: HeaderProps) => {
 	};
 	return (
 		<>
-			<header className="bg-black text-white p-4 sticky top-0 flex justify-between items-center z-50">
-				<div
-					onClick={() => router.push("/")}
-					className="cursor-pointer"
-				>
-					<span className="text-2xl font-bold font-mono">Velora</span>
+			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 md:w-[85%] w-[95%] mx-auto top-1">
+				<div className="flex items-center gap-4">
+					<div>
+						<Menu className="text-white" />
+					</div>
+					<div
+						onClick={() => router.push("/")}
+						className="cursor-pointer"
+					>
+						<span className="text-2xl font-bold font-mono">
+							Velora
+						</span>
+					</div>
 				</div>
 				<div className="relative">
 					{isAuthenticated ? (

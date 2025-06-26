@@ -1,15 +1,15 @@
 "use client";
 
-import ProductDisplayPagination from "@/components/template/Product/ProductDisplayPagination";
+import ProductDisplayPagination from "@/components/template/Admin/Product/ProductDisplayPagination";
 import { useOrder } from "@/hooks/useOrder";
 import axiosInstance from "@/lib/axiosInstance";
 import { Order } from "@/type/orderType";
 import React, { useState, useEffect } from "react";
 import { FaFilter, FaSync } from "react-icons/fa";
 import { toast } from "sonner";
-import OrderModal from "@/components/template/order/OrderModal";
+import OrderModal from "@/components/template/Admin/order/OrderModal";
 import SearchForm from "@/components/fragment/SearchForm";
-import OrderTable from "@/components/template/order/OrderTable";
+import OrderTable from "@/components/template/Admin/order/OrderTable";
 
 const OrdersAdminPage = () => {
 	const { orderPage, loading, total, fetchOrders, allOrder } = useOrder();
