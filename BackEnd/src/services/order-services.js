@@ -44,6 +44,22 @@ export const create = async (userId) => {
     },
   });
 
+  for (const item of cartItems) {
+    if (item.product.stock < item.quantity) {
+      throw new ResponseError(400, "Not enough stock");
+    }
+    await prismaClient.product.update({
+      where: {
+        id: item.productId,
+      },
+      data: {
+        stock: {
+          decrement: item.quantity,
+        },
+      },
+    });
+  }
+
   await prismaClient.cartItem.deleteMany({
     where: { userId },
   });

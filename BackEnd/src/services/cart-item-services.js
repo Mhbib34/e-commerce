@@ -2,46 +2,42 @@ import { prismaClient } from "../config/database.js";
 import { ResponseError } from "../error/response-error.js";
 
 export const addToCart = async (userId, productId, quantity) => {
+  if (quantity <= 0) {
+    throw new ResponseError(400, "Quantity must be greater than zero");
+  }
+
   const findProduct = await prismaClient.product.findUnique({
-    where: {
-      id: productId,
-    },
+    where: { id: productId },
   });
 
-  if (!findProduct) throw new ResponseError(404, "Product is not found!");
+  if (!findProduct) {
+    throw new ResponseError(404, "Product is not found!");
+  }
 
   const existingCartItem = await prismaClient.cartItem.findFirst({
-    where: {
-      userId,
-      productId,
-    },
+    where: { userId, productId },
   });
 
   if (existingCartItem) {
+    const newQuantity = existingCartItem.quantity + quantity;
+
+    if (newQuantity >= findProduct.stock) {
+      throw new ResponseError(400, "Product is out of stock!");
+    }
+
     return prismaClient.cartItem.update({
-      where: {
-        id: existingCartItem.id,
-      },
-      data: {
-        quantity: existingCartItem.quantity + quantity,
-      },
+      where: { id: existingCartItem.id },
+      data: { quantity: newQuantity },
       include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-            price: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        product: { select: { id: true, name: true, price: true } },
+        user: { select: { id: true, name: true } },
       },
     });
   } else {
+    if (quantity > findProduct.stock) {
+      throw new ResponseError(400, "Product is out of stock!");
+    }
+
     return prismaClient.cartItem.create({
       data: {
         userId,
@@ -49,19 +45,8 @@ export const addToCart = async (userId, productId, quantity) => {
         quantity,
       },
       include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-            price: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        product: { select: { id: true, name: true, price: true } },
+        user: { select: { id: true, name: true } },
       },
     });
   }
