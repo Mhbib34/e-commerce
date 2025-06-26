@@ -38,7 +38,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
 const StatsCardAdmin = () => {
 	const { nonAdminUsers } = useAuth();
-	const { order, totalRevenue } = useOrder();
+	const { allOrder, totalRevenue } = useOrder();
 	const { allProducts, getAllProducts } = useProducts();
 
 	useEffect(() => {
@@ -56,7 +56,7 @@ const StatsCardAdmin = () => {
 			/>
 			<StatCard
 				title="Total Orders"
-				value={order.length}
+				value={allOrder.length}
 				icon={ShoppingCart}
 			/>
 			<StatCard

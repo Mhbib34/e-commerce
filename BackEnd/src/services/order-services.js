@@ -112,7 +112,7 @@ export const getAllOrder = async () => {
         },
       },
       user: {
-        select: { id: true, name: true },
+        select: { id: true, name: true, role: true },
       },
     },
     orderBy: {

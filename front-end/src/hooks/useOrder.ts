@@ -93,7 +93,7 @@ export const useOrder = ({
 			// Set individual user orders (if applicable)
 			setOrder(orderRes.data.order || []);
 
-			// Set all orders
+			// Set all orders for search functionality
 			setAllOrder(allOrderRes.data.order || []);
 
 			// Calculate total revenue
