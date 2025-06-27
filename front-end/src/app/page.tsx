@@ -7,37 +7,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-	const { user, isAuthenticated, logout } = useAuth();
+	const { isAuthenticated } = useAuth();
 	const router = useRouter();
 
 	return (
-		<div className="h-screen flex items-center justify-center">
+		<div className="flex items-center justify-center mt-4">
 			{isAuthenticated ? (
-				<div className="text-center">
+				<div className="bg-amber-300 w-full rounded-xl">
 					<Image
-						src={imagesForm.logout}
-						alt="Logout"
-						width={400}
-						height={400}
+						src={imagesForm.imageMain}
+						alt="Login"
+						className="w-full rounded-xl"
 					/>
-					<div>
-						<h1 className="text-2xl font-bold mb-4">
-							Welcome, {user?.name || user?.username}!
-						</h1>
-						<p className="">Email: {user?.email}</p>
-						<p className="">
-							Account Status:{" "}
-							{user?.isAccountVerified
-								? "Verified"
-								: "Not Verified"}
-						</p>
-						<Button
-							onClick={logout}
-							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-						>
-							Logout
-						</Button>
-					</div>
 				</div>
 			) : (
 				<div className="text-center">

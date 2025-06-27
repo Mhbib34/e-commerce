@@ -34,5 +34,9 @@ export default function LayoutWrapper({
 		return <>{children}</>;
 	}
 
-	return <Header>{children}</Header>;
+	return (
+		<div className="md:px-28 px-2">
+			<Header>{children}</Header>
+		</div>
+	);
 }

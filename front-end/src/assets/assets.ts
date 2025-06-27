@@ -7,6 +7,7 @@ import p6 from "@/assets/images/p6.png";
 import login from "@/assets/images/login.png";
 import logout from "@/assets/images/logout.png";
 import eCommerceLogo from "@/assets/images/e-commerce-logo.png";
+import imageMain from "@/assets/images/mainImage.png";
 
 export const imagesForm = {
 	p1,
@@ -18,4 +19,5 @@ export const imagesForm = {
 	login,
 	logout,
 	eCommerceLogo,
+	imageMain,
 };

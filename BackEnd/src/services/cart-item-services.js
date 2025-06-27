@@ -74,9 +74,6 @@ export const getCartByUser = async (userId) => {
     },
   });
 
-  if (!cartItems || (await cartItems).length === 0)
-    throw new ResponseError(400, "Your cart still empty!");
-
   return cartItems;
 };
 

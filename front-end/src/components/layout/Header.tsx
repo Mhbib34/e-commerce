@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
 import { showError, showSuccess } from "@/lib/tasterHelper";
 import Button from "../common/Button";
+import { useCart } from "@/hooks/useCart";
 
 type HeaderProps = {
 	children: React.ReactNode;
@@ -16,6 +17,7 @@ type HeaderProps = {
 const Header = ({ children }: HeaderProps) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const { isAuthenticated, user, logout } = useAuth();
+	const { cart } = useCart();
 	const router = useRouter();
 
 	const handleClickVerify = async (e: React.MouseEvent) => {
@@ -40,7 +42,7 @@ const Header = ({ children }: HeaderProps) => {
 	};
 	return (
 		<>
-			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 md:w-[85%] w-[95%] mx-auto top-1">
+			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 mx-auto top-1">
 				<div className="flex items-center gap-4 w-[50%]">
 					<div>
 						<Menu className="text-white" />
@@ -74,8 +76,14 @@ const Header = ({ children }: HeaderProps) => {
 								className=" relative w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
 							>
 								<ShoppingCart className="text-black" />
-								<div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex justify-center items-center text-xs">
-									<span className=" text-white">0</span>
+								<div
+									className={`${
+										!!cart?.length ? "block" : "hidden"
+									} absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex justify-center items-center text-xs`}
+								>
+									<span className=" text-white">
+										{cart?.length}
+									</span>
 								</div>
 							</div>
 							<div
