@@ -182,7 +182,7 @@ const AdminSidebar: FC<Props> = ({ onClose }) => {
 				<div className="p-4 border-t border-gray-200">
 					<div className="text-center">
 						<p className="text-xs text-gray-500">
-							© 2025 ECommerce Admin
+							© 2025 Velora Admin
 						</p>
 						<p className="text-xs text-gray-400 mt-1">
 							Version 1.0.0

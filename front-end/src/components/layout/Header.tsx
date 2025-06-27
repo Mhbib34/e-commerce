@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { UserRound, Menu } from "lucide-react";
+import { UserRound, Menu, Search, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
@@ -41,7 +41,7 @@ const Header = ({ children }: HeaderProps) => {
 	return (
 		<>
 			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 md:w-[85%] w-[95%] mx-auto top-1">
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-4 w-[50%]">
 					<div>
 						<Menu className="text-white" />
 					</div>
@@ -53,14 +53,37 @@ const Header = ({ children }: HeaderProps) => {
 							Velora
 						</span>
 					</div>
+					{isAuthenticated && (
+						<div className="bg-white rounded-full hidden md:flex px-4 py-2  items-center w-full justify-between">
+							<input
+								type="search"
+								className=" placeholder:text-black w-full focus:outline-none text-black"
+								placeholder="Search for products, brands and more..."
+							/>
+							<div className="cursor-pointer">
+								<Search className="text-black w-6 h-6" />
+							</div>
+						</div>
+					)}
 				</div>
 				<div className="relative">
 					{isAuthenticated ? (
-						<div
-							onClick={() => setIsOpen(!isOpen)}
-							className="w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
-						>
-							<UserRound className="text-black" />
+						<div className="flex gap-3 items-center">
+							<div
+								title="Cart"
+								className=" relative w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
+							>
+								<ShoppingCart className="text-black" />
+								<div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex justify-center items-center text-xs">
+									<span className=" text-white">0</span>
+								</div>
+							</div>
+							<div
+								onClick={() => setIsOpen(!isOpen)}
+								className="w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
+							>
+								<UserRound className="text-black" />
+							</div>
 						</div>
 					) : (
 						<div className="flex justify-center items-center gap-2">
