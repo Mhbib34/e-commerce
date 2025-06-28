@@ -88,6 +88,7 @@ const Header = ({ children }: HeaderProps) => {
 							</div>
 							<div
 								onClick={() => setIsOpen(!isOpen)}
+								title="Account"
 								className="w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
 							>
 								<UserRound className="text-black" />
