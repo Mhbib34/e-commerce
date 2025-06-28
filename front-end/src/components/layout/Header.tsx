@@ -42,7 +42,7 @@ const Header = ({ children }: HeaderProps) => {
 	};
 	return (
 		<>
-			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 mx-auto top-1">
+			<header className="bg-black text-white md:py-3 py-2 md:px-6 px-3 sticky rounded-xl flex justify-between items-center z-50 mx-auto md:top-3 top-5">
 				<div className="flex items-center gap-4 w-[50%]">
 					<div>
 						<Menu className="text-white" />
