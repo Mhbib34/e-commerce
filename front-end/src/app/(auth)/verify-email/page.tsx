@@ -109,7 +109,7 @@ const EmailVerifyPage = () => {
 							type="text"
 							maxLength={1}
 							required
-							className="w-12 h-12 bg-white border-2 border-black text-black text-center text-xl rounded-md focus:outline-none focus:ring"
+							className="md:w-12 md:h-12 w-10 h-10 bg-white border-2 border-black text-black text-center text-xl rounded-md focus:outline-none focus:ring"
 							ref={(el) => {
 								inputRefs.current[index] = el;
 							}}

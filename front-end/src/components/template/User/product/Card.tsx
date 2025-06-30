@@ -7,6 +7,7 @@ const Card = ({ id, name, brand, price, image }: Product) => {
 	return (
 		<div
 			key={id}
+			title={name}
 			className="md:w-[250px] h-[350px] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex flex-col md:justify-between cursor-pointer"
 		>
 			<div className="relative w-full h-1/2">
@@ -21,7 +22,7 @@ const Card = ({ id, name, brand, price, image }: Product) => {
 				</div>
 			</div>
 			<div className="p-4">
-				<h3 className="text-md   mb-1">{name}</h3>
+				<h3 className="text-md mb-1">{name}</h3>
 				<div className="flex gap-2 items-center">
 					<CheckCircleIcon className="h-5 w-5 text-green-500" />
 					<span className="font-medium">{brand}</span>
