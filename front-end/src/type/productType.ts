@@ -3,13 +3,13 @@ import { Category } from "./categoryType";
 export type Product = {
 	id: string;
 	name: string;
-	description: string;
-	brand: string;
+	description?: string;
+	brand?: string;
 	price: number;
-	stock: number;
-	category: Category;
+	stock?: number;
+	category?: Category;
 	image: string;
-	quantity: number;
+	quantity?: number;
 };
 
 export type ProductStore = {

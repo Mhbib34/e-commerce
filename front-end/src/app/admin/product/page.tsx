@@ -55,7 +55,7 @@ const AdminProductPage: FC = () => {
 				const matchesKeyword =
 					product.name.toLowerCase().includes(keyword) ||
 					product.category?.name?.toLowerCase().includes(keyword) ||
-					product.brand.toLowerCase().includes(keyword);
+					product?.brand?.toLowerCase().includes(keyword);
 
 				const matchesCategory =
 					selectedCategory === "all" ||

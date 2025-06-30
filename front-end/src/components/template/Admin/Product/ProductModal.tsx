@@ -14,8 +14,6 @@ const ProductModal = ({
 	selectedProduct,
 	handleCloseModal,
 }: ProductModalProps) => {
-	console.log(selectedProduct?.image);
-
 	return (
 		<AnimatePresence mode="wait">
 			{isModalOpen && selectedProduct && (
@@ -150,7 +148,7 @@ const ProductModal = ({
 								},
 								{
 									label: "Category",
-									value: selectedProduct.category.name,
+									value: selectedProduct?.category?.name,
 									icon: "🗂️",
 								},
 								{
