@@ -5,11 +5,23 @@ import Image from "next/image";
 import { CrownIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Card = ({ id, name, brand, price, image, description }: Product) => {
+interface CardProps extends Product {
+	onClick: () => void;
+}
+const Card = ({
+	id,
+	name,
+	brand,
+	price,
+	image,
+	description,
+	onClick,
+}: CardProps) => {
 	const [hovered, setHovered] = useState(false);
 
 	return (
 		<div
+			onClick={onClick}
 			key={id}
 			title={name}
 			className="md:w-[250px] h-[350px] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl flex flex-col md:justify-between cursor-pointer group"

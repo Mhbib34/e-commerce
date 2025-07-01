@@ -45,6 +45,9 @@ const IsLoginMain = () => {
 							.filter((item) => item.stock && item.stock > 0)
 							.map((product) => (
 								<Card
+									onClick={() => {
+										window.location.href = `/product/detail/${product.id}`;
+									}}
 									key={product.id}
 									id={product.id}
 									name={product.name}
