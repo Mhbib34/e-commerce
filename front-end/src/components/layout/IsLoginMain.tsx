@@ -12,7 +12,6 @@ const IsLoginMain = () => {
 		getAllProducts();
 		//eslint-disable-next-line
 	}, []);
-	console.log(allProducts);
 
 	return (
 		<div className="flex flex-col items-center md:gap-10 gap-5 w-full">
@@ -40,20 +39,23 @@ const IsLoginMain = () => {
 			</div>
 			<div className="w-full flex flex-col gap-2 md:gap-4">
 				<span className="md:text-xl text-lg font-medium">Product</span>
-				<div className="md:flex md:items-center md:flex-wrap md:justify-between w-full grid grid-cols-2 gap-2">
+				<div className="md:grid-cols-5 w-full grid grid-cols-2 gap-2">
 					{allProducts.length > 0 ? (
-						allProducts.map((item, index) => (
-							<Card
-								key={index}
-								id={item.id}
-								name={item.name}
-								brand={item.brand}
-								price={item.price}
-								image={item.image}
-							/>
-						))
+						allProducts
+							.filter((item) => item.stock && item.stock > 0)
+							.map((product) => (
+								<Card
+									key={product.id}
+									id={product.id}
+									name={product.name}
+									brand={product.brand}
+									price={product.price}
+									description={product.description}
+									image={product.image}
+								/>
+							))
 					) : (
-						<p>Loading...</p> // Atau skeleton loader
+						<p>Loading..</p>
 					)}
 				</div>
 			</div>

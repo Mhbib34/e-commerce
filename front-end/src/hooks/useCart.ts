@@ -7,7 +7,6 @@ export const useCart = () => {
 
 	const getCart = async () => {
 		const res = await axiosInstance.get("/cart");
-		console.log(res.data.cart);
 		setCart(res.data.cart);
 	};
 
