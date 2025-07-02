@@ -110,7 +110,7 @@ const ProductDetailPage = () => {
 							</div>
 						</div>
 
-						<div className="">
+						<div className="mt-6 border-t-2 border-gray-200 py-2">
 							<h3 className="text-xl font-semibold text-gray-900 mb-2">
 								Description
 							</h3>
