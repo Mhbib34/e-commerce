@@ -98,7 +98,7 @@ const ProductDetailPage = () => {
 				<div className="flex flex-col lg:flex-row">
 					{/* Image Section */}
 					<div className="lg:w-1/2 relative">
-						<div className="relative w-full h-96 lg:h-[600px] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+						<div className="relative w-full h-96 lg:h-[600px] overflow-hidden">
 							<Image
 								src={`http://localhost:5000${product.image}`}
 								alt={product.name}
@@ -110,14 +110,14 @@ const ProductDetailPage = () => {
 								<motion.button
 									whileHover={{ scale: 1.1 }}
 									whileTap={{ scale: 0.9 }}
-									className="bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors"
+									className="bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors cursor-pointer"
 								>
 									<Heart className="w-5 h-5 text-gray-600" />
 								</motion.button>
 								<motion.button
 									whileHover={{ scale: 1.1 }}
 									whileTap={{ scale: 0.9 }}
-									className="bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors"
+									className="bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors cursor-pointer"
 								>
 									<Share2 className="w-5 h-5 text-gray-600" />
 								</motion.button>
@@ -162,7 +162,7 @@ const ProductDetailPage = () => {
 							</div>
 
 							<div className="mb-8">
-								<span className="text-4xl font-bold text-blue-600">
+								<span className="text-4xl font-bold text-black italic">
 									{formatCurrency(product.price)}
 								</span>
 								<p className="text-sm text-gray-500 mt-1">
@@ -171,12 +171,12 @@ const ProductDetailPage = () => {
 							</div>
 
 							{/* Action Buttons */}
-							<div className="flex gap-4 mb-8">
+							<div className="flex gap-4 mb-8 md:flex-row flex-col w-full justify-between">
 								<motion.div
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
 									onClick={() => setIsOpen(true)}
-									className="flex items-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 rounded-2xl flex-1 justify-center gap-3 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300"
+									className="flex gap-2 bg-black text-white px-4 py-2 rounded-md cursor-pointer justify-center items-center w-full border-2"
 								>
 									<ShoppingBagIcon className="w-6 h-6" />
 									<span className="font-semibold">
@@ -187,7 +187,7 @@ const ProductDetailPage = () => {
 								<motion.div
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
-									className="flex items-center bg-white text-gray-900 py-4 px-8 rounded-2xl flex-1 justify-center border-2 border-gray-200 hover:border-gray-300 transition-all duration-300 shadow-lg hover:shadow-xl"
+									className="flex gap-2 bg-white text-black border-2 border-black px-4 py-2 rounded-md cursor-pointer justify-center items-center w-full"
 								>
 									<span className="font-semibold">
 										Buy Now
@@ -262,20 +262,23 @@ const ProductDetailPage = () => {
 								duration: 0.4,
 							}}
 							onClick={(e) => e.stopPropagation()}
-							className="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
+							className="relative bg-white  w-full max-w-4xl rounded-3xl shadow-2xl overflow-y-auto md:overflow-hidden h-[90vh] md:h-auto"
 						>
-							<motion.button
-								whileHover={{ scale: 1.1, rotate: 90 }}
-								whileTap={{ scale: 0.9 }}
-								className="absolute top-6 right-6 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 text-gray-700 hover:text-red-600 hover:bg-white transition-colors shadow-lg"
-								onClick={() => setIsOpen(false)}
-							>
-								<XCircleIcon className="w-6 h-6" />
-							</motion.button>
+							<div className="sticky top-2 right-2 w-full flex justify-end px-2 z-10">
+								<motion.button
+									whileHover={{ scale: 1.1, rotate: 90 }}
+									whileTap={{ scale: 0.9 }}
+									className="bg-white/90 backdrop-blur-sm rounded-full p-2 text-gray-700 hover:text-red-600 hover:bg-white transition-colors shadow-lg cursor-pointer"
+									onClick={() => setIsOpen(false)}
+								>
+									<XCircleIcon className="w-6 h-6" />
+								</motion.button>
+							</div>
 
-							<div className="flex flex-col md:flex-row">
+							{/* Content Modal */}
+							<div className="flex flex-col md:flex-row -mt-16 pt-16">
 								<div className="md:w-1/2 relative">
-									<div className="relative w-full h-80 md:h-[500px] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+									<div className="relative w-full h-80 md:h-[500px] overflow-hidden">
 										<Image
 											src={`http://localhost:5000${product.image}`}
 											alt={product.name}
@@ -287,10 +290,12 @@ const ProductDetailPage = () => {
 								</div>
 
 								<div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
+									{/* Rest of the modal content remains the same */}
 									<motion.div
 										initial={{ opacity: 0, x: 20 }}
 										animate={{ opacity: 1, x: 0 }}
 										transition={{ delay: 0.2 }}
+										className="border-b border-gray-300 mb-6"
 									>
 										<div className="flex items-center gap-2 mb-2">
 											<LucideCrown className="w-5 h-5 text-yellow-500" />
@@ -305,7 +310,7 @@ const ProductDetailPage = () => {
 											<span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
 											{product.stock} Available
 										</p>
-										<p className="text-3xl font-bold text-blue-600 mb-6">
+										<p className="text-3xl font-bold text-black mb-6 italic">
 											{formatCurrency(product.price)}
 										</p>
 									</motion.div>
@@ -328,7 +333,7 @@ const ProductDetailPage = () => {
 														"decrement"
 													)
 												}
-												className="bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-shadow"
+												className="bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
 											>
 												<Minus className="w-6 h-6 text-gray-600" />
 											</motion.button>
@@ -348,7 +353,7 @@ const ProductDetailPage = () => {
 														"increment"
 													)
 												}
-												className="bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-shadow"
+												className="bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
 											>
 												<Plus className="w-6 h-6 text-gray-600" />
 											</motion.button>
@@ -363,7 +368,7 @@ const ProductDetailPage = () => {
 										<motion.button
 											whileHover={{ scale: 1.02 }}
 											whileTap={{ scale: 0.98 }}
-											className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3"
+											className="w-full bg-black text-white rounded-xl flex gap-2 items-center justify-center py-3 px-6"
 										>
 											<ShoppingBagIcon className="w-6 h-6" />
 											Add {quantity} to Cart
