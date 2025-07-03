@@ -20,8 +20,10 @@ import {
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "@/type/productType";
 import { formatCurrency } from "@/utils/format";
+import { useCart } from "@/context/CartContext";
 
 const ProductDetailPage = () => {
+	const { addToCart } = useCart();
 	const params = useParams();
 	const { getProductById } = useProducts();
 	const [product, setProduct] = useState<Product | null>(null);
@@ -44,7 +46,8 @@ const ProductDetailPage = () => {
 		};
 
 		fetchProduct();
-	}, [params, getProductById]);
+		//eslint-disable-next-line
+	}, []);
 
 	const handleQuantityChange = (action: "increment" | "decrement") => {
 		setQuantity((prev) => {
@@ -53,6 +56,23 @@ const ProductDetailPage = () => {
 			if (action === "decrement" && prev > 1) return prev - 1;
 			return prev;
 		});
+	};
+
+	const handleAddToCart = async () => {
+		if (!product || !params?.id) return;
+		const result = await addToCart(params.id as string, quantity);
+		if (result.success) {
+			console.log("Successfully added to cart");
+			setIsOpen(false);
+
+			// Optional: Show success toast
+			// toast.success(`${quantity} item(s) added to cart!`);
+		} else {
+			console.error("Failed to add to cart:", result.error);
+
+			// Optional: Show error toast
+			// toast.error("Failed to add item to cart");
+		}
 	};
 
 	if (loading) {
@@ -89,7 +109,7 @@ const ProductDetailPage = () => {
 
 	return (
 		<motion.div
-			initial={{ opacity: 0, y: 30 }}
+			initial={{ opacity: 0, y: 50 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.6 }}
 			className="mt-10 mb-10"
@@ -366,6 +386,7 @@ const ProductDetailPage = () => {
 										transition={{ delay: 0.4 }}
 									>
 										<motion.button
+											onClick={handleAddToCart}
 											whileHover={{ scale: 1.02 }}
 											whileTap={{ scale: 0.98 }}
 											className="w-full bg-black text-white rounded-xl flex gap-2 items-center justify-center py-3 px-6"
