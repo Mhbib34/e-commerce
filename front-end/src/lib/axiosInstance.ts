@@ -5,4 +5,17 @@ const axiosInstance = axios.create({
 	withCredentials: true,
 });
 
+axiosInstance.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error.response?.status === 401) {
+			console.warn("Unauthorized, skipping...");
+			// Optional: redirect to login
+			// window.location.href = "/login";
+			return Promise.resolve({ data: { cart: [] } }); // Graceful fallback
+		}
+		return Promise.reject(error);
+	}
+);
+
 export default axiosInstance;
