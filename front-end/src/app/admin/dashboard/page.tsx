@@ -13,7 +13,7 @@ import TopProducts from "@/components/template/Admin/Product/TopProducts";
 
 const AdminDashboardPage: FC = () => {
 	const [page, setPage] = useState(1);
-	const itemsPerPage = 5;
+	const itemsPerPage = 9;
 	const { user } = useAuth();
 	const { orderPage, loading, error, refetch } = useOrder({
 		page,

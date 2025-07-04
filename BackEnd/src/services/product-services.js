@@ -237,7 +237,7 @@ export const getTopProducts = async () => {
   const topProducts = Object.entries(productMap)
     .map(([id, data]) => ({ id, ...data }))
     .sort((a, b) => b.quantity - a.quantity)
-    .slice(0, 5); // ambil top 5
+    .slice(0, 10); // ambil top 5
 
   return topProducts;
 };
