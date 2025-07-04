@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, UserRound } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { cartBadgeVariants } from "@/utils/variants";
+import { useRouter } from "next/navigation";
 
 const HeaderAuthMenu = ({
 	isOpen,
@@ -12,11 +13,13 @@ const HeaderAuthMenu = ({
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	const { cartCount } = useCart();
+	const router = useRouter();
 
 	return (
 		<div className="flex gap-3 items-center">
 			<motion.div
 				title="Cart"
+				onClick={() => router.push("/cart")}
 				className="relative w-10 h-10 rounded-full bg-white flex justify-center items-center cursor-pointer"
 				whileHover={{ scale: 1.1 }}
 				whileTap={{ scale: 0.9 }}

@@ -8,23 +8,14 @@ import React, {
 	ReactNode,
 } from "react";
 import axiosInstance from "@/lib/axiosInstance";
-
-// Tipe item di dalam cart
-export interface CartItem {
-	id: string;
-	productId: string;
-	name: string;
-	price: number;
-	image: string;
-	quantity: number;
-}
+import { Cart } from "@/type/cartType";
 
 // Tipe respons addToCart
 interface AddToCartResponse {
 	success: true;
 	data: {
 		message: string;
-		item: CartItem;
+		item: Cart;
 	};
 }
 
@@ -35,7 +26,7 @@ interface AddToCartError {
 
 // Tipe context yang disediakan
 interface CartContextType {
-	cartItems: CartItem[];
+	cartItems: Cart[];
 	cartCount: number;
 	loading: boolean;
 	addToCart: (
@@ -61,7 +52,7 @@ export const useCart = (): CartContextType => {
 
 // Provider
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-	const [cartItems, setCartItems] = useState<CartItem[]>([]);
+	const [cartItems, setCartItems] = useState<Cart[]>([]);
 	const [cartCount, setCartCount] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -91,7 +82,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 			setLoading(true);
 			const response = await axiosInstance.post<{
 				message: string;
-				item: CartItem;
+				item: Cart;
 			}>("/cart", { productId, quantity });
 
 			await fetchCartItems();
