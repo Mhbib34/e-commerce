@@ -69,6 +69,8 @@ export const getCartByUser = async (userId) => {
           id: true,
           name: true,
           price: true,
+          image: true,
+          brand: true,
         },
       },
     },
