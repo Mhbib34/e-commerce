@@ -10,15 +10,17 @@ import ProductModalDetail from "@/components/template/User/product/detail/Produc
 import { showError, showSuccess } from "@/lib/tasterHelper";
 import ImageSection from "@/components/template/User/product/detail/ImageSection";
 import DetailSection from "@/components/template/User/product/detail/DetailSection";
+import Card from "@/components/template/User/product/Card";
 
 const ProductDetailPage = () => {
 	const { addToCart } = useCart();
 	const params = useParams();
-	const { getProductById } = useProducts();
+	const { getProductById, getTopProducts } = useProducts();
 	const [product, setProduct] = useState<Product | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [isOpen, setIsOpen] = useState(false);
 	const [quantity, setQuantity] = useState(1);
+	const [topProducts, setTopProducts] = useState<Product[]>([]);
 
 	useEffect(() => {
 		const fetchProduct = async () => {
@@ -34,7 +36,17 @@ const ProductDetailPage = () => {
 			}
 		};
 
+		const fetchTopProducts = async () => {
+			try {
+				const topProducts = await getTopProducts();
+				setTopProducts(topProducts);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+
 		fetchProduct();
+		fetchTopProducts();
 		//eslint-disable-next-line
 	}, []);
 
@@ -118,6 +130,29 @@ const ProductDetailPage = () => {
 				handleQuantityChange={handleQuantityChange}
 				handleAddToCart={handleAddToCart}
 			/>
+
+			{/* top Products */}
+			<div className="w-full flex flex-col gap-2 md:gap-4 mt-5">
+				<span className="md:text-xl text-lg font-medium">
+					Top Product
+				</span>
+				<div className="md:grid-cols-5 w-full grid grid-cols-2 gap-2">
+					{topProducts.map((product) => (
+						<Card
+							onClick={() => {
+								window.location.href = `/product/detail/${product.id}`;
+							}}
+							key={product.id}
+							id={product.id}
+							name={product.name}
+							brand={product.brand}
+							price={product.price}
+							description={product.description}
+							image={product.image}
+						/>
+					))}
+				</div>
+			</div>
 		</motion.div>
 	);
 };

@@ -213,7 +213,14 @@ export const getTopProducts = async () => {
       orderItems: {
         include: {
           product: {
-            select: { id: true, name: true },
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              brand: true,
+              price: true,
+              image: true,
+            },
           },
         },
       },
@@ -229,6 +236,10 @@ export const getTopProducts = async () => {
         productMap[id] = {
           name: item.product.name,
           quantity: 0,
+          description: item.product.description,
+          brand: item.product.brand,
+          price: item.product.price,
+          image: item.product.image,
         };
       }
       productMap[id].quantity += item.quantity;
