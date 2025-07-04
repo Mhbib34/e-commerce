@@ -104,9 +104,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
-	const removeFromCart = async (productId: string): Promise<void> => {
+	const removeFromCart = async (cartItemId: string): Promise<void> => {
 		try {
-			await axiosInstance.delete(`/cart/${productId}`);
+			await axiosInstance.delete(`/cart/${cartItemId}`);
 			await fetchCartItems();
 		} catch (err) {
 			console.error("Failed to remove item from cart:", err);

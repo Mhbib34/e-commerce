@@ -13,10 +13,11 @@ import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
+import { showConfirm, showError, showSuccess } from "@/lib/tasterHelper";
 
 const ShoppingCart: React.FC = () => {
 	const router = useRouter();
-	const { cartCount, cartItems } = useCart();
+	const { cartCount, cartItems, removeFromCart } = useCart();
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
 	const formatPrice = (price: number) => {
@@ -42,6 +43,16 @@ const ShoppingCart: React.FC = () => {
 			setSelectedItems([]);
 		} else {
 			setSelectedItems(cartItems.map((item) => item.id));
+		}
+	};
+
+	const handleDeleteCart = async (id: string) => {
+		try {
+			await removeFromCart(id);
+			showSuccess("Item deleted successfully.");
+		} catch (error) {
+			console.error("Failed to remove item from cart:", error);
+			showError("Failed to remove item from cart.");
 		}
 	};
 
@@ -126,6 +137,7 @@ const ShoppingCart: React.FC = () => {
 								{cartItems.map((item) => (
 									<div
 										key={item.id}
+										onClick={() => console.log(item.id)}
 										className="p-6 hover:bg-gray-50 transition-colors"
 									>
 										<div className="flex items-center space-x-4">
@@ -210,10 +222,17 @@ const ShoppingCart: React.FC = () => {
 												</div>
 
 												<button
-													// onClick={() =>
-													// 	removeItem(item.id)
-													// }
-													className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+													onClick={() =>
+														showConfirm(
+															"Are you sure you want to delete this cart item?",
+															item.product.name,
+															() =>
+																handleDeleteCart(
+																	item.id
+																)
+														)
+													}
+													className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
 												>
 													<Trash2 className="h-4 w-4" />
 												</button>
