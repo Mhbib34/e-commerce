@@ -54,7 +54,7 @@ const ShoppingCart: React.FC = () => {
 		0
 	);
 	const shipping = selectedItems.length > 0 ? 25000 : 0;
-	const tax = subtotal * 0.1;
+	const tax = subtotal * 0.05;
 	const total = subtotal + shipping + tax;
 
 	const isAllSelected =
@@ -66,7 +66,7 @@ const ShoppingCart: React.FC = () => {
 		<div className="min-h-screen bg-gray-50 mt-10">
 			{/* Header */}
 			<div className="bg-white shadow-sm border-b">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="px-6">
 					<div className="flex items-center justify-between h-16">
 						<div className="flex items-center space-x-4">
 							<Button
@@ -109,7 +109,7 @@ const ShoppingCart: React.FC = () => {
 															isPartialSelected;
 												}}
 												onChange={toggleSelectAll}
-												className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+												className="h-4 w-4 rounded border-gray-300 accent-black cursor-pointer"
 											/>
 											<label
 												htmlFor="select-all"
@@ -142,7 +142,7 @@ const ShoppingCart: React.FC = () => {
 															item.id
 														)
 													}
-													className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+													className="h-4 w-4 rounded accent-black cursor-pointer"
 												/>
 											</div>
 
@@ -227,7 +227,7 @@ const ShoppingCart: React.FC = () => {
 
 					{/* Order Summary */}
 					<div className="lg:col-span-1 ">
-						<div className="bg-white rounded-lg shadow-sm border sticky top-8">
+						<div className="bg-white rounded-lg shadow-sm border sticky top-20">
 							<div className="p-6 border-b">
 								<h2 className="text-lg font-semibold text-gray-900">
 									Order Summary
@@ -235,7 +235,9 @@ const ShoppingCart: React.FC = () => {
 								{selectedItems.length > 0 && (
 									<p className="text-sm text-gray-500 mt-1">
 										{selectedItems.length} item
-										{selectedItems.length > 1 ? "s" : ""}{" "}
+										{selectedItems.length > 1
+											? "s"
+											: ""}{" "}
 										selected
 									</p>
 								)}
@@ -300,10 +302,6 @@ const ShoppingCart: React.FC = () => {
 														: ""
 											  })`}
 									</span>
-								</button>
-
-								<button className="w-full bg-white text-black border-2 border-black py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors font-medium cursor-pointer">
-									Save for Later
 								</button>
 							</div>
 						</div>
