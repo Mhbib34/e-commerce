@@ -22,7 +22,9 @@ export default function LayoutWrapper({
 
 	// Jika path termasuk yang disembunyikan ATAU dimulai dengan "/admin"
 	const isAuthPage =
-		hiddenHeaderPaths.includes(pathname) || pathname.startsWith("/admin");
+		hiddenHeaderPaths.includes(pathname) ||
+		pathname.startsWith("/admin") ||
+		pathname === "/not-found";
 
 	const { isLoading } = useAuth();
 

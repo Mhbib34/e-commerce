@@ -1,23 +1,9 @@
 import React from "react";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { Search } from "lucide-react";
+import { searchBarVariants } from "@/utils/variants";
 
 const HeaderSearch = () => {
-	const searchBarVariants: Variants = {
-		hidden: {
-			width: 0,
-			opacity: 0,
-		},
-		visible: {
-			width: "100%",
-			opacity: 1,
-			transition: {
-				duration: 0.5,
-				ease: "easeOut",
-			},
-		},
-	};
-
 	return (
 		<motion.div
 			initial="hidden"

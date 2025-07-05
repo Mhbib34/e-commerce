@@ -1,6 +1,6 @@
 // app/product/detail/[id]/page.tsx
-import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
 import { cookies } from "next/headers";
 
@@ -124,7 +124,7 @@ export default async function ProductDetailPage({
 
 	// Handle product not found
 	if (!product) {
-		notFound();
+		return notFound();
 	}
 
 	return (
