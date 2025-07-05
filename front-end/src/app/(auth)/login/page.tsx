@@ -9,11 +9,13 @@ import { imagesForm } from "@/assets/assets";
 import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/axiosInstance";
 import { showError, showSuccess } from "@/lib/tasterHelper";
+import { useCart } from "@/context/CartContext";
 
 const LoginPage = () => {
 	const [user, setUser] = useState({ email: "", password: "" });
 	const [showPassword, setShowPassword] = useState(false);
 	const { refetchUser } = useAuth();
+	const { fetchCartItems } = useCart();
 	const router = useRouter();
 
 	const handleLoginUserChange = (
@@ -42,6 +44,7 @@ const LoginPage = () => {
 				router.push("/admin/dashboard");
 			} else {
 				router.push("/");
+				fetchCartItems();
 			}
 		} catch (error) {
 			const err = error as AxiosError<{ errors: string }>;

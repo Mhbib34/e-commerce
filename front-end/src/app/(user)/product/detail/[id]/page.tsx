@@ -1,160 +1,137 @@
-"use client";
+// app/product/detail/[id]/page.tsx
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import ProductDetailClient from "./ProductDetailClient";
+import { cookies } from "next/headers";
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { useProducts } from "@/hooks/useProducts";
-import { Product } from "@/type/productType";
-import { useCart } from "@/context/CartContext";
-import ProductModalDetail from "@/components/template/User/product/detail/ProductModalDetail";
-import { showError, showSuccess } from "@/lib/tasterHelper";
-import ImageSection from "@/components/template/User/product/detail/ImageSection";
-import DetailSection from "@/components/template/User/product/detail/DetailSection";
-import Card from "@/components/template/User/product/Card";
+// Server-side API calls
+async function getProductById(id: string) {
+	try {
+		// Gunakan API_BASE_URL (tanpa NEXT_PUBLIC_) untuk server-side
+		const apiUrl = process.env.API_BASE_URL || "http://localhost:5000/api";
+		const url = `${apiUrl}/product/${id}`;
 
-const ProductDetailPage = () => {
-	const { addToCart } = useCart();
-	const params = useParams();
-	const { getProductById, getTopProducts } = useProducts();
-	const [product, setProduct] = useState<Product | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [isOpen, setIsOpen] = useState(false);
-	const [quantity, setQuantity] = useState(1);
-	const [topProducts, setTopProducts] = useState<Product[]>([]);
+		const cookieStore = await cookies();
+		const token = cookieStore.get("token")?.value;
 
-	useEffect(() => {
-		const fetchProduct = async () => {
-			try {
-				const id = params?.id;
-				if (typeof id !== "string") return;
-				const fetchedProduct = await getProductById(id);
-				setProduct(fetchedProduct);
-			} catch (error) {
-				console.error("Failed to fetch product:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		const fetchTopProducts = async () => {
-			try {
-				const topProducts = await getTopProducts();
-				setTopProducts(topProducts);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-
-		fetchProduct();
-		fetchTopProducts();
-		//eslint-disable-next-line
-	}, []);
-
-	const handleQuantityChange = (action: "increment" | "decrement") => {
-		setQuantity((prev) => {
-			const maxStock = product?.stock ?? 1;
-			if (action === "increment" && prev < maxStock) return prev + 1;
-			if (action === "decrement" && prev > 1) return prev - 1;
-			return prev;
+		const res = await fetch(url, {
+			cache: "no-store",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			credentials: "include",
 		});
-	};
 
-	const handleAddToCart = async () => {
-		if (!product || !params?.id) return;
-		const result = await addToCart(params.id as string, quantity);
-		if (result.success) {
-			console.log("Successfully added to cart");
-			setIsOpen(false);
-			showSuccess("Successfully added to cart");
-		} else {
-			console.error("Failed to add to cart:", result.error);
-			showError("Failed to add to cart");
+		if (!res.ok) {
+			throw new Error(`Failed to fetch product: ${res.status}`);
 		}
-	};
 
-	if (loading) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<motion.div
-					initial={{ opacity: 0, scale: 0.8 }}
-					animate={{ opacity: 1, scale: 1 }}
-					className="text-center"
-				>
-					<div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-					<p className="text-gray-600 text-lg">
-						Loading product details...
-					</p>
-				</motion.div>
-			</div>
-		);
+		const data = await res.json();
+
+		return data;
+	} catch (error) {
+		console.error("❌ Error fetching product:", error);
+		return null;
 	}
+}
+
+async function getTopProducts() {
+	try {
+		const apiUrl = process.env.API_BASE_URL || "http://localhost:5000/api";
+		const url = `${apiUrl}/product/top`;
+
+		const cookieStore = await cookies();
+		const token = cookieStore.get("token")?.value;
+
+		const res = await fetch(url, {
+			cache: "no-store", // Ganti ke no-store untuk debugging
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			credentials: "include",
+		});
+
+		if (!res.ok) {
+			console.error("❌ API Error:", res.status, res.statusText);
+			throw new Error(`Failed to fetch top products: ${res.status}`);
+		}
+
+		const data = await res.json();
+
+		return data;
+	} catch (error) {
+		console.error("❌ Error fetching top products	:", error);
+		return [];
+	}
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+	const { id } = await params;
+
+	const product = await getProductById(id);
 
 	if (!product) {
-		return (
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				className="flex items-center justify-center min-h-screen"
-			>
-				<div className="text-center">
-					<div className="text-6xl mb-4">😔</div>
-					<p className="text-red-500 text-xl">Product not found.</p>
-				</div>
-			</motion.div>
-		);
+		return {
+			title: "Product Not Found",
+			description: "The requested product could not be found.",
+		};
+	}
+
+	return {
+		title: `${product.name} - ${product.brand}`,
+		description: product.description,
+		openGraph: {
+			title: `${product.name} - ${product.brand}`,
+			description: product.description,
+			images: [
+				{
+					url: product.image,
+					width: 1200,
+					height: 630,
+					alt: product.name,
+				},
+			],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: `${product.name} - ${product.brand}`,
+			description: product.description,
+			images: [product.image],
+		},
+	};
+}
+
+// Main server component
+export default async function ProductDetailPage({
+	params,
+}: {
+	params: Promise<{ id: string }>;
+}) {
+	const { id } = await params;
+
+	// Fetch data on server
+	const [product, topProducts] = await Promise.all([
+		getProductById(id),
+		getTopProducts(),
+	]);
+
+	// Handle product not found
+	if (!product) {
+		notFound();
 	}
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 50 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.6 }}
-			className="mt-10 mb-10"
-		>
-			<div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-				<div className="flex flex-col lg:flex-row">
-					{/* Image Section */}
-					<ImageSection product={product} />
-
-					{/* Detail Section */}
-					<DetailSection product={product} setIsOpen={setIsOpen} />
-				</div>
-			</div>
-
-			{/* Modal with Framer Motion */}
-			<ProductModalDetail
-				isOpen={isOpen}
-				setIsOpen={setIsOpen}
-				product={product}
-				quantity={quantity}
-				handleQuantityChange={handleQuantityChange}
-				handleAddToCart={handleAddToCart}
-			/>
-
-			{/* top Products */}
-			<div className="w-full flex flex-col gap-2 md:gap-4 mt-5">
-				<span className="md:text-xl text-lg font-medium">
-					Top Product
-				</span>
-				<div className="md:grid-cols-5 w-full grid grid-cols-2 gap-2">
-					{topProducts.map((product) => (
-						<Card
-							onClick={() => {
-								window.location.href = `/product/detail/${product.id}`;
-							}}
-							key={product.id}
-							id={product.id}
-							name={product.name}
-							brand={product.brand}
-							price={product.price}
-							description={product.description}
-							image={product.image}
-						/>
-					))}
-				</div>
-			</div>
-		</motion.div>
+		<ProductDetailClient
+			initialProduct={product.product}
+			initialTopProducts={topProducts.product}
+			productId={id}
+		/>
 	);
-};
-
-export default ProductDetailPage;
+}
