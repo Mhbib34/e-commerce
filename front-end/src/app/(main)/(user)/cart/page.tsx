@@ -17,7 +17,7 @@ import { showConfirm, showError, showSuccess } from "@/lib/tasterHelper";
 
 const ShoppingCart: React.FC = () => {
 	const router = useRouter();
-	const { cartCount, cartItems, removeFromCart } = useCart();
+	const { cartCount, cartItems, removeFromCart, updateQuantity } = useCart();
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
 	const formatPrice = (price: number) => {
@@ -193,13 +193,13 @@ const ShoppingCart: React.FC = () => {
 											<div className="flex items-center space-x-3">
 												<div className="flex items-center border border-gray-300 rounded-lg">
 													<button
-														// onClick={() =>
-														// 	updateQuantity(
-														// 		item.id,
-														// 		item.quantity -
-														// 			1
-														// 	)
-														// }
+														onClick={() =>
+															updateQuantity(
+																item.id,
+																item.quantity -
+																	1
+															)
+														}
 														className="p-1 hover:bg-gray-100 rounded-l-lg transition-colors"
 													>
 														<Minus className="h-4 w-4 text-gray-600" />
@@ -208,13 +208,13 @@ const ShoppingCart: React.FC = () => {
 														{item.quantity}
 													</span>
 													<button
-														// onClick={() =>
-														// 	updateQuantity(
-														// 		item.id,
-														// 		item.quantity +
-														// 			1
-														// 	)
-														// }
+														onClick={() =>
+															updateQuantity(
+																item.id,
+																item.quantity +
+																	1
+															)
+														}
 														className="p-1 hover:bg-gray-100 rounded-r-lg transition-colors"
 													>
 														<Plus className="h-4 w-4 text-gray-600" />

@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { Cart } from "@/type/cartType";
+import { showError } from "@/lib/tasterHelper";
+import { AxiosError } from "axios";
 
 // Tipe respons addToCart
 interface AddToCartResponse {
@@ -114,14 +116,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const updateQuantity = async (
-		productId: string,
+		cartItemId: string,
 		quantity: number
 	): Promise<void> => {
 		try {
-			await axiosInstance.put(`/cart/${productId}`, { quantity });
+			await axiosInstance.patch(`/cart/${cartItemId}`, { quantity });
 			await fetchCartItems();
 		} catch (err) {
-			console.error("Failed to update quantity:", err);
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Update quantity failed."
+				);
+				console.log(error);
+			}
 		}
 	};
 
