@@ -28,12 +28,12 @@ const Card = ({
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 		>
-			<div className="relative w-full h-1/2">
+			<div className="relative w-full h-full bg-white">
 				<Image
 					src={`http://localhost:5000${image}`}
 					alt={name}
 					fill
-					className="object-cover"
+					className="object-contain  hover:scale-110 transition-transform duration-500"
 				/>
 				<div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
 					Sale
