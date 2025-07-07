@@ -111,7 +111,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 			await axiosInstance.delete(`/cart/${cartItemId}`);
 			await fetchCartItems();
 		} catch (err) {
-			console.error("Failed to remove item from cart:", err);
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Update quantity failed."
+				);
+				console.log(error);
+			}
 		}
 	};
 
