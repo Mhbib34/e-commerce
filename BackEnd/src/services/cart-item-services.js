@@ -95,3 +95,26 @@ export const removeCart = async (userId, cartItemId) => {
     },
   });
 };
+
+export const updateCart = async (cartItemId, quantity) => {
+  const findCart = await prismaClient.cartItem.findUnique({
+    where: {
+      id: cartItemId,
+    },
+  });
+
+  if (!findCart) throw new ResponseError(400, "Cart is not found");
+
+  if (quantity <= 0) {
+    throw new ResponseError(400, "Quantity must be greater than zero");
+  }
+
+  return prismaClient.cartItem.update({
+    where: {
+      id: cartItemId,
+    },
+    data: {
+      quantity,
+    },
+  });
+};

@@ -7,3 +7,4 @@ export const cartItemRouter = new express.Router();
 cartItemRouter.post("/", userAuth, cartItemController.addCart);
 cartItemRouter.get("/", userAuth, cartItemController.getCart);
 cartItemRouter.delete("/:id", userAuth, cartItemController.remove);
+cartItemRouter.patch("/:id", userAuth, cartItemController.update);

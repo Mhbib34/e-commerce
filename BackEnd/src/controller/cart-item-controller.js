@@ -2,6 +2,7 @@ import {
   addToCart,
   getCartByUser,
   removeCart,
+  updateCart,
 } from "../services/cart-item-services.js";
 
 const addToCartHandler = async (req, res, next) => {
@@ -47,8 +48,24 @@ const removeCartHandler = async (req, res, next) => {
   }
 };
 
+const updateCartHandler = async (req, res, next) => {
+  try {
+    const cartItemId = req.params.id;
+    const { quantity } = req.body;
+    const result = await updateCart(cartItemId, quantity);
+    res.status(200).json({
+      success: true,
+      message: "Cart item updated successfully",
+      cart: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   addCart: addToCartHandler,
   getCart: getCartByUserHandler,
   remove: removeCartHandler,
+  update: updateCartHandler,
 };
