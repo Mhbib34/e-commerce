@@ -101,8 +101,8 @@ const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
 			/>
 
 			{/* Top Products */}
-			<div className="w-full flex flex-col gap-2 md:gap-4 mt-5">
-				<span className="md:text-xl text-lg font-medium">
+			<div className="w-full flex flex-col gap-2 md:gap-4 mt-10">
+				<span className="md:text-xl text-xl font-bold mb-2">
 					Top Product
 				</span>
 				<div className="md:grid-cols-5 w-full grid grid-cols-2 gap-2">
