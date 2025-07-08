@@ -4,16 +4,7 @@ import axios from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
 import { showSuccess } from "@/lib/tasterHelper";
 import axiosInstance from "@/lib/axiosInstance";
-
-type User = {
-	id: string;
-	email: string;
-	username: string;
-	name: string;
-	isAccountVerified: boolean;
-	role: string;
-};
-
+import { User } from "@/type/userType";
 type AuthContextType = {
 	user: User | null;
 	isLoading: boolean;
@@ -23,6 +14,7 @@ type AuthContextType = {
 	deleteUser: (id: string) => Promise<void>;
 	nonAdminUsers: User[];
 	setNonAdminUsers: (users: User[]) => void;
+	updateUser: (data: User) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -70,6 +62,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	};
 
+	const updateUser = async (data: User) => {
+		try {
+			await axiosInstance.patch(`/user`, data);
+			refetchUser();
+		} catch (err) {
+			console.log("Update user error:", err);
+		} finally {
+			showSuccess("User updated successfully.");
+		}
+	};
+
 	useEffect(() => {
 		refetchUser();
 	}, []);
@@ -85,6 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				deleteUser,
 				nonAdminUsers,
 				setNonAdminUsers,
+				updateUser,
 			}}
 		>
 			{children}

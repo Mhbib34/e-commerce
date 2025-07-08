@@ -43,10 +43,10 @@ const UpdateProductPage = () => {
 				setProduct(fetchedProduct);
 				setName(fetchedProduct.name);
 				setPrice(fetchedProduct.price.toString());
-				setStock(fetchedProduct.stock.toString());
-				setBrand(fetchedProduct.brand);
-				setCategoryName(fetchedProduct.category.name);
-				setDescription(fetchedProduct.description);
+				setStock(fetchedProduct?.stock?.toString() || "");
+				setBrand(fetchedProduct?.brand || "");
+				setCategoryName(fetchedProduct?.category?.name || "");
+				setDescription(fetchedProduct?.description || "");
 			} catch (error) {
 				console.error(error);
 				showError("Failed to fetch product data");

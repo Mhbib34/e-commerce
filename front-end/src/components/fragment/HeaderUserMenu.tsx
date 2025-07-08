@@ -20,20 +20,16 @@ import {
 	LogOut,
 	Shield,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
 	user: User;
 	handleClickVerify: React.MouseEventHandler<HTMLButtonElement>;
 	handleLogout: React.MouseEventHandler<HTMLButtonElement>;
-	onNavigate?: (path: string) => void;
 };
 
-const HeaderUserMenu = ({
-	user,
-	handleClickVerify,
-	handleLogout,
-	onNavigate,
-}: Props) => {
+const HeaderUserMenu = ({ user, handleClickVerify, handleLogout }: Props) => {
+	const router = useRouter();
 	const menuItems = [
 		{
 			icon: UserIcon,
@@ -90,12 +86,6 @@ const HeaderUserMenu = ({
 			description: "Get assistance",
 		},
 	];
-
-	const handleMenuItemClick = (path: string) => {
-		if (onNavigate) {
-			onNavigate(path);
-		}
-	};
 
 	return (
 		<motion.div
@@ -168,7 +158,7 @@ const HeaderUserMenu = ({
 						transition={{ delay: 0.1 * (index + 1) }}
 						whileHover={{ backgroundColor: "#f8fafc" }}
 						className="px-4 py-3 cursor-pointer transition-colors duration-150"
-						onClick={() => handleMenuItemClick(item.path)}
+						onClick={() => router.push(item.path)}
 					>
 						<div className="flex items-center space-x-3">
 							<item.icon size={18} className="text-gray-600" />
@@ -197,7 +187,7 @@ const HeaderUserMenu = ({
 				>
 					<Button
 						onClick={handleLogout}
-						className="bg-red-500 hover:bg-red-600 text-white transition-all duration-200 ease-in cursor-pointer font-medium py-2 px-3 rounded-md w-full text-sm flex items-center justify-center space-x-2"
+						className="bg-black hover:scale-105 text-white transition-all duration-200 ease-in cursor-pointer font-medium py-2 px-3 rounded-md w-full text-sm flex items-center justify-center space-x-2"
 					>
 						<LogOut size={16} />
 						<span>Logout</span>
