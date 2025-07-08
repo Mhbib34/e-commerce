@@ -228,11 +228,11 @@ export const resetPassword = async (email, otp, newPassword) => {
   return updatedUser;
 };
 
-export const update = async (request) => {
+export const update = async (id, request) => {
   const userValidate = validate(updateUserValidation, request);
   const user = await prismaClient.user.findUnique({
     where: {
-      email: userValidate.email,
+      id,
     },
   });
 
@@ -240,7 +240,7 @@ export const update = async (request) => {
 
   return prismaClient.user.update({
     where: {
-      email: user.email,
+      id: user.id,
     },
     data: userValidate,
     select: {

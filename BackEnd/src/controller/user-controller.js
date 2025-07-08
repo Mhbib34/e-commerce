@@ -197,7 +197,7 @@ const resetPasswordHandler = async (req, res, next) => {
 
 const updateUserHandler = async (req, res, next) => {
   try {
-    const result = await update({ ...req.body, email: req.user.email });
+    const result = await update(req.user.id, req.body);
     res.status(200).json({
       success: true,
       message: "User updated Successfully",

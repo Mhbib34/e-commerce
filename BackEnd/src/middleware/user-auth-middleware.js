@@ -40,12 +40,12 @@ const userAuth = async (req, res, next) => {
     if (tokenDecode?.id && tokenDecode?.email) {
       const user = await prismaClient.user.findUnique({
         where: {
-          email: tokenDecode.email,
+          id: tokenDecode.id,
         },
       });
 
       if (!user) {
-        console.error("❌ User not found in database:", tokenDecode.email);
+        console.error("❌ User not found in database:", tokenDecode.id);
         throw new ResponseError(401, "User not found");
       }
 
