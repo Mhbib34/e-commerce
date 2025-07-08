@@ -16,7 +16,6 @@ import {
 	CreditCard,
 	MapPin,
 	Bell,
-	HelpCircle,
 	LogOut,
 	Shield,
 } from "lucide-react";
@@ -78,12 +77,6 @@ const HeaderUserMenu = ({ user, handleClickVerify, handleLogout }: Props) => {
 			label: "Settings",
 			path: "/settings",
 			description: "Account preferences",
-		},
-		{
-			icon: HelpCircle,
-			label: "Help & Support",
-			path: "/help",
-			description: "Get assistance",
 		},
 	];
 
@@ -156,17 +149,20 @@ const HeaderUserMenu = ({ user, handleClickVerify, handleLogout }: Props) => {
 						initial="hidden"
 						animate="visible"
 						transition={{ delay: 0.1 * (index + 1) }}
-						whileHover={{ backgroundColor: "#f8fafc" }}
-						className="px-4 py-3 cursor-pointer transition-colors duration-150"
+						whileHover={{ backgroundColor: "black	" }}
+						className="px-4 py-3 cursor-pointer transition-colors duration-150 group "
 						onClick={() => router.push(item.path)}
 					>
 						<div className="flex items-center space-x-3">
-							<item.icon size={18} className="text-gray-600" />
+							<item.icon
+								size={18}
+								className="text-gray-600 group-hover:text-white"
+							/>
 							<div className="flex-1">
-								<p className="font-medium text-gray-800 text-sm">
+								<p className="font-medium text-gray-800 text-sm group-hover:text-white">
 									{item.label}
 								</p>
-								<p className="text-xs text-gray-500">
+								<p className="text-xs text-gray-500 group-hover:text-white">
 									{item.description}
 								</p>
 							</div>
