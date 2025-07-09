@@ -1,6 +1,7 @@
 import { Lock } from "lucide-react";
 import React from "react";
 import { formatCurrency } from "@/utils/format";
+import { showConfirm } from "@/lib/tasterHelper";
 
 type Props = {
 	subtotal: number;
@@ -74,10 +75,14 @@ const OrderSummary = ({
 
 				<div className="p-6 pt-0 space-y-3">
 					<button
-						onClick={
-							isAllSelected
-								? handleCreateOrder
-								: handleCreateSelectedOrder
+						onClick={() =>
+							showConfirm(
+								"Are you sure you want to checkout?",
+								"",
+								isAllSelected
+									? handleCreateOrder
+									: handleCreateSelectedOrder
+							)
 						}
 						disabled={selectedItems.length === 0}
 						className={`w-full py-3 px-4 rounded-lg transition-colors font-medium flex items-center border-2 justify-center space-x-2 cursor-pointer ${
