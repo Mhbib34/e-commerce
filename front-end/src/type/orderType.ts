@@ -38,4 +38,6 @@ export type OrderData = {
 	refetch: () => Promise<void>;
 	fetchOrders: (page: number, limit: number) => Promise<void>;
 	fetchOrderByUserId: (userId: string) => Promise<Order[]>;
+	createOrder: () => Promise<void>;
+	createOrderByCartId: (id: string) => Promise<void>;
 };

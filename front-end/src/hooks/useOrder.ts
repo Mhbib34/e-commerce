@@ -1,7 +1,10 @@
 import axiosInstance from "@/lib/axiosInstance";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useAuth } from "./useAuth";
 import { Order, OrderData, OrderProps } from "@/type/orderType";
+import { showError, showSuccess } from "@/lib/tasterHelper";
+import { AxiosError } from "axios";
+import { useCart } from "@/context/CartContext";
 
 export const useOrder = ({
 	page = 1,
@@ -16,6 +19,7 @@ export const useOrder = ({
 	const [error, setError] = useState<string | null>(null);
 	const { isAuthenticated } = useAuth();
 
+	const { fetchCartItems } = useCart();
 	// Main fetch function that can be called with different parameters
 	const fetchOrders = useCallback(
 		async (currentPage: number = page, currentLimit: number = limit) => {
@@ -151,10 +155,41 @@ export const useOrder = ({
 		}
 	};
 
-	// Initial fetch on mount and when dependencies change
-	useEffect(() => {
-		fetchOrder();
-	}, [fetchOrder]);
+	const createOrder = async () => {
+		try {
+			const res = await axiosInstance.post("/order");
+			showSuccess(res.data.message);
+			fetchCartItems();
+		} catch (err) {
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Create order failed."
+				);
+				console.log(error);
+			}
+		}
+	};
+
+	const createOrderByCartId = async (cartId: string) => {
+		try {
+			const res = await axiosInstance.post(`/order/cart/${cartId}`);
+			showSuccess(res.data.message);
+			fetchCartItems();
+		} catch (err) {
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Create order failed."
+				);
+				console.log(error);
+			}
+		}
+	};
 
 	return {
 		order,
@@ -167,5 +202,7 @@ export const useOrder = ({
 		refetch: fetchOrder,
 		fetchOrders, // New function for manual pagination
 		fetchOrderByUserId,
+		createOrder,
+		createOrderByCartId,
 	};
 };

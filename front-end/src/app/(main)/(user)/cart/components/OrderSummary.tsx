@@ -8,6 +8,9 @@ type Props = {
 	total: number;
 	tax: number;
 	selectedItems: string[];
+	isAllSelected: boolean;
+	handleCreateOrder: () => void;
+	handleCreateSelectedOrder: () => void;
 };
 
 const OrderSummary = ({
@@ -16,6 +19,9 @@ const OrderSummary = ({
 	total,
 	tax,
 	selectedItems,
+	isAllSelected,
+	handleCreateOrder,
+	handleCreateSelectedOrder,
 }: Props) => {
 	return (
 		<div className="lg:col-span-1 ">
@@ -68,6 +74,11 @@ const OrderSummary = ({
 
 				<div className="p-6 pt-0 space-y-3">
 					<button
+						onClick={
+							isAllSelected
+								? handleCreateOrder
+								: handleCreateSelectedOrder
+						}
 						disabled={selectedItems.length === 0}
 						className={`w-full py-3 px-4 rounded-lg transition-colors font-medium flex items-center border-2 justify-center space-x-2 cursor-pointer ${
 							selectedItems.length === 0

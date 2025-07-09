@@ -8,11 +8,13 @@ import { useCart } from "@/context/CartContext";
 import { showError, showSuccess } from "@/lib/tasterHelper";
 import OrderSummary from "./components/OrderSummary";
 import CartItems from "./components/CartItems";
+import { useOrder } from "@/hooks/useOrder";
 
 const ShoppingCart: React.FC = () => {
 	const router = useRouter();
 	const { cartCount, cartItems, removeFromCart, updateQuantity } = useCart();
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
+	const { createOrder, createOrderByCartId } = useOrder();
 
 	// Toggle individual item selection
 	const toggleItemSelection = (itemId: string) => {
@@ -39,6 +41,25 @@ const ShoppingCart: React.FC = () => {
 		} catch (error) {
 			console.error("Failed to remove item from cart:", error);
 			showError("Failed to remove item from cart.");
+		}
+	};
+
+	const handleCreateOrder = async () => {
+		try {
+			const res = await createOrder();
+			console.log(res);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleCreateSelectedOrder = async () => {
+		try {
+			for (const itemId of selectedItems) {
+				await createOrderByCartId(itemId);
+			}
+		} catch (error) {
+			console.error("Failed to create selected orders:", error);
 		}
 	};
 
@@ -106,6 +127,9 @@ const ShoppingCart: React.FC = () => {
 						total={total}
 						tax={tax}
 						selectedItems={selectedItems}
+						isAllSelected={isAllSelected}
+						handleCreateOrder={handleCreateOrder}
+						handleCreateSelectedOrder={handleCreateSelectedOrder}
 					/>
 				</div>
 
