@@ -1,10 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import {
 	User,
 	Mail,
-	Phone,
 	// Calendar,
 	// MapPin,
 	// Camera,
@@ -12,25 +11,26 @@ import {
 	Save,
 	X,
 	Shield,
-	// Key,
+	Key,
 	// Bell,
 	Globe,
-	// Eye,
-	// EyeOff,
-	User2,
+	Eye,
+	EyeOff,
 	UserCircleIcon,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { showSuccess } from "@/lib/tasterHelper";
 
 const ProfileManagementPage = () => {
-	const { user, updateUser } = useAuth();
+	const { user, updateUser, updateUserPassword } = useAuth();
 	const [isEditing, setIsEditing] = useState(false);
-	// const [showPassword, setShowPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const [activeTab, setActiveTab] = useState("personal");
 	const [name, setName] = useState(user?.name || "");
 	const [email, setEmail] = useState(user?.email || "");
 	const [username, setUsername] = useState(user?.username || "");
+	const [currentPassword, setCurrentPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 
 	const tabs = [
 		{ id: "personal", label: "Personal Info", icon: User },
@@ -48,7 +48,7 @@ const ProfileManagementPage = () => {
 		},
 	};
 
-	const itemVariants = {
+	const itemVariants: Variants = {
 		hidden: { y: 20, opacity: 0 },
 		visible: {
 			y: 0,
@@ -74,6 +74,19 @@ const ProfileManagementPage = () => {
 			console.log(error);
 		}
 	};
+
+	const handleUpdateUserPassword = async () => {
+		try {
+			const res = await updateUserPassword({
+				currentPassword,
+				newPassword,
+				confirmPassword,
+			});
+			console.log(res);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<div className=" px-4 mt-10">
 			<motion.div
@@ -92,7 +105,7 @@ const ProfileManagementPage = () => {
 							<div className="flex items-center gap-2">
 								<div className="relative">
 									<div className="w-24 h-24 bg-gradient-to-r from-red-600 to-purple-600 bg-opacity-20 rounded-full flex items-center justify-center text-2xl font-bold ">
-										{user?.name.charAt(0)}
+										{user?.name?.charAt(0)}
 									</div>
 								</div>
 								<div className="flex-1">
@@ -349,7 +362,7 @@ const ProfileManagementPage = () => {
 
 					{activeTab === "security" && (
 						<div className="p-6">
-							{/* <h2 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+							<h2 className="text-xl font-semibold mb-6 flex items-center space-x-2">
 								<Shield size={20} />
 								<span>Security Settings</span>
 							</h2>
@@ -370,10 +383,9 @@ const ProfileManagementPage = () => {
 													? "text"
 													: "password"
 											}
-											value={}
+											value={currentPassword}
 											onChange={(e) =>
-												handleInputChange(
-													"currentPassword",
+												setCurrentPassword(
 													e.target.value
 												)
 											}
@@ -411,12 +423,9 @@ const ProfileManagementPage = () => {
 													? "text"
 													: "password"
 											}
-											value={formData.newPassword}
+											value={newPassword}
 											onChange={(e) =>
-												handleInputChange(
-													"newPassword",
-													e.target.value
-												)
+												setNewPassword(e.target.value)
 											}
 											className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 											placeholder="Enter new password"
@@ -439,10 +448,9 @@ const ProfileManagementPage = () => {
 													? "text"
 													: "password"
 											}
-											value={formData.confirmPassword}
+											value={confirmPassword}
 											onChange={(e) =>
-												handleInputChange(
-													"confirmPassword",
+												setConfirmPassword(
 													e.target.value
 												)
 											}
@@ -470,10 +478,13 @@ const ProfileManagementPage = () => {
 									</ul>
 								</div>
 
-								<button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+								<button
+									onClick={handleUpdateUserPassword}
+									className="w-full bg-black text-white py-3 rounded-lg  transition-colors"
+								>
 									Update Password
 								</button>
-							</div> */}
+							</div>
 						</div>
 					)}
 

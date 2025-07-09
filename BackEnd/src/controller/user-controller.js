@@ -11,6 +11,7 @@ import {
   getAll,
   deleted,
   getPaginatedUsers,
+  updatePassword,
 } from "../services/user-services.js";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
@@ -235,6 +236,32 @@ const getAllUsersPaginations = async (req, res, next) => {
     next(error);
   }
 };
+
+const updatePasswordHandler = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const result = await updatePassword(
+      id,
+      currentPassword,
+      newPassword,
+      confirmPassword
+    );
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+      user: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   register: registerUserHandler,
   login: loginUserHandler,
@@ -248,4 +275,5 @@ export default {
   getAll: getAllUserHandler,
   delete: deleteUserHandler,
   getPage: getAllUsersPaginations,
+  updatePassword: updatePasswordHandler,
 };

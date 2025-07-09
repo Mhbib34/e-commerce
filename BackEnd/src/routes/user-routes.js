@@ -10,6 +10,7 @@ userRouter.post("/logout", userAuth, userController.logout);
 userRouter.get("/", userAuth, userController.get);
 userRouter.delete("/:id", userAuth, isAdmin, userController.delete);
 userRouter.patch("/", userAuth, userController.update);
+userRouter.patch("/change-password", userAuth, userController.updatePassword);
 userRouter.get("/page", userAuth, userController.getPage);
 userRouter.post("/send-verify-otp", userAuth, userController.verifyOtp);
 userRouter.post("/verify-email", userAuth, userController.verifyEmail);

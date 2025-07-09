@@ -5,7 +5,7 @@ import {
   removeAllTestIsUser,
   removeAllTestUser,
 } from "./test.util.js";
-import { app } from "../src/app/app.js";
+import { app } from "../src/config/app.js";
 
 describe("POST /api/category/create", () => {
   jest.setTimeout(10000);

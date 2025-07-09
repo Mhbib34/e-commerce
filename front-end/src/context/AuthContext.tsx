@@ -2,9 +2,10 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "@/lib/axiosInstance";
 import { AxiosError } from "axios";
-import { showSuccess } from "@/lib/tasterHelper";
+import { showError, showSuccess } from "@/lib/tasterHelper";
 import axiosInstance from "@/lib/axiosInstance";
 import { User } from "@/type/userType";
+import { useRouter } from "next/navigation";
 type AuthContextType = {
 	user: User | null;
 	isLoading: boolean;
@@ -15,6 +16,7 @@ type AuthContextType = {
 	nonAdminUsers: User[];
 	setNonAdminUsers: (users: User[]) => void;
 	updateUser: (data: User) => Promise<void>;
+	updateUserPassword: (data: User) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [nonAdminUsers, setNonAdminUsers] = useState<User[]>([]);
+	const router = useRouter();
 
 	const refetchUser = async () => {
 		try {
@@ -67,9 +70,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			await axiosInstance.patch(`/user`, data);
 			refetchUser();
 		} catch (err) {
-			console.log("Update user error:", err);
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Update user failed."
+				);
+				console.log(error);
+			}
 		} finally {
 			showSuccess("User updated successfully.");
+		}
+	};
+
+	const updateUserPassword = async (data: User) => {
+		try {
+			await axiosInstance.patch(`/user/change-password`, data);
+			refetchUser();
+			showSuccess("Password updated successfully.");
+			router.push("/login");
+		} catch (err) {
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Update password failed."
+				);
+				console.log(error);
+			}
 		}
 	};
 
@@ -89,6 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				nonAdminUsers,
 				setNonAdminUsers,
 				updateUser,
+				updateUserPassword,
 			}}
 		>
 			{children}

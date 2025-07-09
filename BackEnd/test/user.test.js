@@ -1,8 +1,7 @@
 import { createTestUser, removeAllTestUser } from "./test.util.js";
 import supertest from "supertest";
-import { app } from "../src/app/app.js";
-import { prismaClient } from "../src/app/database.js";
-import { log } from "winston";
+import { app } from "../src/config/app.js";
+import { prismaClient } from "../src/config/database.js";
 
 describe("POST /api/user/register", () => {
   afterEach(async () => {
@@ -567,5 +566,37 @@ describe("PATCH /api/user/update", () => {
 
     console.log(result.body);
     expect(result.status).toBe(401);
+  });
+});
+
+describe("PATCH /api/user/change-password", () => {
+  let token;
+  beforeEach(async () => {
+    const result = await supertest(app).post("/api/user/register").send({
+      username: "test",
+      password: "rahasia",
+      name: "test",
+      email: "test@gmail.com",
+    });
+
+    token = result.body.token;
+    console.log(token);
+  });
+  afterEach(async () => {
+    await removeAllTestUser();
+  });
+
+  it("should can change password", async () => {
+    const result = await supertest(app)
+      .patch("/api/user/change-password")
+      .set("Cookie", [`token=${token}`])
+      .send({
+        currentPassword: "rahasia",
+        newPassword: "rahasia baru",
+        confirmPassword: "rahasia baru",
+      });
+
+    console.log(result.body);
+    expect(result.status).toBe(200);
   });
 });

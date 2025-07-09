@@ -289,3 +289,45 @@ export const getPaginatedUsers = async (page, limit) => {
     totalPages: Math.ceil(total / limit),
   };
 };
+
+export const updatePassword = async (
+  id,
+  currentPassword,
+  newPassword,
+  confirmPassword
+) => {
+  const user = await prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!user) throw new ResponseError(404, "User is not found!");
+
+  const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+  if (!isPasswordValid)
+    throw new ResponseError(400, "Current password is wrong!");
+
+  const isPasswordSame = await bcrypt.compare(newPassword, user.password);
+
+  if (isPasswordSame)
+    throw new ResponseError(
+      400,
+      "New password cannot be the same as the old one"
+    );
+
+  if (newPassword !== confirmPassword)
+    throw new ResponseError(400, "New password and confirm password mismatch!");
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  return prismaClient.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+};
