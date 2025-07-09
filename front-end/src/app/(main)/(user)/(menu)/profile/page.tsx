@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
-import PersonalTab from "./PersonalTab";
-import SecurityTab from "./SecurityTab";
-import PrefencesTab from "./PrefencesTab";
-import Header from "./Header";
-import { itemVariants } from "@/utils/variants";
-import NavigationsTab from "./NavigationsTab";
+import PersonalTab from "./components/PersonalTab";
+import SecurityTab from "./components/SecurityTab";
+import PrefencesTab from "./components/PrefencesTab";
+import Header from "./components/Header";
+import { containerVariants, itemVariants } from "@/utils/variants";
+import NavigationsTab from "./components/NavigationsTab";
 
 const ProfileManagementPage = () => {
 	const { user, updateUser, updateUserPassword } = useAuth();
@@ -20,16 +20,6 @@ const ProfileManagementPage = () => {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.1,
-			},
-		},
-	};
 
 	const handleUpdateUser = async () => {
 		try {

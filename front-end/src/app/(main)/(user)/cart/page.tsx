@@ -6,8 +6,8 @@ import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { showError, showSuccess } from "@/lib/tasterHelper";
-import OrderSummary from "./OrderSummary";
-import CartItems from "./CartItems";
+import OrderSummary from "./components/OrderSummary";
+import CartItems from "./components/CartItems";
 
 const ShoppingCart: React.FC = () => {
 	const router = useRouter();
