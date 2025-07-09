@@ -1,5 +1,6 @@
 import {
   create,
+  createOrderByCartId,
   getAllOrder,
   getOrderById,
   getOrderByUser,
@@ -106,6 +107,21 @@ const updateOrderStatusHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+const createOrderByCartIdHandler = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const cartId = req.params.id;
+    const result = await createOrderByCartId(userId, cartId);
+    res.status(201).json({
+      success: true,
+      message: "Order created successfully",
+      order: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export default {
   create: createOrderHandler,
   getOrderByUserId: getOrderByUserHandler,
@@ -114,4 +130,5 @@ export default {
   getByParams: getOrderByUserParamsHandler,
   getPage: getAllOrdersPaginations,
   update: updateOrderStatusHandler,
+  createByCartId: createOrderByCartIdHandler,
 };
