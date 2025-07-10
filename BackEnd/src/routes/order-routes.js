@@ -7,7 +7,7 @@ export const orderRouter = new express.Router();
 
 orderRouter.post("/", userAuth, orderController.create);
 orderRouter.post("/cart/:id", userAuth, orderController.createByCartId);
-orderRouter.patch("/:id", userAuth, isAdmin, orderController.update);
+orderRouter.patch("/:id", userAuth, orderController.update);
 orderRouter.get("/list", userAuth, isAdmin, orderController.getAll);
 orderRouter.get("/page", userAuth, orderController.getPage);
 orderRouter.get("/user/:id", userAuth, orderController.getByParams);

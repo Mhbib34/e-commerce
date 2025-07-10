@@ -24,8 +24,10 @@ export const create = async (userId) => {
 
     let total = 0;
     const orderItemsData = cartItems.map((item) => {
+      const tax = item.product.price * 0.05 * item.quantity;
+      const shipping = 25000;
       const itemTotal = item.product.price * item.quantity;
-      total += itemTotal;
+      total += itemTotal + tax + shipping;
       return {
         productId: item.productId,
         quantity: item.quantity,
@@ -88,7 +90,7 @@ export const getOrderByUser = async (userId) => {
       orderItems: {
         include: {
           product: {
-            select: { id: true, name: true },
+            select: { id: true, name: true, image: true },
           },
         },
       },
@@ -247,7 +249,6 @@ export const updateOrderStatus = async (orderId, status) => {
     },
     data: {
       status,
-      updatedAt: new Date(),
     },
     include: {
       orderItems: {
