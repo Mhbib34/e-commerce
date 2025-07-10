@@ -191,6 +191,15 @@ export const useOrder = ({
 		}
 	};
 
+	const fetchUserOrders = async () => {
+		try {
+			const res = await axiosInstance.get("/order");
+			console.log(res.data.order);
+			return res.data.order;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		order,
 		loading,
@@ -204,5 +213,6 @@ export const useOrder = ({
 		fetchOrderByUserId,
 		createOrder,
 		createOrderByCartId,
+		fetchUserOrders,
 	};
 };

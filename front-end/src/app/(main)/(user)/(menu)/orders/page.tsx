@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Package,
 	ChevronRight,
@@ -13,121 +13,43 @@ import {
 	Clock,
 	XCircle,
 } from "lucide-react";
-
-interface Order {
-	id: string;
-	orderNumber: string;
-	date: string;
-	status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-	total: number;
-	items: {
-		id: string;
-		name: string;
-		image: string;
-		quantity: number;
-		price: number;
-	}[];
-	shippingAddress: string;
-	trackingNumber?: string;
-}
+import Image from "next/image";
+import { useOrder } from "@/hooks/useOrder";
+import { Order } from "@/type/orderType";
+import { formatCurrency, formatDate } from "@/utils/format";
 
 const OrdersPage: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [sortBy, setSortBy] = useState("newest");
+	const { fetchUserOrders } = useOrder();
+	const [order, setOrder] = useState<Order[]>([]);
 
-	// Sample data
-	const orders: Order[] = [
-		{
-			id: "1",
-			orderNumber: "ORD-2024-001",
-			date: "2024-07-08",
-			status: "delivered",
-			total: 1250000,
-			items: [
-				{
-					id: "1",
-					name: "iPhone 15 Pro Max",
-					image: "/api/placeholder/60/60",
-					quantity: 1,
-					price: 1250000,
-				},
-			],
-			shippingAddress: "Jl. Sudirman No. 123, Jakarta",
-			trackingNumber: "JNE123456789",
-		},
-		{
-			id: "2",
-			orderNumber: "ORD-2024-002",
-			date: "2024-07-05",
-			status: "shipped",
-			total: 750000,
-			items: [
-				{
-					id: "2",
-					name: "MacBook Air M2",
-					image: "/api/placeholder/60/60",
-					quantity: 1,
-					price: 750000,
-				},
-			],
-			shippingAddress: "Jl. Gatot Subroto No. 456, Bandung",
-			trackingNumber: "SICEPAT987654321",
-		},
-		{
-			id: "3",
-			orderNumber: "ORD-2024-003",
-			date: "2024-07-03",
-			status: "processing",
-			total: 2500000,
-			items: [
-				{
-					id: "3",
-					name: "Dell XPS 13",
-					image: "/api/placeholder/60/60",
-					quantity: 1,
-					price: 1500000,
-				},
-				{
-					id: "4",
-					name: "Sony WH-1000XM4",
-					image: "/api/placeholder/60/60",
-					quantity: 1,
-					price: 1000000,
-				},
-			],
-			shippingAddress: "Jl. Diponegoro No. 789, Surabaya",
-		},
-		{
-			id: "4",
-			orderNumber: "ORD-2024-004",
-			date: "2024-07-01",
-			status: "cancelled",
-			total: 500000,
-			items: [
-				{
-					id: "5",
-					name: 'iPad Pro 11"',
-					image: "/api/placeholder/60/60",
-					quantity: 1,
-					price: 500000,
-				},
-			],
-			shippingAddress: "Jl. Thamrin No. 321, Jakarta",
-		},
-	];
+	useEffect(() => {
+		const fetchOrders = async () => {
+			try {
+				const orders = await fetchUserOrders();
+				setOrder(orders);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		fetchOrders();
+		// eslint-disable-next-line
+	}, []);
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case "delivered":
+			case "Delivered":
 				return "bg-green-100 text-green-800 border-green-200";
-			case "shipped":
+			case "Shipped":
 				return "bg-blue-100 text-blue-800 border-blue-200";
-			case "processing":
+			case "Processing":
 				return "bg-yellow-100 text-yellow-800 border-yellow-200";
-			case "pending":
+			case "Pending":
 				return "bg-orange-100 text-orange-800 border-orange-200";
-			case "cancelled":
+			case "Cancelled":
 				return "bg-red-100 text-red-800 border-red-200";
 			default:
 				return "bg-gray-100 text-gray-800 border-gray-200";
@@ -136,44 +58,28 @@ const OrdersPage: React.FC = () => {
 
 	const getStatusIcon = (status: string) => {
 		switch (status) {
-			case "delivered":
+			case "Delivered":
 				return <CheckCircle className="w-4 h-4" />;
-			case "shipped":
+			case "Shipped":
 				return <Truck className="w-4 h-4" />;
-			case "processing":
+			case "Processing":
 				return <Clock className="w-4 h-4" />;
-			case "pending":
+			case "Pending":
 				return <Clock className="w-4 h-4" />;
-			case "cancelled":
+			case "Cancelled":
 				return <XCircle className="w-4 h-4" />;
 			default:
 				return <Package className="w-4 h-4" />;
 		}
 	};
 
-	const formatCurrency = (amount: number) => {
-		return new Intl.NumberFormat("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-		}).format(amount);
-	};
-
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString("id-ID", {
-			day: "numeric",
-			month: "long",
-			year: "numeric",
-		});
-	};
-
-	const filteredOrders = orders.filter((order) => {
+	const filteredOrders = order.filter((order) => {
 		const matchesSearch =
-			order.orderNumber
-				.toLowerCase()
-				.includes(searchTerm.toLowerCase()) ||
-			order.items.some((item) =>
-				item.name.toLowerCase().includes(searchTerm.toLowerCase())
+			order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			order.orderItems.some((item) =>
+				item.product.name
+					.toLowerCase()
+					.includes(searchTerm.toLowerCase())
 			);
 		const matchesStatus =
 			statusFilter === "all" || order.status === statusFilter;
@@ -219,11 +125,11 @@ const OrdersPage: React.FC = () => {
 								}
 							>
 								<option value="all">Semua Status</option>
-								<option value="pending">Menunggu</option>
-								<option value="processing">Diproses</option>
-								<option value="shipped">Dikirim</option>
-								<option value="delivered">Selesai</option>
-								<option value="cancelled">Dibatalkan</option>
+								<option value="Pending">Menunggu</option>
+								<option value="Processing">Diproses</option>
+								<option value="Shipped">Dikirim</option>
+								<option value="Delivered">Selesai</option>
+								<option value="Cancelled">Dibatalkan</option>
 							</select>
 						</div>
 
@@ -268,7 +174,7 @@ const OrdersPage: React.FC = () => {
 										<div className="flex-1">
 											<div className="flex items-center gap-3 mb-2">
 												<h3 className="text-lg font-semibold text-gray-900">
-													{order.orderNumber}
+													{order.id}
 												</h3>
 												<span
 													className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(
@@ -279,27 +185,30 @@ const OrdersPage: React.FC = () => {
 														order.status
 													)}
 													{order.status ===
-														"delivered" &&
+														"Delivered" &&
 														"Selesai"}
 													{order.status ===
-														"shipped" && "Dikirim"}
+														"Shipped" && "Dikirim"}
 													{order.status ===
-														"processing" &&
+														"Processing" &&
 														"Diproses"}
 													{order.status ===
-														"pending" && "Menunggu"}
+														"Pending" && "Menunggu"}
 													{order.status ===
-														"cancelled" &&
+														"Cancelled" &&
 														"Dibatalkan"}
 												</span>
 											</div>
 											<div className="flex items-center gap-4 text-sm text-gray-600">
 												<span>
-													{formatDate(order.date)}
+													{formatDate(
+														order.createdAt
+													)}
 												</span>
 												<span>•</span>
 												<span>
-													{order.items.length} item
+													{order.orderItems.length}{" "}
+													item
 												</span>
 												<span>•</span>
 												<span className="font-semibold text-gray-900">
@@ -321,19 +230,21 @@ const OrdersPage: React.FC = () => {
 
 									{/* Order Items */}
 									<div className="space-y-3 mb-4">
-										{order.items.map((item) => (
+										{order.orderItems.map((item) => (
 											<div
 												key={item.id}
 												className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
 											>
-												<img
-													src={item.image}
-													alt={item.name}
+												<Image
+													alt={item.product.name}
+													src={`http://localhost:5000${item.product.image}`}
+													width={48}
+													height={48}
 													className="w-12 h-12 object-cover rounded-lg"
 												/>
 												<div className="flex-1">
 													<h4 className="font-medium text-gray-900">
-														{item.name}
+														{item.product.name}
 													</h4>
 													<p className="text-sm text-gray-600">
 														Qty: {item.quantity}
@@ -355,20 +266,9 @@ const OrdersPage: React.FC = () => {
 										<div className="flex items-center gap-2 text-sm text-gray-600">
 											<Truck className="w-4 h-4" />
 											<span>
-												Dikirim ke:{" "}
-												{order.shippingAddress}
+												Dikirim ke: {order.user.name}
 											</span>
 										</div>
-										{order.trackingNumber && (
-											<div className="flex items-center gap-2">
-												<span className="text-sm text-gray-600">
-													Resi: {order.trackingNumber}
-												</span>
-												<button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-													Lacak Paket
-												</button>
-											</div>
-										)}
 									</div>
 								</div>
 

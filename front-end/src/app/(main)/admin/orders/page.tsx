@@ -66,7 +66,7 @@ const OrdersAdminPage = () => {
 				.filter((order) => {
 					const matchesKeyword =
 						!keyword ||
-						order.user.name.toLowerCase().includes(keyword) ||
+						order.user?.name?.toLowerCase().includes(keyword) ||
 						order.id.toLowerCase().includes(keyword);
 
 					const matchesStatus =

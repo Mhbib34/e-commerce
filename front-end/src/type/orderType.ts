@@ -1,7 +1,5 @@
-type OrderProduct = {
-	id: string;
-	name: string;
-};
+import { Product } from "./productType";
+import { User } from "./userType";
 
 type OrderItem = {
 	id: string;
@@ -9,7 +7,7 @@ type OrderItem = {
 	productId: string;
 	quantity: number;
 	price: number;
-	product: OrderProduct;
+	product: Product;
 };
 
 export type Order = {
@@ -19,7 +17,7 @@ export type Order = {
 	status: string;
 	createdAt: string;
 	orderItems: OrderItem[];
-	user: OrderProduct;
+	user: User;
 };
 
 export type OrderProps = {
@@ -40,4 +38,5 @@ export type OrderData = {
 	fetchOrderByUserId: (userId: string) => Promise<Order[]>;
 	createOrder: () => Promise<void>;
 	createOrderByCartId: (id: string) => Promise<void>;
+	fetchUserOrders: () => Promise<Order[]>;
 };
