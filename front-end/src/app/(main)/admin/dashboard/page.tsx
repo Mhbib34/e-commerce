@@ -15,7 +15,7 @@ const AdminDashboardPage: FC = () => {
 	const [page, setPage] = useState(1);
 	const itemsPerPage = 9;
 	const { user } = useAuth();
-	const { orderPage, loading, error, refetch } = useOrder({
+	const { orderPage, loading, error, refetch, fetchOrders } = useOrder({
 		page,
 		limit: itemsPerPage,
 	});
@@ -33,6 +33,7 @@ const AdminDashboardPage: FC = () => {
 			}
 		};
 		fetchTopProducts();
+		fetchOrders(page, itemsPerPage);
 		//eslint-disable-next-line
 	}, []);
 

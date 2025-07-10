@@ -39,4 +39,5 @@ export type OrderData = {
 	createOrder: () => Promise<void>;
 	createOrderByCartId: (id: string) => Promise<void>;
 	fetchUserOrders: () => Promise<Order[]>;
+	updateStatus: (id: string, status: string) => Promise<void>;
 };

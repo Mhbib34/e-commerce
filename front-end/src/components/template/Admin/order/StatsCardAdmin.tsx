@@ -38,11 +38,12 @@ const StatCard: React.FC<StatCardProps> = ({
 
 const StatsCardAdmin = () => {
 	const { nonAdminUsers } = useAuth();
-	const { allOrder, totalRevenue } = useOrder();
+	const { allOrder, totalRevenue, fetchOrders } = useOrder();
 	const { allProducts, getAllProducts } = useProducts();
 
 	useEffect(() => {
 		getAllProducts();
+		fetchOrders(1, 0);
 		//eslint-disable-next-line
 	}, []);
 

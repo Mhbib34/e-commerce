@@ -30,7 +30,10 @@ const StatsCard = ({ products }: { products: Product[] }) => {
 						<p className="text-2xl font-bold text-orange-600 mt-1">
 							{
 								products.filter(
-									(p) => p.stock < 10 && p.stock > 0
+									(p) =>
+										typeof p.stock === "number" &&
+										p.stock < 10 &&
+										p.stock > 0
 								).length
 							}
 						</p>
@@ -64,7 +67,10 @@ const StatsCard = ({ products }: { products: Product[] }) => {
 							Categories
 						</p>
 						<p className="text-2xl font-bold text-gray-900 mt-1">
-							{new Set(products.map((p) => p.category.name)).size}
+							{
+								new Set(products.map((p) => p?.category?.name))
+									.size
+							}
 						</p>
 					</div>
 					<div className="p-3 bg-green-100 rounded-full">

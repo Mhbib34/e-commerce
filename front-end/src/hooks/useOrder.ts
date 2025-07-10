@@ -191,6 +191,24 @@ export const useOrder = ({
 		}
 	};
 
+	const updateStatus = async (orderId: string, status: string) => {
+		try {
+			await axiosInstance.patch(`/order/${orderId}`, {
+				status,
+			});
+		} catch (err) {
+			const error = err as AxiosError<{ errors: string }>;
+			if (error.response?.status === 401) {
+				showError(error.response.data.errors);
+			} else {
+				showError(
+					error.response?.data?.errors || "Update status failed."
+				);
+				console.log(error);
+			}
+		}
+	};
+
 	const fetchUserOrders = async () => {
 		try {
 			const res = await axiosInstance.get("/order");
@@ -214,5 +232,6 @@ export const useOrder = ({
 		createOrder,
 		createOrderByCartId,
 		fetchUserOrders,
+		updateStatus,
 	};
 };
