@@ -95,7 +95,7 @@ export const getOrderByUser = async (userId) => {
         },
       },
       user: {
-        select: { id: true, name: true },
+        select: { id: true, name: true, email: true, username: true },
       },
     },
     orderBy: {
