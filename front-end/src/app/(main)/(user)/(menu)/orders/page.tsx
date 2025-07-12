@@ -8,13 +8,15 @@ import Filters from "./components/Filters";
 import OrdersHeader from "./components/OrdersHeader";
 import OrdersItems from "./components/OrdersItems";
 import ShippingInfo from "./components/ShippingInfo";
-import ActionsButton from "./components/ActionsButton";
+import OrderDetailModal from "./components/OrderDetailModal";
 
 const OrdersPage: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const { fetchUserOrders, updateStatus } = useOrder();
 	const [order, setOrder] = useState<Order[]>([]);
+	const [isOpen, setIsOpen] = useState(false);
+	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
 	useEffect(() => {
 		const fetchOrders = async () => {
@@ -29,6 +31,12 @@ const OrdersPage: React.FC = () => {
 		fetchOrders();
 		// eslint-disable-next-line
 	}, []);
+
+	const handleOpenModal = (orderId: string) => {
+		const order = filteredOrders.find((order) => order.id === orderId);
+		setSelectedOrder(order ?? null);
+		setIsOpen(true);
+	};
 
 	const handleUpdateStatus = async (orderId: string, newStatus: string) => {
 		try {
@@ -94,7 +102,10 @@ const OrdersPage: React.FC = () => {
 							>
 								<div className="p-6">
 									{/* Order Header */}
-									<OrdersHeader order={order} />
+									<OrdersHeader
+										order={order}
+										handleOpenModal={handleOpenModal}
+									/>
 
 									{/* Order Items */}
 									<OrdersItems order={order} />
@@ -105,14 +116,18 @@ const OrdersPage: React.FC = () => {
 										handleUpdateStatus={handleUpdateStatus}
 									/>
 								</div>
-
-								{/* Action Buttons */}
-								<ActionsButton />
 							</div>
 						))
 					)}
 				</div>
 			</div>
+			{isOpen && (
+				<OrderDetailModal
+					order={selectedOrder as Order}
+					isOpen={isOpen}
+					onClose={() => setIsOpen(false)}
+				/>
+			)}
 		</div>
 	);
 };

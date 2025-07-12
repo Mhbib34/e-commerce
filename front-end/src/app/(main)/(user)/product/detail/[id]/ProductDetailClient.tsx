@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Product } from "@/type/productType";
 import { useCart } from "@/context/CartContext";
 import ProductModalDetail from "@/components/template/User/product/detail/ProductModalDetail";
-import { showError, showSuccess } from "@/lib/tasterHelper";
+import { showError } from "@/lib/tasterHelper";
 import ImageSection from "@/components/template/User/product/detail/ImageSection";
 import DetailSection from "@/components/template/User/product/detail/DetailSection";
 import Card from "@/components/template/User/product/Card";
@@ -44,7 +44,6 @@ const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
 		if (result.success) {
 			console.log("Successfully added to cart");
 			setIsOpen(false);
-			showSuccess("Successfully added to cart");
 		} else {
 			console.error("Failed to add to cart:", result.error);
 			showError("Failed to add to cart");

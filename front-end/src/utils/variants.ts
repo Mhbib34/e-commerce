@@ -105,3 +105,48 @@ export const containerVariants = {
 		},
 	},
 };
+
+export const modalVariants: Variants = {
+	hidden: {
+		opacity: 0,
+		scale: 0.8,
+		y: 50,
+	},
+	visible: {
+		opacity: 1,
+		scale: 1,
+		y: 0,
+		transition: {
+			type: "spring",
+			stiffness: 300,
+			damping: 30,
+			duration: 0.3,
+		},
+	},
+	exit: {
+		opacity: 0,
+		scale: 0.8,
+		y: 50,
+		transition: {
+			duration: 0.2,
+		},
+	},
+};
+
+export const contentVariants: Variants = {
+	hidden: { opacity: 0, y: 20 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		transition: {
+			delay: 0.1,
+			duration: 0.3,
+			staggerChildren: 0.05,
+		},
+	},
+};
+
+export const backdropVariants: Variants = {
+	hidden: { opacity: 0 },
+	visible: { opacity: 1 },
+};

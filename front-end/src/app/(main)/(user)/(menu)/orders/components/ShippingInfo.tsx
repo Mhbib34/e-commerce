@@ -1,3 +1,4 @@
+import { showConfirm } from "@/lib/tasterHelper";
 import { Order } from "@/type/orderType";
 import { Truck } from "lucide-react";
 import React from "react";
@@ -33,7 +34,13 @@ const ShippingInfo = ({ order, handleUpdateStatus }: Props) => {
 				{order.status === "Pending" && (
 					<button
 						onClick={() =>
-							handleUpdateStatus(order.id, "Cancelled")
+							showConfirm(
+								"Are you sure you want to cancel this order?",
+								order.orderItems
+									.map((item) => item.product.name)
+									.join(", "),
+								() => handleUpdateStatus(order.id, "Cancelled")
+							)
 						}
 						className="px-4 py-2 bg-red-100 text-red-600 border border-red-600 cursor-pointer rounded-lg hover:bg-red-50 transition-colors font-medium"
 					>
