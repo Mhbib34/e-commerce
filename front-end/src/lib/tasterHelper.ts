@@ -24,12 +24,13 @@ export const showWarning = (message: string) => {
 export const showConfirm = (
 	message: string,
 	description: string,
-	onConfirm: () => void
+	onConfirm: () => void,
+	label: string
 ) => {
 	toast.warning(message, {
 		description,
 		action: {
-			label: "Hapus",
+			label: label,
 			onClick: onConfirm,
 		},
 		duration: 4000,

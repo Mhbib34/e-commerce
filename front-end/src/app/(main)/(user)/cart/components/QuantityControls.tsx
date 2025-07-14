@@ -39,7 +39,8 @@ const QuantityControls = ({
 					showConfirm(
 						"Are you sure you want to delete this cart item?",
 						item.product.name,
-						() => handleDeleteCart(item.id)
+						() => handleDeleteCart(item.id),
+						"Delete"
 					)
 				}
 				className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"

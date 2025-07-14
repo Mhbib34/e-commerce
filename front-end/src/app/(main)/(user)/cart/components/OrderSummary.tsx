@@ -81,7 +81,8 @@ const OrderSummary = ({
 								"",
 								isAllSelected
 									? handleCreateOrder
-									: handleCreateSelectedOrder
+									: handleCreateSelectedOrder,
+								"Checkout"
 							)
 						}
 						disabled={selectedItems.length === 0}

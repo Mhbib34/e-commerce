@@ -39,7 +39,8 @@ const ShippingInfo = ({ order, handleUpdateStatus }: Props) => {
 								order.orderItems
 									.map((item) => item.product.name)
 									.join(", "),
-								() => handleUpdateStatus(order.id, "Cancelled")
+								() => handleUpdateStatus(order.id, "Cancelled"),
+								"Cancel"
 							)
 						}
 						className="px-4 py-2 bg-red-100 text-red-600 border border-red-600 cursor-pointer rounded-lg hover:bg-red-50 transition-colors font-medium"
