@@ -239,9 +239,25 @@ export const updateOrderStatus = async (orderId, status) => {
     where: {
       id: orderId,
     },
+    include: {
+      orderItems: {},
+    },
   });
 
   if (!findOrder) throw new ResponseError(404, "Order is not found!");
+
+  if (status === "Cancelled" || findOrder.status !== "Cancelled") {
+    for (const item of findOrder.orderItems) {
+      await prismaClient.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: {
+            increment: item.quantity,
+          },
+        },
+      });
+    }
+  }
 
   const order = await prismaClient.order.update({
     where: {
